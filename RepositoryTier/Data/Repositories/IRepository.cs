@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories
 {
-    internal interface IRepository<T> where T : class
+    public interface IRepository<T> where T : class
     { 
         Task<T?> GetByIdAsync(int Id,params Expression<Func<T, object>>[]includes);
         Task<T?> FindByIdAsync(int Id);

@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using GymManagementAPI.Models;
+﻿ 
 using Microsoft.EntityFrameworkCore;
+using RepositoryTier.Models;
+using System;
+using System.Collections.Generic;
 
 namespace RepositoryTier.Data;
 

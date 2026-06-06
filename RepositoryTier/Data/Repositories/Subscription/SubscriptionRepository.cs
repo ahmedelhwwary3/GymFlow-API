@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Subscription
 {
-    internal class SubscriptionRepository : Repository<GymManagementAPI.Models.Subscription>, ISubscriptionRepository
+    public class SubscriptionRepository : Repository<RepositoryTier.Models.Subscription>, ISubscriptionRepository
     {
         public SubscriptionRepository(GymManagementDbContext context) : base(context) { }
 

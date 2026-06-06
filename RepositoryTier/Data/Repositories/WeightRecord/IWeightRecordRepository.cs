@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.WeightRecord
 {
-    internal interface IWeightRecordRepository : IRepository<GymManagementAPI.Models.WeightRecord>
+    public interface IWeightRecordRepository : IRepository<RepositoryTier.Models.WeightRecord>
     {
     }
 }

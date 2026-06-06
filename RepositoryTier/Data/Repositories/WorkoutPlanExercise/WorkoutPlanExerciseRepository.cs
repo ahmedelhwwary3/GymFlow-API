@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.WorkoutPlanExercise
 {
-    internal class WorkoutPlanExerciseRepository : Repository<GymManagementAPI.Models.WorkoutPlanExercise>
+    public class WorkoutPlanExerciseRepository : Repository<RepositoryTier.Models.WorkoutPlanExercise>
         , IWorkoutPlanExerciseRepository
     {
         public WorkoutPlanExerciseRepository(GymManagementDbContext context) : base(context) { }

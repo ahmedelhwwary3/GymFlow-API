@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Attendance
 {
-    internal class AttendanceRepository : Repository<GymManagementAPI.Models.Attendance>, IAttendanceRepository
+    public class AttendanceRepository : Repository<RepositoryTier.Models.Attendance>, IAttendanceRepository
     {
         public AttendanceRepository(GymManagementDbContext context) : base(context) { }
 

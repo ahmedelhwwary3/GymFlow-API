@@ -1,4 +1,4 @@
-﻿using GymManagementAPI.Models;
+﻿ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Attendance
 {
-    internal interface IAttendanceRepository:IRepository<GymManagementAPI.Models.Attendance>
+    public interface IAttendanceRepository:IRepository<RepositoryTier.Models.Attendance>
     {
 
     }

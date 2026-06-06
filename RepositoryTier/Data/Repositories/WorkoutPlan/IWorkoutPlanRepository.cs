@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.WorkoutPlan
 {
-    internal interface IWorkoutPlanRepository : IRepository<GymManagementAPI.Models.WorkoutPlan>
+    public interface IWorkoutPlanRepository : IRepository<RepositoryTier.Models.WorkoutPlan>
     {
     }
 }

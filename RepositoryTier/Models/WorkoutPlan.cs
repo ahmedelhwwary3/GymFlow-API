@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GymManagementAPI.Models;
+namespace RepositoryTier.Models;
 
 public partial class WorkoutPlan
 {

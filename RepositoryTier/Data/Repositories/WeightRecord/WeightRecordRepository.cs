@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.WeightRecord
 {
-    internal class WeightRecordRepository : Repository<GymManagementAPI.Models.WeightRecord>, IWeightRecordRepository
+    public class WeightRecordRepository : Repository<RepositoryTier.Models.WeightRecord>, IWeightRecordRepository
     {
         public WeightRecordRepository(GymManagementDbContext context) : base(context) { }
     }

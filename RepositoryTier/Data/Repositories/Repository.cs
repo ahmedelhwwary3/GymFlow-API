@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories
 {
-    internal class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly GymManagementDbContext _context;
+        protected readonly GymManagementDbContext _context;
 
         public Repository(GymManagementDbContext context)
         {

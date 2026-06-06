@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GymManagementAPI.Models;
+namespace RepositoryTier.Models;
 
 public partial class Attendance
 {
@@ -14,4 +14,6 @@ public partial class Attendance
     public string? Notes { get; set; }
 
     public virtual Member Member { get; set; } = null!;
+
+    
 }

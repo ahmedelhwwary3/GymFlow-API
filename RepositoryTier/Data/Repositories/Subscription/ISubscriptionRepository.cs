@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Subscription
 {
-    internal interface ISubscriptionRepository : IRepository<GymManagementAPI.Models.Subscription>
+    public interface ISubscriptionRepository : IRepository<RepositoryTier.Models.Subscription>
     {
     }
 }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Member
 {
-    internal class MemberRepository : Repository<GymManagementAPI.Models.Member>, IMemberRepository
+    public class MemberRepository : Repository<RepositoryTier.Models.Member>, IMemberRepository
     {
         public MemberRepository(GymManagementDbContext context) : base(context) { }
+
     }
 }

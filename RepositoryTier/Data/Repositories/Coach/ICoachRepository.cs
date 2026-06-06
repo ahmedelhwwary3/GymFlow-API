@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Coach
 {
-    internal interface ICoachRepository: IRepository<GymManagementAPI.Models.Coach>
+    public interface ICoachRepository: IRepository<RepositoryTier.Models.Coach>
     {
     }
 }

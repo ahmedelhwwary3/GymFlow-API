@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Payment
 {
-    internal interface IPaymentRepository:IRepository<GymManagementAPI.Models.Payment>
+    public interface IPaymentRepository:IRepository<RepositoryTier.Models.Payment>
     {
     }
 }

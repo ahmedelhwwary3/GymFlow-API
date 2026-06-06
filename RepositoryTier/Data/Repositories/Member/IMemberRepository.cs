@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Member
 {
-    internal interface IMemberRepository : IRepository<GymManagementAPI.Models.Member>
+    public interface IMemberRepository : IRepository<RepositoryTier.Models.Member>
     {
     }
 }

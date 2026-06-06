@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories.Payment
 {
-    internal class PaymentRepository : Repository<GymManagementAPI.Models.Payment>, IPaymentRepository
+    public class PaymentRepository : Repository<RepositoryTier.Models.Payment>, IPaymentRepository
     {
         public PaymentRepository(GymManagementDbContext context) : base(context) { }
     }
