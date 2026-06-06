@@ -25,6 +25,8 @@ namespace RepositoryTier.Data.Configurations
             builder.HasIndex(e => e.Phone, "UQ_Users_Phone").IsUnique();
 
             builder.Property(e => e.Email).HasMaxLength(255);
+            builder.Property(e => e.IsActive).HasDefaultValue(true);
+            builder.Property(e => e.IsDeleted).HasDefaultValue(false);
             builder.Property(e => e.FullName).HasMaxLength(150);
             builder.Property(e => e.PasswordHash).HasMaxLength(500);
             builder.Property(e => e.Phone).HasMaxLength(20);

@@ -52,6 +52,9 @@ namespace ServiceTier.User
             if (user == null)
                 return null;
 
+            if (!user.IsActive || user.IsDeleted)
+                return null;
+
             bool isValidPassword = BCrypt.Net.BCrypt
                 .Verify("password", user.PasswordHash);
             if (!isValidPassword)
@@ -95,6 +98,9 @@ namespace ServiceTier.User
             // A) validate refresh token
             var user = await _repo.GetByEmailAsync(request.Email);
             if (user == null)
+                return null;
+
+            if (!user.IsActive || user.IsDeleted)
                 return null;
 
             bool isUserRefreshToken = BCrypt.Net.BCrypt
@@ -142,6 +148,9 @@ namespace ServiceTier.User
             // A) validate refresh token
             var user = await _repo.GetByEmailAsync(request.Email);
             if(user == null)
+                return false;
+
+            if(user.IsDeleted || !user.IsActive)
                 return false;
 
             bool isUserRefreshToken = BCrypt.Net.BCrypt
