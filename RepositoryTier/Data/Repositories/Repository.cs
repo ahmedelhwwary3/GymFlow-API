@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.Data.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public abstract class Repository<T> : IRepository<T> where T : class
     {
         protected readonly GymManagementDbContext _context;
 

@@ -8,7 +8,7 @@ using RepositoryTier.Data.Repositories;
 
 namespace ServiceTier
 {
-    public class Service<T> : IService<T> where T : class
+    public abstract class Service<T> : IService<T> where T : class
     {
         protected readonly IRepository<T> _repo;
         public Service(IRepository<T>repo)
