@@ -48,6 +48,12 @@ namespace RepositoryTier.Data.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
+        public async Task<List<T>> GetAllAsync()
+        {
+            var query = _context.Set<T>(); 
+            return await query.ToListAsync();
+        }
+
         public async Task<int> SaveChangesAsync()
         {
            return await _context.SaveChangesAsync();
