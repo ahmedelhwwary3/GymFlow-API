@@ -14,6 +14,6 @@ namespace RepositoryTier.Data.Repositories
         Task DeleteByIdAsync(int Id);
         Task AddAsync(T entity);
         Task<Boolean> ExistsByIdAsync(int Id);
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.DTOs.Authentication
 {
-    public class LoginResponse
+    public class TokenResponse
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }

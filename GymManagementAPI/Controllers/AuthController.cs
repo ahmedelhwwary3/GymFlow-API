@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ServiceTier;
 using auth= RepositoryTier.DTOs.Authentication;
+using RepositoryTier.DTOs.Authentication;
 
 namespace GymManagementAPI.Controllers
 {
@@ -20,18 +21,44 @@ namespace GymManagementAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(auth.LoginRequest request)
+        public async Task<ActionResult<TokenResponse>> Login(auth.LoginRequest request)
         {
             if(!ModelState.IsValid)
                 return BadRequest();
 
-            var response =await _userService.LoginAsync(request);
-            if(response==null)
+            var response = await _userService.LoginAsync(request);
+            if (response==null)
                 return Unauthorized("Invalid email or password.");
 
             return Ok(response);
         }
 
+        [HttpPost("refresh")]
+        public async Task<ActionResult<TokenResponse>> Refresh(auth.RefreshRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var response = await _userService.RefreshAsync(request);
+            if (response == null)
+                return Unauthorized("Invalid refresh token.");
+
+            return Ok(response);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(auth.LogoutRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var response = await _userService.LogoutAsync(request);
+            // To confuse attackers, we return 200 OK even if the logout fails (e.g., invalid token)
+            if (response == false)
+                return Ok();
+
+            return Ok("Logged out successfully");// Frindly message for successful logout
+        }
 
     }
 }

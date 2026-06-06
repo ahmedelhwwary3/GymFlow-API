@@ -9,6 +9,8 @@ namespace ServiceTier
 {
     public interface IUserService: IService<models.User>
     {
-        Task<LoginResponse?> LoginAsync(LoginRequest request);
+        Task<TokenResponse?> LoginAsync(LoginRequest request);
+        Task<TokenResponse?> RefreshAsync(RefreshRequest request);
+        Task<bool> LogoutAsync(LogoutRequest request);
     }
 }
