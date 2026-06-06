@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Data.Repositories;
+using RepositoryTier.Data.Repositories.Attendance;
 using RepositoryTier.Data.Repositories.Coach;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace ServiceTier.Coach
 {
     public class CoachService : Service<RepositoryTier.Models.Coach>, ICoachService
     {
-        public CoachService(IRepository<RepositoryTier.Models.Coach> repo) : base(repo) { }
+        public CoachService(ICoachRepository repo) : base(repo) { }
     }
 }

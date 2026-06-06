@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Data.Repositories;
+using RepositoryTier.Data.Repositories.WorkoutPlan;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ServiceTier.WorkoutPlan
 {
     public class WorkoutPlanService: Service<RepositoryTier.Models.WorkoutPlan>, IWorkoutPlanService
     {
-        public WorkoutPlanService(IRepository<RepositoryTier.Models.WorkoutPlan>repo) : base(repo) { }
+        public WorkoutPlanService(IWorkoutPlanRepository repo) : base(repo) { }
     }
 }

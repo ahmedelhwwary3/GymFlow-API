@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Data.Repositories;
+using RepositoryTier.Data.Repositories.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ServiceTier.User
 {
     public class UserService : Service<RepositoryTier.Models.User>, IUserService
     {
-        public UserService(IRepository<RepositoryTier.Models.User> repo) : base(repo) { }
+        public UserService(IUserRepository repo) : base(repo) { }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Data.Repositories;
+using RepositoryTier.Data.Repositories.Member;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ServiceTier.Member
 {
     public class MemberService: Service<RepositoryTier.Models.Member>, IMemberService
     {
-        public MemberService(IRepository<RepositoryTier.Models.Member>repo) : base(repo) { }
+        public MemberService(IMemberRepository repo) : base(repo) { }
     }
 }

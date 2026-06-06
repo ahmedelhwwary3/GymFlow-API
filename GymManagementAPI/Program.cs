@@ -1,6 +1,28 @@
 
 using Microsoft.EntityFrameworkCore;
 using RepositoryTier.Data;
+using RepositoryTier.Data.Repositories.Attendance;
+using RepositoryTier.Data.Repositories.Coach;
+using RepositoryTier.Data.Repositories.Exercise;
+using RepositoryTier.Data.Repositories.Member;
+using RepositoryTier.Data.Repositories.Payment;
+using RepositoryTier.Data.Repositories.Subscription;
+using RepositoryTier.Data.Repositories.User;
+using RepositoryTier.Data.Repositories.WeightRecord;
+using RepositoryTier.Data.Repositories.WorkoutPlan;
+using RepositoryTier.Data.Repositories.WorkoutPlanExercise;
+using RepositoryTier.Data.Repositories;
+using ServiceTier;
+using ServiceTier.Attendance;
+using ServiceTier.Coach;
+using ServiceTier.Exercise;
+using ServiceTier.Member;
+using ServiceTier.Payment;
+using ServiceTier.Subscription;
+using ServiceTier.User;
+using ServiceTier.WeightRecord;
+using ServiceTier.WorkoutPlan;
+using ServiceTier.WorkoutPlanExercise;
 
 namespace GymManagement
 {
@@ -20,6 +42,29 @@ namespace GymManagement
                 options.LogTo(Console.WriteLine, LogLevel.Information)
                        .EnableSensitiveDataLogging();
             });
+
+            builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            builder.Services.AddScoped<ICoachRepository, CoachRepository>();
+            builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+            builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IWeightRecordRepository, WeightRecordRepository>();
+            builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
+            builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
+
+            builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+            builder.Services.AddScoped<ICoachService, CoachService>();
+            builder.Services.AddScoped<IExerciseService, ExerciseService>();
+            builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IWeightRecordService, WeightRecordService>();
+            builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
+            builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
+
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

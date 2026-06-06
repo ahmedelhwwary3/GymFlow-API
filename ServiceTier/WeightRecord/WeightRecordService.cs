@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Data.Repositories;
+using RepositoryTier.Data.Repositories.WeightRecord;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ServiceTier.WeightRecord
 {
     public class WeightRecordService : Service<RepositoryTier.Models.WeightRecord>, IWeightRecordService
     {
-        public WeightRecordService(IRepository<RepositoryTier.Models.WeightRecord> repo) : base(repo) { } 
+        public WeightRecordService(IWeightRecordRepository repo) : base(repo) { } 
     }
 }

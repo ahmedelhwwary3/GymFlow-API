@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Data.Repositories;
+using RepositoryTier.Data.Repositories.Attendance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ServiceTier.Attendance
 {
     public class AttendanceService:Service<RepositoryTier.Models.Attendance>, IAttendanceService
     {
-        public AttendanceService(IRepository<RepositoryTier.Models.Attendance> repo) : base(repo) { }
+        public AttendanceService(IAttendanceRepository repo) : base(repo) { }
     }
 }
