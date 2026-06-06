@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using models= RepositoryTier.Models;
 
 namespace ServiceTier
 {
-    public interface ISubscriptionService:IService<RepositoryTier.Models.Subscription>
+    public interface ISubscriptionService:IService<models.Subscription>
     {
     }
 }

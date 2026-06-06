@@ -1,6 +1,7 @@
-
+ 
 using Microsoft.EntityFrameworkCore;
 using RepositoryTier.Data;
+using RepositoryTier.Data.Repositories;
 using RepositoryTier.Data.Repositories.Attendance;
 using RepositoryTier.Data.Repositories.Coach;
 using RepositoryTier.Data.Repositories.Exercise;
@@ -11,10 +12,10 @@ using RepositoryTier.Data.Repositories.User;
 using RepositoryTier.Data.Repositories.WeightRecord;
 using RepositoryTier.Data.Repositories.WorkoutPlan;
 using RepositoryTier.Data.Repositories.WorkoutPlanExercise;
-using RepositoryTier.Data.Repositories;
 using ServiceTier;
 using ServiceTier.Attendance;
 using ServiceTier.Coach;
+using ServiceTier.Configurations;
 using ServiceTier.Exercise;
 using ServiceTier.Member;
 using ServiceTier.Payment;
@@ -23,6 +24,7 @@ using ServiceTier.User;
 using ServiceTier.WeightRecord;
 using ServiceTier.WorkoutPlan;
 using ServiceTier.WorkoutPlanExercise;
+using System.Security.Cryptography;
 
 namespace GymManagement
 {
@@ -42,6 +44,8 @@ namespace GymManagement
                 options.LogTo(Console.WriteLine, LogLevel.Information)
                        .EnableSensitiveDataLogging();
             });
+
+            builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
 
             builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
@@ -65,7 +69,6 @@ namespace GymManagement
             builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
             builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
 
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -83,8 +86,8 @@ namespace GymManagement
             app.UseAuthorization();
 
             app.MapControllers();
-
-            app.Run();
+              
+            app.Run(); 
         }
     }
 }
