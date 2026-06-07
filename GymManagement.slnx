@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="GymManagementAPI/GymManagementAPI.csproj" />
+  <Project Path="GymManagementServiceTier.UnitTesting/GymManagementServiceTier.UnitTesting.csproj" Id="b806bc82-3bd5-4d1f-a17d-607608e07cc5" />
   <Project Path="RepositoryTier/RepositoryTier.csproj" />
   <Project Path="ServiceTier/ServiceTier.csproj" />
 </Solution>

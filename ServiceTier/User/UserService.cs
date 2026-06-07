@@ -22,7 +22,7 @@ namespace ServiceTier.User
     public class UserService : Service<models.User>, IUserService
     {
         private readonly IUserRepository _repo;
-        private readonly JWTOptions _jwt;
+        private readonly JWTOptions _jwtConfigs;
         private readonly IConfiguration _configs;
         public UserService(
             IUserRepository repo,
@@ -30,7 +30,7 @@ namespace ServiceTier.User
             IConfiguration configs)
             : base(repo)
         {
-            _jwt = jwtOptions.Value;
+            _jwtConfigs = jwtOptions.Value;
             _repo = repo;
             _configs = configs;
         }
@@ -56,7 +56,7 @@ namespace ServiceTier.User
                 return null;
 
             bool isValidPassword = BCrypt.Net.BCrypt
-                .Verify("password", user.PasswordHash);
+                .Verify(request.Password, user.PasswordHash);
             if (!isValidPassword)
                 return null;
             // B) login is valid - generate tokens
@@ -67,22 +67,22 @@ namespace ServiceTier.User
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.Role,user.Role.ToString())
             };
-            string key = _configs["JWT_SECRET_KEY"] ??
-                throw new Exception("JWT_SECRET key is not configured");
+            string key = _configs["GYM_SECRET_KEY"] ??
+                throw new Exception("GYM_SECRET key is not configured");
 
             var creds = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256);
 
             var accessToken = new JwtSecurityToken(
                 claims: Claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwt.ExpirationInMinutes),
-                audience: _jwt.Audience,
-                issuer: _jwt.Issuer,
+                expires: DateTime.UtcNow.AddMinutes(_jwtConfigs.ExpirationInMinutes),
+                audience: _jwtConfigs.Audience,
+                issuer: _jwtConfigs.Issuer,
                 signingCredentials: creds);
             // 2.save new refresh token and revoke the old one
             var refreshToken = GenerateRefreshToken();
             user.RefreshTokenRevokedAt = null;
-            user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(_jwt.RefreshTokenExpirationInDays);
+            user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(_jwtConfigs.RefreshTokenExpirationInDays);
             user.RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken);// logout  
             int affectedRows= await _repo.SaveChangesAsync();
 
@@ -117,21 +117,21 @@ namespace ServiceTier.User
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.Role,user.Role.ToString())
             };
-            string key = _configs["JWT_SECRET_KEY"] ??
-                throw new Exception("JWT_SECRET key is not configured");
+            string key = _configs["GYM_SECRET_KEY"] ??
+                throw new Exception("GYM_SECRET key is not configured");
 
             var creds = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256);
             var newAccessToken = new JwtSecurityToken(
                 claims: Claims,
-                issuer: _jwt.Issuer,
-                audience: _jwt.Audience,
-                expires: DateTime.UtcNow.AddMinutes(_jwt.ExpirationInMinutes),
+                issuer: _jwtConfigs.Issuer,
+                audience: _jwtConfigs.Audience,
+                expires: DateTime.UtcNow.AddMinutes(_jwtConfigs.ExpirationInMinutes),
                 signingCredentials: creds
                 );
             //2.save new refresh token and revoke the old one
             var newRefreshToken = GenerateRefreshToken(); 
-            user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(_jwt.RefreshTokenExpirationInDays);
+            user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(_jwtConfigs.RefreshTokenExpirationInDays);
             user.RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(newRefreshToken);
             user.RefreshTokenRevokedAt = null;
             int affectedRows = await _repo.SaveChangesAsync();
