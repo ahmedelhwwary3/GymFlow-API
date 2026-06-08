@@ -106,7 +106,7 @@ namespace ServiceTier.User
             bool isUserRefreshToken = BCrypt.Net.BCrypt
                 .Verify(request.RefreshToken, user.RefreshTokenHash);
             if (!isUserRefreshToken ||
-                user.RefreshTokenExpiresAt > DateTime.UtcNow ||
+                user.RefreshTokenExpiresAt < DateTime.UtcNow ||
                 user.RefreshTokenRevokedAt != null)
                 return null;
             // B) refresh token is valid - generate new tokens
@@ -155,7 +155,7 @@ namespace ServiceTier.User
 
             bool isUserRefreshToken = BCrypt.Net.BCrypt
                 .Verify(request.RefreshToken, user.RefreshTokenHash);
-            if(!isUserRefreshToken || user.RefreshTokenExpiresAt > DateTime.UtcNow ||
+            if(!isUserRefreshToken || user.RefreshTokenExpiresAt < DateTime.UtcNow ||
                 user.RefreshTokenRevokedAt != null)
                 return false;
             // B) refresh token is valid - revoke it

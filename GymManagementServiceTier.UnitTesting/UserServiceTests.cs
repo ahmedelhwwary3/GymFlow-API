@@ -8,6 +8,7 @@ using ServiceTier.User;
 using RepositoryTier.DTOs.Authentication;
 using BCrypt.Net;
 using RepositoryTier.Models;
+using System.Security.Cryptography;
 
 namespace GymManagementServiceTier.UnitTesting
 {
@@ -19,7 +20,7 @@ namespace GymManagementServiceTier.UnitTesting
         private Mock<IUserRepository> _repoMock; 
 
         [OneTimeSetUp]
-        public void SetUpOneTime()
+        protected void SetUpOneTime()
         {
             // 1.Arrange
 
@@ -43,7 +44,7 @@ namespace GymManagementServiceTier.UnitTesting
                 .Build();
 
             _repoMock=new Mock<IUserRepository>();
-
+             
             _userService = new UserService(
                 _repoMock.Object,
                 jwtOptions,
@@ -51,11 +52,23 @@ namespace GymManagementServiceTier.UnitTesting
               
         }
         [OneTimeTearDown]
-        public void TearDownOneTime() { }
+        protected void TearDownOneTime() { }
+        
+        protected void SetUpSaveChangesAsync(int affetedRows)
+        {
+            _repoMock.Setup(r => r.SaveChangesAsync())
+                .ReturnsAsync(affetedRows);
+        }
+
+        protected void VerifySaveChangesAsync(int affetedRows)
+        {
+            _repoMock.Verify(r => r.SaveChangesAsync(),
+                Times.Exactly(affetedRows));
+        }
 
         [Test]
         [Category("Login")]
-        public async Task TestLoginAsync_WithValidCredentials_ReturnsTokenResponse()
+        public async Task TestLoginAsync_ValidCredentials_ReturnsTokenResponse()
         {
             // 1.Arrange
             _repoMock
@@ -79,6 +92,8 @@ namespace GymManagementServiceTier.UnitTesting
                    IsDeleted = false,
                    Phone = "1234567890"
                });
+            SetUpSaveChangesAsync(1);
+
             //2.Act
             var response =await _userService.LoginAsync(new LoginRequest()
             {
@@ -87,11 +102,12 @@ namespace GymManagementServiceTier.UnitTesting
             });
             //3.Assert
             Assert.That(response,Is.Not.Null);
+            VerifySaveChangesAsync(1);
         }
 
         [Test]
         [Category("Login")]
-        public async Task TestLoginAsync_WithInvalidEmail_ReturnsNull()
+        public async Task TestLoginAsync_InvalidEmail_ReturnsNull()
         {
             // 1.Arrange
             _repoMock
@@ -115,6 +131,7 @@ namespace GymManagementServiceTier.UnitTesting
                    IsDeleted = false,
                    Phone = "1234567890"
                });
+            SetUpSaveChangesAsync(0);
             //2.Act
             var response = await _userService.LoginAsync(new LoginRequest()
             {
@@ -123,11 +140,12 @@ namespace GymManagementServiceTier.UnitTesting
             });
             //3.Assert
             Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
         }
 
         [Test]
         [Category("Login")]
-        public async Task TestLoginAsync_WithInvalidPassword_ReturnsNull()
+        public async Task TestLoginAsync_InvalidPassword_ReturnsNull()
         {
             // 1.Arrange
             _repoMock
@@ -151,6 +169,7 @@ namespace GymManagementServiceTier.UnitTesting
                    IsDeleted = false,
                    Phone = "1234567890"
                });
+            SetUpSaveChangesAsync(0);
             //2.Act
             var response = await _userService.LoginAsync(new LoginRequest()
             {
@@ -159,6 +178,7 @@ namespace GymManagementServiceTier.UnitTesting
             });
             //3.Assert
             Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
         }
 
         [Test]
@@ -187,6 +207,7 @@ namespace GymManagementServiceTier.UnitTesting
                    IsDeleted = false,
                    Phone = "1234567890"
                });
+            SetUpSaveChangesAsync(0);
             //2.Act
             var response = await _userService.LoginAsync(new LoginRequest()
             {
@@ -195,6 +216,7 @@ namespace GymManagementServiceTier.UnitTesting
             });
             //3.Assert
             Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
         }
 
         [Test]
@@ -223,6 +245,7 @@ namespace GymManagementServiceTier.UnitTesting
                    IsDeleted = true,
                    Phone = "1234567890"
                });
+            SetUpSaveChangesAsync(0);
             //2.Act
             var response = await _userService.LoginAsync(new LoginRequest()
             {
@@ -231,6 +254,7 @@ namespace GymManagementServiceTier.UnitTesting
             });
             //3.Assert
             Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
         }
          
         [Test]
@@ -245,7 +269,7 @@ namespace GymManagementServiceTier.UnitTesting
                    Id = 1,
                    Email = "koko@yahoo.com",
                    CreatedAt = DateTime.UtcNow,
-                   DeletedAt = DateTime.UtcNow.AddDays(-1),
+                   DeletedAt = null,
                    UpdatedAt = null,
                    IsActive = true,
                    Gender = 1,
@@ -256,9 +280,10 @@ namespace GymManagementServiceTier.UnitTesting
                    Role = 1,
                    DateOfBirth = new DateOnly(1990, 1, 1),
                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
-                   IsDeleted = true,
+                   IsDeleted = false,
                    Phone = "1234567890"
                });
+            SetUpSaveChangesAsync(0);
             //2.Act
             var response = await _userService.LoginAsync(new LoginRequest()
             {
@@ -267,6 +292,7 @@ namespace GymManagementServiceTier.UnitTesting
             });
             //3.Assert
             Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
         }
 
         [Test]
@@ -281,7 +307,7 @@ namespace GymManagementServiceTier.UnitTesting
                    Id = 1,
                    Email = "koko@yahoo.com",
                    CreatedAt = DateTime.UtcNow,
-                   DeletedAt = DateTime.UtcNow.AddDays(-1),
+                   DeletedAt = null,
                    UpdatedAt = null,
                    IsActive = true,
                    Gender = 1,
@@ -292,9 +318,10 @@ namespace GymManagementServiceTier.UnitTesting
                    Role = 1,
                    DateOfBirth = new DateOnly(1990, 1, 1),
                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
-                   IsDeleted = true,
+                   IsDeleted = false,
                    Phone = "1234567890"
                });
+            SetUpSaveChangesAsync(0);
             //2.Act
             var response = await _userService.LoginAsync(new LoginRequest()
             {
@@ -303,20 +330,618 @@ namespace GymManagementServiceTier.UnitTesting
             });
             //3.Assert
             Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
+        }
+
+        //=======================
+
+        private string GenerateRefreshToken()
+        {
+            var bytes = new byte[64];
+            var rng = RandomNumberGenerator.Create(); // crypto object
+            rng.GetBytes(bytes);//Fill array  random bytes
+            return Convert.ToBase64String(bytes);
+        }
+        [Test]
+        [Category("Refresh")]
+        public async Task TestRefreshAsync_ValidTokenAndEmail_ReturnsTokenResponse()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(1);
+            //2.Act
+            var response =await _userService.RefreshAsync(new RefreshRequest()
+            {
+                Email= "koko@yahoo.com",
+                RefreshToken= refreshToken
+            });
+
+            //3.Assert
+            Assert.That(response, Is.Not.Null);
+            VerifySaveChangesAsync(1);
         }
 
         [Test]
         [Category("Refresh")]
-        public void TestRefreshAsync_WithValidTokenAndEmail_ReturnsTokenResponse()
+        public async Task TestRefreshAsync_InvalidToken_ReturnsNull()
         {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
 
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            var response = await _userService.RefreshAsync(new RefreshRequest()
+            {
+                Email = "koko@yahoo.com",
+                RefreshToken = "Invalid Token" 
+            });
+
+            //3.Assert
+            Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Refresh")]
+        public async Task TestRefreshAsync_InvalidEmail_ReturnsNull()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            var response =await _userService.RefreshAsync(new RefreshRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Refresh")]
+        public async Task TestRefreshAsync_EmptyEmail_ReturnsNull()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            var response =await _userService.RefreshAsync(new RefreshRequest()
+            {
+                Email = string.Empty,
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Refresh")]
+        public async Task TestRefreshAsync_EmptyToken_ReturnsNull()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            var response =await _userService.RefreshAsync(new RefreshRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = string.Empty
+            });
+
+            //3.Assert
+            Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Refresh")]
+        public async Task TestRefreshAsync_Expired_ReturnsNull()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(-1),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            var response = await _userService.RefreshAsync(new RefreshRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Refresh")]
+        public async Task TestRefreshAsync_Revoked_ReturnsNull()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = DateTime.UtcNow.AddDays(-1),
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            var response = await _userService.RefreshAsync(new RefreshRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(response, Is.Null);
+            VerifySaveChangesAsync(0);
+        }
+
+        //=======================
+
+        [Test]
+        [Category("Logout")]
+        public async Task TestLogoutAsync_ValidTokenAndEmail_ReturnsTrue()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(1);
+            //2.Act
+            bool succeed = await _userService.LogoutAsync(new LogoutRequest()
+            {
+                Email = "koko@yahoo.com",
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(succeed, Is.True);
+            VerifySaveChangesAsync(1);
         }
 
         [Test]
         [Category("Logout")]
-        public void TestLogoutAsync_WithValidTokenAndEmail_ReturnsOkWithMessage()
+        public async Task TestLogoutAsync_InvalidToken_False()
         {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
 
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            bool succeed = await _userService.LogoutAsync(new LogoutRequest()
+            {
+                Email = "koko@yahoo.com",
+                RefreshToken = "Invalid Token"
+            });
+
+            //3.Assert
+            Assert.That(succeed, Is.False);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Logout")]
+        public async Task TestLogoutAsync_InvalidEmail_False()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            bool succeed = await _userService.LogoutAsync(new LogoutRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(succeed, Is.False);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Logout")]
+        public async Task TestLogoutAsync_EmptyEmail_False()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            bool succeed = await _userService.LogoutAsync(new LogoutRequest()
+            {
+                Email = string.Empty,
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(succeed, Is.False);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Logout")]
+        public async Task TestLogoutAsync_EmptyToken_False()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            bool succeed = await _userService.LogoutAsync(new LogoutRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = string.Empty
+            });
+
+            //3.Assert
+            Assert.That(succeed, Is.False);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Logout")]
+        public async Task TestLogoutAsync_Expired_False()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(-1),
+                   RefreshTokenRevokedAt = null,
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            bool succeed = await _userService.LogoutAsync(new LogoutRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(succeed, Is.False);
+            VerifySaveChangesAsync(0);
+        }
+
+        [Test]
+        [Category("Logout")]
+        public async Task TestLogoutAsync_Revoked_False()
+        {
+            string refreshToken = GenerateRefreshToken();
+            if (string.IsNullOrEmpty(refreshToken))
+                return;
+
+            // 1.Arrange
+            _repoMock
+               .Setup(r => r.GetByEmailAsync("koko@yahoo.com"))
+               .ReturnsAsync(new User
+               {
+                   Id = 1,
+                   Email = "koko@yahoo.com",
+                   CreatedAt = DateTime.UtcNow,
+                   DeletedAt = null,
+                   UpdatedAt = null,
+                   IsActive = true,
+                   Gender = 1,
+                   FullName = "Ahmed Elhwwary",
+                   RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                   RefreshTokenRevokedAt = DateTime.UtcNow.AddDays(-1),
+                   RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                   Role = 1,
+                   DateOfBirth = new DateOnly(1990, 1, 1),
+                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                   IsDeleted = false,
+                   Phone = "1234567890"
+               });
+            SetUpSaveChangesAsync(0);
+            //2.Act
+            bool succeed = await _userService.LogoutAsync(new LogoutRequest()
+            {
+                Email = "medo@yahoo.com",
+                RefreshToken = refreshToken
+            });
+
+            //3.Assert
+            Assert.That(succeed, Is.False);
+            VerifySaveChangesAsync(0);
         }
 
 
