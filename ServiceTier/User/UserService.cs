@@ -56,7 +56,7 @@ namespace ServiceTier.User
             if (!user.IsActive)
                 return new LoginResult(enLoginStatus.Inactive);
 
-            if(!user.IsDeleted)
+            if(user.IsDeleted)
                 return new LoginResult(enLoginStatus.Deleted);
 
             bool isValidPassword = BCrypt.Net.BCrypt
@@ -108,7 +108,7 @@ namespace ServiceTier.User
             if (!user.IsActive)
                 return new RefreshResult(enRefreshStatus.Inactive);
 
-            if (!user.IsDeleted)
+            if (user.IsDeleted)
                 return new RefreshResult(enRefreshStatus.Deleted);
 
             bool isUserRefreshToken = BCrypt.Net.BCrypt

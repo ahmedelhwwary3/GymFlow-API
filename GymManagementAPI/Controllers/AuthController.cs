@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ServiceTier; 
 using RepositoryTier.User.DTOs.Authentication;
 using RepositoryTier.User.Enums;
 using RepositoryTier.User.Results;
+using ServiceTier; 
+using ServiceTier.User;
 
 namespace GymManagementAPI.Controllers
 {
@@ -56,18 +57,9 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
 
             RefreshResult result = await _userService.RefreshAsync(request);
-            return result.RefreshStatus switch
-            {
-                enRefreshStatus.UserNotFound => Unauthorized("Invalid username or password"),
 
-                enRefreshStatus.InvalidPassword => Unauthorized("Invalid username or password"),
-
-                enRefreshStatus.Deleted => Unauthorized("User is deleted"),
-
-                enRefreshStatus.Inactive => Unauthorized("User is not active"),
-
-                _ => Ok(result.TokenResponse)
-            };
+            return result.RefreshStatus == enRefreshStatus.Succeeded ?
+                Ok(result.RefreshStatus) : Unauthorized("Refresh token is no longer valid");
         }
 
         [HttpPost("Logout", Name = "Logout")]

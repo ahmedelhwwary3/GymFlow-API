@@ -14,7 +14,8 @@ namespace RepositoryTier.User.Repositories
 
         public async Task<models.User?> GetByEmailAsync(string email)
         {
-            var user= await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users
+                .SingleOrDefaultAsync(u => u.Email == email); 
             return user;
         }
     }
