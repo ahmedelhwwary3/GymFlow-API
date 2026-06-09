@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using models = RepositoryTier.Models;
 
-namespace ServiceTier
+namespace ServiceTier.Payment
 {
     public interface IPaymentService:IService<models.Payment>
     {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.Enums;
 using ServiceTier;
+using ServiceTier.User;
 using System.Security.Claims;
 
 namespace GymManagementAPI.Controllers
@@ -28,17 +29,17 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
 
             int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));  
-            enChangePasswordResult result = await _userService.ChangePasswordAsync(userId, request);
+            enChangePasswordStatus result = await _userService.ChangePasswordAsync(userId, request);
              
             return result switch
             {
-                enChangePasswordResult.Succeeded =>
+                enChangePasswordStatus.Succeeded =>
                     NoContent(),
 
-                enChangePasswordResult.InvalidConfirmPassword =>
+                enChangePasswordStatus.InvalidConfirmPassword =>
                     BadRequest("Password confirmation does not match."),
 
-                enChangePasswordResult.InvalidCurrentPassword =>
+                enChangePasswordStatus.InvalidCurrentPassword =>
                     BadRequest("Current password is incorrect."),
 
                 _=>NotFound()

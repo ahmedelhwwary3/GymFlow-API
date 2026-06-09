@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceTier
+namespace ServiceTier.Exercise
 {
     public interface IExerciseService: IService<RepositoryTier.Models.Exercise>
     {

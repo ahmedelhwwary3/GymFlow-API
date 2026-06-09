@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.User.Enums
 {
-    public enum enChangePasswordResult
+    public enum enChangePasswordStatus
     {
         InvalidConfirmPassword,
         UserNotFound,

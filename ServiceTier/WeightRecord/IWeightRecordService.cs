@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using models = RepositoryTier.Models;
 
-namespace ServiceTier
+namespace ServiceTier.WeightRecord
 {
     public interface IWeightRecordService : IService<models.WeightRecord>
     {

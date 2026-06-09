@@ -18,8 +18,4 @@
     <ProjectReference Include="..\ServiceTier\ServiceTier.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UserService\" />
-  </ItemGroup>
-
 </Project>

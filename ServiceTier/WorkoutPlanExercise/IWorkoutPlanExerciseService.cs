@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using models = RepositoryTier.Models;
 
-namespace ServiceTier
+namespace ServiceTier.WorkoutPlanExercise
 {
     public interface IWorkoutPlanExerciseService:IService<models.WorkoutPlanExercise>
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using models = RepositoryTier.Models;
 
-namespace ServiceTier
+namespace ServiceTier.Subscription
 {
     public interface ISubscriptionService:IService<models.Subscription>
     {

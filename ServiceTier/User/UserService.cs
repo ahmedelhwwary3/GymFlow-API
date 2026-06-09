@@ -175,24 +175,27 @@ namespace ServiceTier.User
             return true;
         }
 
-        public async Task<enChangePasswordResult> ChangePasswordAsync(int userId,ChangePasswordRequest request)
+        public async Task<enChangePasswordStatus>
+            ChangePasswordAsync(int userId,ChangePasswordRequest request)
         {
             if (request.ConfirmPassword != request.NewPassword)
-                return enChangePasswordResult.InvalidConfirmPassword;
+                return enChangePasswordStatus.InvalidConfirmPassword;
 
             var user = await _repo.FindByIdAsync(userId);
             if (user == null)
-                return enChangePasswordResult.UserNotFound;
+                return enChangePasswordStatus.UserNotFound;
 
-            if (user.PasswordHash != BCrypt.Net.BCrypt.HashPassword(request.CurrentPassword))
-                return enChangePasswordResult.InvalidCurrentPassword;
+            bool isValidPassword = BCrypt.Net.BCrypt
+                .Verify(request.CurrentPassword, user.PasswordHash);
+            if (!isValidPassword)
+                return enChangePasswordStatus.InvalidCurrentPassword;
              
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.CurrentPassword);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             user.RefreshTokenHash = null;
             user.RefreshTokenRevokedAt = DateTime.UtcNow; 
             int affectedRows = await _repo.SaveChangesAsync();
 
-            return enChangePasswordResult.Succeeded;
+            return enChangePasswordStatus.Succeeded;
         }
     }
 }

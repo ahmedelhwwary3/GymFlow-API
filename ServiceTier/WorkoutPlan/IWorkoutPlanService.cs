@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using models = RepositoryTier.Models;
-namespace ServiceTier
+namespace ServiceTier.WorkoutPlan
 {
     public interface IWorkoutPlanService: IService<models.WorkoutPlan>
     {
