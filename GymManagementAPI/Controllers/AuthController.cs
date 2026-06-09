@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServiceTier;
-using auth= RepositoryTier.DTOs.Authentication;
-using RepositoryTier.DTOs.Authentication;
+using auth = RepositoryTier.DTOs.Authentication;
+using RepositoryTier.User.DTOs.Authentication;
 
 namespace GymManagementAPI.Controllers
 {
@@ -21,7 +21,7 @@ namespace GymManagementAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<TokenResponse>> Login(auth.LoginRequest request)
+        public async Task<ActionResult<TokenResponse>> Login(LoginRequest request)
         {
             if(!ModelState.IsValid)
                 return BadRequest();
@@ -34,7 +34,7 @@ namespace GymManagementAPI.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<TokenResponse>> Refresh(auth.RefreshRequest request)
+        public async Task<ActionResult<TokenResponse>> Refresh(RefreshRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -47,7 +47,7 @@ namespace GymManagementAPI.Controllers
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout(auth.LogoutRequest request)
+        public async Task<IActionResult> Logout(LogoutRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();

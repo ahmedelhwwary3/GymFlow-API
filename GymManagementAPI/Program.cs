@@ -1,17 +1,17 @@
- 
+
 using Microsoft.EntityFrameworkCore;
-using RepositoryTier.Data;
+using RepositoryTier;
+using RepositoryTier.Attendance.Repositories;
+using RepositoryTier.Coach.Repositories;
 using RepositoryTier.Data.Repositories;
-using RepositoryTier.Data.Repositories.Attendance;
-using RepositoryTier.Data.Repositories.Coach;
-using RepositoryTier.Data.Repositories.Exercise;
-using RepositoryTier.Data.Repositories.Member;
-using RepositoryTier.Data.Repositories.Payment;
-using RepositoryTier.Data.Repositories.Subscription;
-using RepositoryTier.Data.Repositories.User;
-using RepositoryTier.Data.Repositories.WeightRecord;
-using RepositoryTier.Data.Repositories.WorkoutPlan;
-using RepositoryTier.Data.Repositories.WorkoutPlanExercise;
+using RepositoryTier.Exercise.Repositories;
+using RepositoryTier.Member.Repositories;
+using RepositoryTier.Payment.Repositories;
+using RepositoryTier.Subscription.Repositories;
+using RepositoryTier.User.Repositories;
+using RepositoryTier.WeightRecord.Repositories;
+using RepositoryTier.WorkoutPlan.Repositories;
+using RepositoryTier.WorkoutPlanExercise.Repositories;
 using ServiceTier;
 using ServiceTier.Attendance;
 using ServiceTier.Coach;

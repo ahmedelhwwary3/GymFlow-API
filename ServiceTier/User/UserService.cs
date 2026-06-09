@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
-using RepositoryTier.Data.Repositories;
-using RepositoryTier.Data.Repositories.User;
-using RepositoryTier.DTOs.Authentication; 
+using Microsoft.Extensions.Options; 
+using Microsoft.IdentityModel.Tokens;  
 using RepositoryTier.DTOs.Users;
 using RepositoryTier.Enums.Users;
+using RepositoryTier.User.DTOs.Authentication;
+using RepositoryTier.User.Repositories;  
 using ServiceTier.Configurations;
 using System;
 using System.Collections.Generic;

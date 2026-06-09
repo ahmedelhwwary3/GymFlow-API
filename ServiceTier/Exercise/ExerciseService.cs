@@ -1,5 +1,5 @@
-﻿using RepositoryTier.Data.Repositories;
-using RepositoryTier.Data.Repositories.Exercise;
+﻿ 
+using RepositoryTier.Exercise.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

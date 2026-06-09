@@ -1,8 +1,4 @@
-﻿using RepositoryTier.Data.Repositories;
-using RepositoryTier.Data.Repositories.Attendance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using RepositoryTier.Attendance.Repositories; 
 using System.Text;
 using System.Threading.Tasks;
 using models = RepositoryTier.Models;
