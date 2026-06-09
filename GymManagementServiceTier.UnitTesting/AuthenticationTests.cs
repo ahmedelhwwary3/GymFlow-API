@@ -1,10 +1,13 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using ServiceTier.Configurations;
-using Microsoft.Extensions.Configuration;
-using ServiceTier.User; 
+using RepositoryTier.Models; 
+using RepositoryTier.User.DTOs.Authentication;
 using RepositoryTier.User.Repositories;
+using ServiceTier.Configurations;
+using ServiceTier.User;
+using System.Security.Cryptography;
 
 namespace GymManagementServiceTier.UnitTesting.Users
 {

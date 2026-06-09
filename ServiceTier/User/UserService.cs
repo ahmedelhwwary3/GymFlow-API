@@ -175,12 +175,12 @@ namespace ServiceTier.User
             return true;
         }
 
-        public async Task<enChangePasswordResult> ChangePasswordAsync(ChangePasswordRequest request)
+        public async Task<enChangePasswordResult> ChangePasswordAsync(int userId,ChangePasswordRequest request)
         {
             if (request.ConfirmPassword != request.NewPassword)
                 return enChangePasswordResult.InvalidConfirmPassword;
 
-            var user = await _repo.FindByIdAsync(request.UserId);
+            var user = await _repo.FindByIdAsync(userId);
             if (user == null)
                 return enChangePasswordResult.UserNotFound;
 

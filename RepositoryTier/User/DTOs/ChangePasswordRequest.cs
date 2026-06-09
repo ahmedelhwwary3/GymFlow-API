@@ -9,9 +9,6 @@ namespace RepositoryTier.User.DTOs
 {
     public class ChangePasswordRequest
     {
-        [Range(1,int.MaxValue,ErrorMessage ="Invalid user id")]
-        public int UserId { get; set; }
-
         [Required]
         public string CurrentPassword { get; set; }
 

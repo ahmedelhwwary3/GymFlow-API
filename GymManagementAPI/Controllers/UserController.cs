@@ -27,9 +27,8 @@ namespace GymManagementAPI.Controllers
             if(!ModelState.IsValid)
                 return BadRequest();
 
-            int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier)); 
-            request.UserId = userId;
-            enChangePasswordResult result = await _userService.ChangePasswordAsync(request);
+            int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));  
+            enChangePasswordResult result = await _userService.ChangePasswordAsync(userId, request);
              
             return result switch
             {

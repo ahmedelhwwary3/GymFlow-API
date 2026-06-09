@@ -11,6 +11,6 @@ namespace ServiceTier
         Task<LoginResult> LoginAsync(LoginRequest request);
         Task<RefreshResult> RefreshAsync(RefreshRequest request);
         Task<bool> LogoutAsync(LogoutRequest request);
-        Task<enChangePasswordResult> ChangePasswordAsync(ChangePasswordRequest request);
+        Task<enChangePasswordResult> ChangePasswordAsync(int userId,ChangePasswordRequest request);
     }
 }

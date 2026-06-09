@@ -21,7 +21,7 @@ namespace GymManagementAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "Login")]
+        [HttpPost("Login",Name = "Login")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)] 
@@ -45,7 +45,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
-        [HttpPost(Name = "Refresh")]
+        [HttpPost("Refresh",Name = "Refresh")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] 
@@ -70,7 +70,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
-        [HttpPost(Name = "Logout")]
+        [HttpPost("Logout", Name = "Logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Logout(LogoutRequest request)

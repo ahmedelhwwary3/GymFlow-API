@@ -17,14 +17,32 @@
 
   <ItemGroup>
     <Folder Include="Attendance\DTOs\" />
+    <Folder Include="Attendance\Enums\" />
+    <Folder Include="Attendance\Results\" />
     <Folder Include="Coach\DTOs\" />
+    <Folder Include="Coach\Enums\" />
+    <Folder Include="Coach\Results\" />
     <Folder Include="Exercise\DTOs\" />
+    <Folder Include="Exercise\Enums\" />
+    <Folder Include="Exercise\Results\" />
     <Folder Include="Member\DTOs\" />
+    <Folder Include="Member\Enums\" />
+    <Folder Include="Member\Results\" />
     <Folder Include="Payment\DTOs\" />
+    <Folder Include="Payment\Enums\" />
+    <Folder Include="Payment\Results\" />
     <Folder Include="Subscription\DTOs\" />
+    <Folder Include="Subscription\Enums\" />
+    <Folder Include="Subscription\Results\" />
     <Folder Include="WeightRecord\DTOs\" />
+    <Folder Include="WeightRecord\Enums\" />
+    <Folder Include="WeightRecord\Results\" />
     <Folder Include="WorkoutPlanExercise\DTOs\" />
+    <Folder Include="WorkoutPlanExercise\Enums\" />
+    <Folder Include="WorkoutPlanExercise\Results\" />
     <Folder Include="WorkoutPlan\DTOs\" />
+    <Folder Include="WorkoutPlan\Enums\" />
+    <Folder Include="WorkoutPlan\Results\" />
   </ItemGroup>
 
 </Project>
