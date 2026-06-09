@@ -1,7 +1,6 @@
- 
-using RepositoryTier.DTOs.Users;
-using RepositoryTier.Enums.Users;
-using RepositoryTier.User.DTOs.Authentication;  
+using RepositoryTier.User.DTOs;
+using RepositoryTier.User.DTOs.Authentication;
+using RepositoryTier.User.Enums;
 using models = RepositoryTier.Models;
 
 namespace ServiceTier

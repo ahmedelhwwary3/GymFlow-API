@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.DTOs.Users
+namespace RepositoryTier.User.DTOs
 {
     public class ChangePasswordRequest
     {

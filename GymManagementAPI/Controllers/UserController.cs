@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RepositoryTier.DTOs.Users;
-using RepositoryTier.Enums.Users;
+using RepositoryTier.User.DTOs;
+using RepositoryTier.User.Enums;
 using ServiceTier;
 using System.Security.Claims;
 
