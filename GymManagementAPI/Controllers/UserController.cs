@@ -18,11 +18,10 @@ namespace GymManagementAPI.Controllers
             _userService=userService;
         }
 
-        [HttpPatch(Name = "ChangePassword")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPatch(Name = "ChangePassword")] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)] 
+        [ProducesResponseType(StatusCodes.Status200OK)] 
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
             if(!ModelState.IsValid)
@@ -34,7 +33,7 @@ namespace GymManagementAPI.Controllers
             return result switch
             {
                 enChangePasswordStatus.Succeeded =>
-                    NoContent(),
+                    Ok(),
 
                 enChangePasswordStatus.InvalidConfirmPassword =>
                     BadRequest("Password confirmation does not match."),
