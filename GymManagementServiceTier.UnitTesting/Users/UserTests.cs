@@ -115,6 +115,49 @@ namespace GymManagementServiceTier.UnitTesting.Users
 
         [Test]
         [Category("ChangePassword")]
+        public async Task ChangePasswordAsync_OldPassword_ReturnsOldPassword()
+        {
+            string refreshToken = GenerateRefreshToken();
+            //1.Arrange
+            _repoMock.Setup(r => r.FindByIdAsync(1))
+                .ReturnsAsync(new User()
+                {
+                    Id = 1,
+                    Email = "koko@yahoo.com",
+                    CreatedAt = DateTime.UtcNow,
+                    DeletedAt = null,
+                    UpdatedAt = null,
+                    IsActive = true,
+                    Gender = 1,
+                    FullName = "Ahmed Elhwwary",
+                    RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
+                    RefreshTokenRevokedAt = null,
+                    RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
+                    Role = 1,
+                    DateOfBirth = new DateOnly(1990, 1, 1),
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
+                    IsDeleted = false,
+                    Phone = "1234567890"
+                });
+            var request = new ChangePasswordRequest()
+            {
+                CurrentPassword = "11112222",
+                NewPassword = "11112222",
+                ConfirmPassword = "11112222"
+            };
+            SetUpSaveChangesAsync(0);
+
+            //2.Act
+            enChangePasswordStatus result = await _userService
+                .ChangePasswordAsync(1, request);
+
+            //3.Assert
+            Assert.That(result, Is.EqualTo(enChangePasswordStatus.OldPassword));
+            VerifySaveChangesAsync(0);
+        }
+         
+        [Test]
+        [Category("ChangePassword")]
         public async Task ChangePasswordAsync_InvalidConfirmPassword_ReturnsInvalidConfirmPassword()
         {
             string refreshToken = GenerateRefreshToken();

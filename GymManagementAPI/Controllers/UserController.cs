@@ -35,6 +35,9 @@ namespace GymManagementAPI.Controllers
                 enChangePasswordStatus.Succeeded =>
                     Ok(),
 
+                enChangePasswordStatus.OldPassword =>
+                    BadRequest("Password is used before"),
+
                 enChangePasswordStatus.InvalidConfirmPassword =>
                     BadRequest("Password confirmation does not match."),
 

@@ -11,7 +11,8 @@ namespace RepositoryTier.User.Enums
         InvalidConfirmPassword,
         UserNotFound,
         InvalidCurrentPassword,
-        Succeeded
+        Succeeded,
+        OldPassword
 
     }
 }

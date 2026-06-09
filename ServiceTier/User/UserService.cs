@@ -49,7 +49,7 @@ namespace ServiceTier.User
         public async Task<LoginResult> LoginAsync(LoginRequest request)
         {
             // A) validate login
-            var user = await _repo.GetByEmailAsync(request.Email);
+            var user = await _repo.GetByEmailAsync(request.Email.Trim());
             if (user == null)
                 return new LoginResult(enLoginStatus.UserNotFound);
 
@@ -60,7 +60,7 @@ namespace ServiceTier.User
                 return new LoginResult(enLoginStatus.Deleted);
 
             bool isValidPassword = BCrypt.Net.BCrypt
-                .Verify(request.Password, user.PasswordHash);
+                .Verify(request.Password.Trim(), user.PasswordHash);
             if (!isValidPassword)
                 return new LoginResult(enLoginStatus.InvalidPassword);
             // B) login is valid - generate tokens
@@ -101,18 +101,18 @@ namespace ServiceTier.User
         public async Task<RefreshResult> RefreshAsync(RefreshRequest request)
         {
             // A) validate refresh token
-            var user = await _repo.GetByEmailAsync(request.Email);
+            var user = await _repo.GetByEmailAsync(request.Email.Trim());
             if (user == null)
                 return new RefreshResult(enRefreshStatus.UserNotFound);
 
-            if (!user.IsActive)
+            if (!user.IsActive) 
                 return new RefreshResult(enRefreshStatus.Inactive);
 
             if (user.IsDeleted)
                 return new RefreshResult(enRefreshStatus.Deleted);
 
             bool isUserRefreshToken = BCrypt.Net.BCrypt
-                .Verify(request.RefreshToken, user.RefreshTokenHash);
+                .Verify(request.RefreshToken.Trim(), user.RefreshTokenHash);
             if (!isUserRefreshToken ||
                 user.RefreshTokenExpiresAt < DateTime.UtcNow ||
                 user.RefreshTokenRevokedAt != null)
@@ -178,19 +178,23 @@ namespace ServiceTier.User
         public async Task<enChangePasswordStatus>
             ChangePasswordAsync(int userId,ChangePasswordRequest request)
         {
-            if (request.ConfirmPassword != request.NewPassword)
+            if (request.ConfirmPassword.Trim() != request.NewPassword.Trim())
                 return enChangePasswordStatus.InvalidConfirmPassword;
 
             var user = await _repo.FindByIdAsync(userId);
             if (user == null)
-                return enChangePasswordStatus.UserNotFound;
+                return enChangePasswordStatus.UserNotFound; 
 
             bool isValidPassword = BCrypt.Net.BCrypt
-                .Verify(request.CurrentPassword, user.PasswordHash);
+                .Verify(request.CurrentPassword.Trim(), user.PasswordHash);
+
             if (!isValidPassword)
                 return enChangePasswordStatus.InvalidCurrentPassword;
-             
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            if (request.NewPassword.Trim() == request.CurrentPassword.Trim())
+                return enChangePasswordStatus.OldPassword;
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword.Trim());
             user.RefreshTokenHash = null;
             user.RefreshTokenRevokedAt = DateTime.UtcNow; 
             int affectedRows = await _repo.SaveChangesAsync();
