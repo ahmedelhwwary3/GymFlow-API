@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using RepositoryTier.Data.Repositories;
 using RepositoryTier.Data.Repositories.User;
 using RepositoryTier.DTOs.Authentication; 
+using RepositoryTier.DTOs.Users;
+using RepositoryTier.Enums.Users;
 using ServiceTier.Configurations;
 using System;
 using System.Collections.Generic;
@@ -35,7 +37,7 @@ namespace ServiceTier.User
             _configs = configs;
         }
 
-        private string GenerateRefreshToken()
+        protected string GenerateRefreshToken()
         {
             var randomBytes = new byte[64];
             // create cryptographic object to generate secure random numbers
@@ -163,6 +165,26 @@ namespace ServiceTier.User
             user.RefreshTokenExpiresAt = null;
             int affectedRows = await _repo.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<enChangePasswordResult> ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            if (request.ConfirmPassword != request.NewPassword)
+                return enChangePasswordResult.InvalidConfirmPassword;
+
+            var user = await _repo.FindByIdAsync(request.UserId);
+            if (user == null)
+                return enChangePasswordResult.UserNotFound;
+
+            if (user.PasswordHash != BCrypt.Net.BCrypt.HashPassword(request.CurrentPassword))
+                return enChangePasswordResult.InvalidCurrentPassword;
+             
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.CurrentPassword);
+            user.RefreshTokenHash = null;
+            user.RefreshTokenRevokedAt = DateTime.UtcNow; 
+            int affectedRows = await _repo.SaveChangesAsync();
+
+            return enChangePasswordResult.Succeeded;
         }
     }
 }

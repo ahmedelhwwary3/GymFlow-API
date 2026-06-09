@@ -10,7 +10,7 @@ using BCrypt.Net;
 using RepositoryTier.Models;
 using System.Security.Cryptography;
 
-namespace GymManagementServiceTier.UnitTesting
+namespace GymManagementServiceTier.UnitTesting.Users
 {
     [TestFixture]
     public class UserServiceTests
