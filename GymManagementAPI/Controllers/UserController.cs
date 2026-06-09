@@ -21,8 +21,7 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)] 
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
             if(!ModelState.IsValid)
@@ -43,10 +42,7 @@ namespace GymManagementAPI.Controllers
                 enChangePasswordResult.InvalidCurrentPassword =>
                     BadRequest("Current password is incorrect."),
 
-                enChangePasswordResult.UserNotFound =>
-                    NotFound(),
-
-                _ => StatusCode(StatusCodes.Status500InternalServerError)
+                _=>NotFound()
             };
         }
 

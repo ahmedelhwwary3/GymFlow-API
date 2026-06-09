@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ServiceTier;
-using auth = RepositoryTier.DTOs.Authentication;
+using ServiceTier; 
 using RepositoryTier.User.DTOs.Authentication;
+using RepositoryTier.User.Enums;
+using RepositoryTier.User.Results;
 
 namespace GymManagementAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -20,33 +21,58 @@ namespace GymManagementAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost("login")]
+        [HttpPost(Name = "Login")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)] 
         public async Task<ActionResult<TokenResponse>> Login(LoginRequest request)
         {
             if(!ModelState.IsValid)
                 return BadRequest();
 
-            var response = await _userService.LoginAsync(request);
-            if (response==null)
-                return Unauthorized("Invalid email or password.");
+            LoginResult result = await _userService.LoginAsync(request);
+            return result.LoginStatus switch
+            {
+                enLoginStatus.UserNotFound => Unauthorized("Invalid username or password"),
 
-            return Ok(response);
+                enLoginStatus.InvalidPassword => Unauthorized("Invalid username or password"),
+
+                enLoginStatus.Deleted => Unauthorized("User is deleted"),
+
+                enLoginStatus.Inactive => Unauthorized("User is not active"),
+
+                _=>Ok(result.TokenResponse)
+            };
         }
 
-        [HttpPost("refresh")]
+        [HttpPost(Name = "Refresh")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<TokenResponse>> Refresh(RefreshRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var response = await _userService.RefreshAsync(request);
-            if (response == null)
-                return Unauthorized("Invalid refresh token.");
+            RefreshResult result = await _userService.RefreshAsync(request);
+            return result.RefreshStatus switch
+            {
+                enRefreshStatus.UserNotFound => Unauthorized("Invalid username or password"),
 
-            return Ok(response);
+                enRefreshStatus.InvalidPassword => Unauthorized("Invalid username or password"),
+
+                enRefreshStatus.Deleted => Unauthorized("User is deleted"),
+
+                enRefreshStatus.Inactive => Unauthorized("User is not active"),
+
+                _ => Ok(result.TokenResponse)
+            };
         }
 
-        [HttpPost("logout")]
+        [HttpPost(Name = "Logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Logout(LogoutRequest request)
         {
             if (!ModelState.IsValid)

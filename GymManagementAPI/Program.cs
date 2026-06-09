@@ -2,8 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RepositoryTier;
 using RepositoryTier.Attendance.Repositories;
-using RepositoryTier.Coach.Repositories;
-using RepositoryTier.Data.Repositories;
+using RepositoryTier.Coach.Repositories; 
 using RepositoryTier.Exercise.Repositories;
 using RepositoryTier.Member.Repositories;
 using RepositoryTier.Payment.Repositories;

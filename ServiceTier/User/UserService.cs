@@ -5,6 +5,7 @@ using RepositoryTier.User.DTOs;
 using RepositoryTier.User.DTOs.Authentication;
 using RepositoryTier.User.Enums;
 using RepositoryTier.User.Repositories;
+using RepositoryTier.User.Results;
 using ServiceTier.Configurations;
 using System;
 using System.Collections.Generic;
@@ -45,20 +46,23 @@ namespace ServiceTier.User
                 return Convert.ToBase64String(randomBytes);
             }
         }
-        public async Task<TokenResponse?> LoginAsync(LoginRequest request)
+        public async Task<LoginResult> LoginAsync(LoginRequest request)
         {
             // A) validate login
             var user = await _repo.GetByEmailAsync(request.Email);
             if (user == null)
-                return null;
+                return new LoginResult(enLoginStatus.UserNotFound);
 
-            if (!user.IsActive || user.IsDeleted)
-                return null;
+            if (!user.IsActive)
+                return new LoginResult(enLoginStatus.Inactive);
+
+            if(!user.IsDeleted)
+                return new LoginResult(enLoginStatus.Deleted);
 
             bool isValidPassword = BCrypt.Net.BCrypt
                 .Verify(request.Password, user.PasswordHash);
             if (!isValidPassword)
-                return null;
+                return new LoginResult(enLoginStatus.InvalidPassword);
             // B) login is valid - generate tokens
             // 1.access token
             var Claims = new Claim[]
@@ -86,29 +90,33 @@ namespace ServiceTier.User
             user.RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken);// logout  
             int affectedRows= await _repo.SaveChangesAsync();
 
-            return new TokenResponse()
+            var tokenResonse= new TokenResponse()
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
                 RefreshToken = refreshToken
             };
+            return new LoginResult(enLoginStatus.Succeeded,tokenResonse);
         }
 
-        public async Task<TokenResponse?> RefreshAsync(RefreshRequest request)
+        public async Task<RefreshResult> RefreshAsync(RefreshRequest request)
         {
             // A) validate refresh token
             var user = await _repo.GetByEmailAsync(request.Email);
             if (user == null)
-                return null;
+                return new RefreshResult(enRefreshStatus.UserNotFound);
 
-            if (!user.IsActive || user.IsDeleted)
-                return null;
+            if (!user.IsActive)
+                return new RefreshResult(enRefreshStatus.Inactive);
+
+            if (!user.IsDeleted)
+                return new RefreshResult(enRefreshStatus.Deleted);
 
             bool isUserRefreshToken = BCrypt.Net.BCrypt
                 .Verify(request.RefreshToken, user.RefreshTokenHash);
             if (!isUserRefreshToken ||
                 user.RefreshTokenExpiresAt < DateTime.UtcNow ||
                 user.RefreshTokenRevokedAt != null)
-                return null;
+                return new RefreshResult(enRefreshStatus.InvalidPassword);
             // B) refresh token is valid - generate new tokens
             //1.access token
             var Claims = new Claim[]
@@ -136,11 +144,12 @@ namespace ServiceTier.User
             user.RefreshTokenRevokedAt = null;
             int affectedRows = await _repo.SaveChangesAsync();
 
-            return new TokenResponse()
+            var tokenResponse= new TokenResponse()
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
                 RefreshToken = newRefreshToken
             };
+            return new RefreshResult(enRefreshStatus.Succeeded,tokenResponse);
         }
 
         public async Task<bool> LogoutAsync(LogoutRequest request)
@@ -158,6 +167,7 @@ namespace ServiceTier.User
             if(!isUserRefreshToken || user.RefreshTokenExpiresAt < DateTime.UtcNow ||
                 user.RefreshTokenRevokedAt != null)
                 return false;
+
             // B) refresh token is valid - revoke it
             user.RefreshTokenRevokedAt = DateTime.UtcNow;
             user.RefreshTokenExpiresAt = null;
