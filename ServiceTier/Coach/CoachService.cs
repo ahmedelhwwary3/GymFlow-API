@@ -1,6 +1,6 @@
-﻿using RepositoryTier.Data.Repositories;
+﻿using RepositoryTier.Coach.Repositories;
+using RepositoryTier.Data.Repositories;
 using RepositoryTier.Data.Repositories.Attendance;
-using RepositoryTier.Data.Repositories.Coach;
 using System;
 using System.Collections.Generic;
 using System.Linq;

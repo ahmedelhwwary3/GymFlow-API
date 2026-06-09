@@ -1,6 +1,5 @@
 ﻿using RepositoryTier.Data.Repositories;
-using RepositoryTier.Data.Repositories.WorkoutPlanExercise;
-using RepositoryTier.Models;
+using RepositoryTier.WorkoutPlanExercise.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

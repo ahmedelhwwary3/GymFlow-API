@@ -15,4 +15,16 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Attendance\DTOs\" />
+    <Folder Include="Coach\DTOs\" />
+    <Folder Include="Exercise\DTOs\" />
+    <Folder Include="Member\DTOs\" />
+    <Folder Include="Payment\DTOs\" />
+    <Folder Include="Subscription\DTOs\" />
+    <Folder Include="WeightRecord\DTOs\" />
+    <Folder Include="WorkoutPlanExercise\DTOs\" />
+    <Folder Include="WorkoutPlan\DTOs\" />
+  </ItemGroup>
+
 </Project>

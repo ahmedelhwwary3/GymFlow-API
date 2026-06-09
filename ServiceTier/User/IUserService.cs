@@ -1,4 +1,4 @@
-﻿using RepositoryTier.DTOs.Authentication;
+﻿using RepositoryTier.User.DTOs.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
