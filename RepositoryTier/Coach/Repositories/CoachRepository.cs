@@ -33,8 +33,7 @@ namespace RepositoryTier.Coach.Repositories
 
             var query = _context.Coaches
                 .AsNoTracking() // Read-Only (Better C# performance)
-                .Where(c => !c.IsDeleted &&
-                (request.Specialization == null ||
+                .Where(c =>(request.Specialization == null ||
                 c.Specialization == request.Specialization) &&
             (request.Status == enUserActivityStatus.All ||
             (c.IsActive == (request.Status == enUserActivityStatus.Active ? true : false))) &&

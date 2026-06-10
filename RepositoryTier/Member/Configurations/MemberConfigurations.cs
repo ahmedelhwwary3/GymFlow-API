@@ -17,7 +17,10 @@ namespace RepositoryTier.Member.Configurations
             builder.HasIndex(e => e.CoachId, "IX_Members_CoachId"); 
 
             builder.Property(e => e.Address).HasMaxLength(300);
+
             builder.Property(e => e.Height).HasColumnType("decimal(5, 2)");
+
+            builder.HasQueryFilter(e => !e.IsDeleted && e.DeletedAt!=null);
 
             builder.HasOne(d => d.Coach).WithMany(p => p.Members)
                 .HasForeignKey(d => d.CoachId)

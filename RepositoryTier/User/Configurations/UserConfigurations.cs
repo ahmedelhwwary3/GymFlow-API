@@ -23,6 +23,8 @@ namespace RepositoryTier.User.Configurations
 
             builder.HasIndex(e => e.Phone, "UQ_Users_Phone").IsUnique();
 
+            builder.HasQueryFilter(e=>!e.IsDeleted && e.DeletedAt != null);
+
             builder.UseTptMappingStrategy();
 
             builder.Property(e => e.Email).HasMaxLength(255);
