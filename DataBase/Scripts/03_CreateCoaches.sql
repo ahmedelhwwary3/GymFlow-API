@@ -1,6 +1,6 @@
 CREATE TABLE Coaches
 (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Id INT PRIMARY KEY,
 
     UserId INT NOT NULL,
 

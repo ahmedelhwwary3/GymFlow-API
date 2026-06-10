@@ -1,6 +1,6 @@
 ﻿ 
 
-namespace RepositoryTier.Models;
+namespace RepositoryTier.Entities;
 
 public partial class WorkoutPlanExercise
 {

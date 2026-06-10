@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.WorkoutPlanExercise.Configurations
 {
-    internal class WorkoutPlanExerciseConfigurations : IEntityTypeConfiguration<models.WorkoutPlanExercise>
+    internal class WorkoutPlanExerciseConfigurations : IEntityTypeConfiguration<Entities.WorkoutPlanExercise>
     {
-        public void Configure(EntityTypeBuilder<models.WorkoutPlanExercise> builder)
+        public void Configure(EntityTypeBuilder<Entities.WorkoutPlanExercise> builder)
         {
             builder.HasKey(e => e.Id).HasName("PK__WorkoutP__3214EC073EBFA5A6");
 

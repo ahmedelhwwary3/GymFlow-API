@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using RepositoryTier.User.Enums;
 
-namespace RepositoryTier.Models;
+namespace RepositoryTier.Entities;
 
 public partial class Member:User
 {   

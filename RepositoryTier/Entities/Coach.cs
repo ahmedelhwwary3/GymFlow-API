@@ -1,7 +1,7 @@
 ﻿using RepositoryTier.Coach.Enums;
 using RepositoryTier.User.Enums;
 
-namespace RepositoryTier.Models;
+namespace RepositoryTier.Entities;
 
 public partial class Coach:User
 {    

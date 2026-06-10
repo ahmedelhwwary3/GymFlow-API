@@ -3,16 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using models = RepositoryTier.Models;
+using System.Linq; 
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RepositoryTier.Payment.Configurations
 {
-    internal class PaymentConfigurations : IEntityTypeConfiguration<models.Payment>
+    internal class PaymentConfigurations : IEntityTypeConfiguration<Entities.Payment>
     {
-        public void Configure(EntityTypeBuilder<models.Payment> builder)
+        public void Configure(EntityTypeBuilder<Entities.Payment> builder)
         {
             builder.HasKey(e => e.Id).HasName("PK__Payments__3214EC07A3F4D955");
 

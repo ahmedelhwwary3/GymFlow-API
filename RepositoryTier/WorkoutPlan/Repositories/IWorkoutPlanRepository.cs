@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.WorkoutPlan.Repositories
 {
-    public interface IWorkoutPlanRepository : IRepository<models.WorkoutPlan>
+    public interface IWorkoutPlanRepository : IRepository<Entities.WorkoutPlan>
     {
     }
 }

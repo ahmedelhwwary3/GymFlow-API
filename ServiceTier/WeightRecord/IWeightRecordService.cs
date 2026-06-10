@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace ServiceTier.WeightRecord
 {
-    public interface IWeightRecordService : IService<models.WeightRecord>
+    public interface IWeightRecordService : IService<RepositoryTier.Entities.WeightRecord>
     {
     }
 }

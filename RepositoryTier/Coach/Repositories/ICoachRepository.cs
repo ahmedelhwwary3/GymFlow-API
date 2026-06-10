@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.Coach.Repositories
 {
-    public interface ICoachRepository: IRepository<models.Coach>
+    public interface ICoachRepository: IRepository<Entities.Coach>
     {
         Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request);
     }

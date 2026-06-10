@@ -11,8 +11,7 @@ using RepositoryTier.WeightRecord;
 using RepositoryTier.WorkoutPlan;
 using RepositoryTier.WorkoutPlanExercise; 
 using System;
-using System.Collections.Generic;
-using models = RepositoryTier.Models;
+using System.Collections.Generic; 
 
 namespace RepositoryTier;
 
@@ -27,25 +26,25 @@ public partial class GymManagementDbContext : DbContext
     {
     }
 
-    public virtual DbSet<models.Attendance> Attendances { get; set; }
+    public virtual DbSet<Entities.Attendance> Attendances { get; set; }
 
-    public virtual DbSet<models.Coach> Coaches { get; set; }
+    public virtual DbSet<Entities.Coach> Coaches { get; set; }
 
-    public virtual DbSet<models.Exercise> Exercises { get; set; }
+    public virtual DbSet<Entities.Exercise> Exercises { get; set; }
 
-    public virtual DbSet<models.Member> Members { get; set; }
+    public virtual DbSet<Entities.Member> Members { get; set; }
 
-    public virtual DbSet<models.Payment> Payments { get; set; }
+    public virtual DbSet<Entities.Payment> Payments { get; set; }
 
-    public virtual DbSet<models.Subscription> Subscriptions { get; set; }
+    public virtual DbSet<Entities.Subscription> Subscriptions { get; set; }
 
-    public virtual DbSet<models.User> Users { get; set; }
+    public virtual DbSet<Entities.User> Users { get; set; }
 
-    public virtual DbSet<models.WeightRecord> WeightRecords { get; set; }
+    public virtual DbSet<Entities.WeightRecord> WeightRecords { get; set; }
 
-    public virtual DbSet<models.WorkoutPlan> WorkoutPlans { get; set; }
+    public virtual DbSet<Entities.WorkoutPlan> WorkoutPlans { get; set; }
 
-    public virtual DbSet<models.WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
+    public virtual DbSet<Entities.WorkoutPlanExercise> WorkoutPlanExercises { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

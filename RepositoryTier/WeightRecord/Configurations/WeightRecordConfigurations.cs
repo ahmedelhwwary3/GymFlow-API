@@ -4,15 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using models = RepositoryTier.Models;
+using System.Text; 
 using System.Threading.Tasks;
 
 namespace RepositoryTier.WeightRecord.Configurations
 {
-    internal class WeightRecordConfigurations : IEntityTypeConfiguration<models.WeightRecord>
+    internal class WeightRecordConfigurations : IEntityTypeConfiguration<Entities.WeightRecord>
     {
-        public void Configure(EntityTypeBuilder<models.WeightRecord> builder)
+        public void Configure(EntityTypeBuilder<Entities.WeightRecord> builder)
         {
             builder.HasKey(e => e.Id).HasName("PK__WeightRe__3214EC07581F8344");
 

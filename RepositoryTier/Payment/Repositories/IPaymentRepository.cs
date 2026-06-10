@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.Payment.Repositories
 {
-    public interface IPaymentRepository:IRepository<models.Payment>
+    public interface IPaymentRepository:IRepository<Entities.Payment>
     {
     }
 }

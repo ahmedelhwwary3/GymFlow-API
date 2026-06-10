@@ -15,12 +15,10 @@ using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
-
+using System.Threading.Tasks; 
 namespace ServiceTier.User
 {
-    public class UserService : Service<models.User>, IUserService
+    public class UserService : Service<RepositoryTier.Entities.User>, IUserService
     {
         protected readonly IUserRepository _repo;
         protected readonly JWTOptions _jwtConfigs;

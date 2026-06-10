@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RepositoryTier.Models;
+namespace RepositoryTier.Entities;
 
 public partial class Payment
 {

@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.User.Configurations
 {
-    internal class UserConfigurations : IEntityTypeConfiguration<models.User>
+    internal class UserConfigurations : IEntityTypeConfiguration<Entities.User>
     {
-        public void Configure(EntityTypeBuilder<models.User> builder)
+        public void Configure(EntityTypeBuilder<Entities.User> builder)
         {
             builder.HasKey(e => e.Id).HasName("PK__Users__3214EC0731A6BD8E");
 

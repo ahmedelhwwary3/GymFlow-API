@@ -19,14 +19,14 @@ namespace RepositoryTier
 
         public async Task AddAsync(T entity)
         {
-            await _context.AddAsync(entity);
+            await _context.AddAsync(entity); 
         }
 
         public async Task DeleteByIdAsync(int Id)
         {
             var entity = await FindByIdAsync(Id);
             if(entity != null)
-                _context.Remove(entity);
+                _context.Remove(entity); 
         }
 
         public async Task<T?> FindByIdAsync(int Id)

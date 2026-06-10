@@ -3,7 +3,7 @@ using RepositoryTier.User.Enums;
 using System;
 using System.Collections.Generic;
 
-namespace RepositoryTier.Models;
+namespace RepositoryTier.Entities;
 
 public partial class User
 {
@@ -15,7 +15,7 @@ public partial class User
 
     public string Phone { get; set; } = null!;
 
-    public int Gender { get; set; }
+    public enUserGender Gender { get; set; }
 
     public DateOnly DateOfBirth { get; set; }
 

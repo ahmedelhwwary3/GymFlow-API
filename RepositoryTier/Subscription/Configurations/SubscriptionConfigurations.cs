@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.Subscription.Configurations
 {
-    internal class SubscriptionConfigurations : IEntityTypeConfiguration<models.Subscription>
+    internal class SubscriptionConfigurations : IEntityTypeConfiguration<Entities.Subscription>
     {
-        public void Configure(EntityTypeBuilder<models.Subscription> builder)
+        public void Configure(EntityTypeBuilder<Entities.Subscription> builder)
         {
             builder.HasKey(e => e.Id).HasName("PK__Subscrip__3214EC07EB458BD3");
 

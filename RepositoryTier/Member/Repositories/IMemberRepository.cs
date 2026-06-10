@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.Member.Repositories
 {
-    public interface IMemberRepository : IRepository<models.Member>
+    public interface IMemberRepository : IRepository<Entities.Member>
     {
     }
 }

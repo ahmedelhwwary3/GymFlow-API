@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace ServiceTier.Subscription
 {
-    public interface ISubscriptionService:IService<models.Subscription>
+    public interface ISubscriptionService:IService<RepositoryTier.Entities.Subscription>
     {
     }
 }

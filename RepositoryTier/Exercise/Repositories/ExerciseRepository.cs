@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
+using RepositoryTier.Entities;
 
 namespace RepositoryTier.Exercise.Repositories
 {
-    public class ExerciseRepository : Repository<models.Exercise>, IExerciseRepository
+    public class ExerciseRepository : Repository<Entities.Exercise>, IExerciseRepository
     {
         public ExerciseRepository(GymManagementDbContext context) : base(context) { }
     }

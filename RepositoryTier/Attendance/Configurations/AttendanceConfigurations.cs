@@ -1,14 +1,13 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System; 
-using models = RepositoryTier.Models;
+using System;  
 
 namespace RepositoryTier.Attendance.Configurations
 {
-    internal class AttendanceConfigurations : IEntityTypeConfiguration<models.Attendance>
+    internal class AttendanceConfigurations : IEntityTypeConfiguration<Entities.Attendance>
     {
-        public void Configure(EntityTypeBuilder<models.Attendance> builder)
+        public void Configure(EntityTypeBuilder<Entities.Attendance> builder)
         {
             builder.HasKey(e => e.Id).HasName("PK__Attendan__3214EC0794DDB513");
 

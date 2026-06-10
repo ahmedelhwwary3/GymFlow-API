@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RepositoryTier.Coach.Enums;
-using models = RepositoryTier.Models;
+using RepositoryTier.Coach.Enums; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -14,7 +13,7 @@ using RepositoryTier.API_Configurations;
 
 namespace RepositoryTier.Coach.Repositories
 {
-    public class CoachRepository : Repository<models.Coach>, ICoachRepository
+    public class CoachRepository : Repository<Entities.Coach>, ICoachRepository
     {
         protected readonly PaganationOptions _paganationOptions;
         public CoachRepository(
@@ -33,6 +32,7 @@ namespace RepositoryTier.Coach.Repositories
             int pageSize = request.PageSize ?? (Convert.ToInt32(_paganationOptions.TinyPageSize));
 
             var query = _context.Coaches
+                .AsNoTracking() // Read-Only (Better C# performance)
                 .Where(c => !c.IsDeleted &&
                 (request.Specialization == null ||
                 c.Specialization == request.Specialization) &&

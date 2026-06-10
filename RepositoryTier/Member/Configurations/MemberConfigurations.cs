@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.Member.Configurations
 {
-    internal class MemberConfigurations : IEntityTypeConfiguration<models.Member>
+    internal class MemberConfigurations : IEntityTypeConfiguration<Entities.Member>
     {
-        public void Configure(EntityTypeBuilder<models.Member> builder)
+        public void Configure(EntityTypeBuilder<Entities.Member> builder)
         { 
 
             builder.HasIndex(e => e.CoachId, "IX_Members_CoachId"); 

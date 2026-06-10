@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RepositoryTier.Coach.DTOs;
+using RepositoryTier.Coach.DTOs; 
 using ServiceTier.Coach;
 
 namespace GymManagementAPI.Controllers
@@ -33,33 +33,22 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [HttpPost(Name ="Add")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<AddCoachResponse>> Add(AddCoachRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var response = await _coachService.AddAsync(request);
+            return response!=null? CreatedAtAction("Add",response) :
+                StatusCode(StatusCodes.Status500InternalServerError);
+        }
 
 
 
-
-        //// GET api/<CoachController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/<CoachController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        //// PUT api/<CoachController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/<CoachController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+         
     }
 }

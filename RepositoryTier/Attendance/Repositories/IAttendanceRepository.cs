@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.Attendance.Repositories
 {
-    public interface IAttendanceRepository:IRepository<models.Attendance>
+    public interface IAttendanceRepository:IRepository<Entities.Attendance>
     {
 
     }

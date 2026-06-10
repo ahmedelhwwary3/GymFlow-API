@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace ServiceTier.WorkoutPlanExercise
 {
-    public interface IWorkoutPlanExerciseService:IService<models.WorkoutPlanExercise>
+    public interface IWorkoutPlanExerciseService:IService<RepositoryTier.Entities.WorkoutPlanExercise>
     {
     }
 }

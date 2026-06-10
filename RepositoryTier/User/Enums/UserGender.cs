@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceTier.Exercise
+namespace RepositoryTier.User.Enums
 {
-    public interface IExerciseService: IService<RepositoryTier.Entities.Exercise>
+    public enum enUserGender
     {
+        Male = 1,
+        Female = 2
+
     }
 }

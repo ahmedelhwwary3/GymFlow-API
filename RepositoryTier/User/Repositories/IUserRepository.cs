@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models; 
+using System.Threading.Tasks; 
 
 namespace RepositoryTier.User.Repositories
 {
-    public interface IUserRepository: IRepository<models.User>
+    public interface IUserRepository: IRepository<Entities.User>
     {
-        Task<models.User?> GetByEmailAsync(string email);
+        Task<Entities.User?> GetByEmailAsync(string email);
     }
 }

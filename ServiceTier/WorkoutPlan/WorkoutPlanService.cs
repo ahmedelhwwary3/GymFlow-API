@@ -4,12 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using models = RepositoryTier.Models;
+using System.Threading.Tasks; 
 
 namespace ServiceTier.WorkoutPlan
 {
-    public class WorkoutPlanService: Service<models.WorkoutPlan>, IWorkoutPlanService
+    public class WorkoutPlanService: Service<RepositoryTier.Entities.WorkoutPlan>, IWorkoutPlanService
     {
         public WorkoutPlanService(IWorkoutPlanRepository repo) : base(repo) { }
     }
