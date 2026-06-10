@@ -36,11 +36,5 @@ public partial class User
 
     public bool IsActive { get; set; }
 
-    public DateTime? DeletedAt { get; set; }
-
-    public virtual Coach? Coach { get; set; }
-
-    public virtual Member? Member { get; set; }
-
-    public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+    public DateTime? DeletedAt { get; set; }  
 }

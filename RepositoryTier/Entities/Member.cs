@@ -3,11 +3,8 @@ using System.Collections.Generic;
 
 namespace RepositoryTier.Models;
 
-public partial class Member
-{
-    public int Id { get; set; }
-
-    public int UserId { get; set; }
+public partial class Member:User
+{   
 
     public int? CoachId { get; set; }
 
@@ -21,9 +18,7 @@ public partial class Member
 
     public virtual Coach? Coach { get; set; }
 
-    public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
-
-    public virtual User User { get; set; } = null!;
+    public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>(); 
 
     public virtual ICollection<WeightRecord> WeightRecords { get; set; } = new List<WeightRecord>();
 

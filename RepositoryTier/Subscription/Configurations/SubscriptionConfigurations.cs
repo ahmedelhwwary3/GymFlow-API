@@ -22,7 +22,7 @@ namespace RepositoryTier.Subscription.Configurations
 
             builder.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
-            builder.HasOne(d => d.CreatedByUser).WithMany(p => p.Subscriptions)
+            builder.HasOne(d => d.CreatedByUser).WithMany()
                 .HasForeignKey(d => d.CreatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Subscriptions_Users");
