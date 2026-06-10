@@ -46,6 +46,19 @@ namespace GymManagementAPI.Controllers
             return response!=null? CreatedAtAction("Add",response) :
                 StatusCode(StatusCodes.Status500InternalServerError);
         }
+         
+        [HttpGet("{Id}",Name = "GetById")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<GetCoachByIdResponse>>GetById(int Id)
+        {
+            if (Id < 1)
+                return BadRequest();
+
+            var response = await _coachService.GetByIdAsync(Id);
+            return response==null?NotFound("Coach not found"): Ok(response);
+        }
 
 
 

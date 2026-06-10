@@ -49,5 +49,10 @@ namespace ServiceTier.Coach
         {  
             return await _repo.GetCoachesAsync(request);
         }
+
+        public async Task<GetCoachByIdResponse?> GetByIdAsync(int Id)
+        {
+            return await _repo.GetCoachByIdAsync(Id); 
+        }
     }
 }

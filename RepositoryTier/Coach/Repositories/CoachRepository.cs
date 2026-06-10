@@ -71,5 +71,24 @@ namespace RepositoryTier.Coach.Repositories
             return response;
             
         }
+
+        public async Task<GetCoachByIdResponse?> GetCoachByIdAsync(int Id)
+        {
+            return await _context.Coaches
+                .AsNoTracking()
+                .Where(c => c.Id == Id)
+                .Select(c => new GetCoachByIdResponse()
+                {
+                    Id= c.Id,
+                    Email = c.Email,
+                    FullName = c.FullName,
+                    Gender = c.Gender,
+                    HireDate = c.HireDate,
+                    Phone = c.Phone,
+                    Salary = c.Salary,
+                    Specialization = c.Specialization,
+                    Status = c.IsActive ? enUserActivityStatus.Active : enUserActivityStatus.Inactive
+                }).FirstOrDefaultAsync();
+        }
     }
 }

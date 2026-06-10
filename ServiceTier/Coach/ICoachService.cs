@@ -11,5 +11,6 @@ namespace ServiceTier.Coach
     {
         Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request);
         Task<AddCoachResponse> AddAsync(AddCoachRequest request);
+        Task<GetCoachByIdResponse?> GetByIdAsync(int Id);
     }
 }

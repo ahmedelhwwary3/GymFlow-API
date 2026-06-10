@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace ServiceTier
 {
     public interface IService<T> where T : class
-    {
-        Task<T?> FindByIdAsync(int Id);
+    { 
         Task DeleteByIdAsync(int Id); 
         Task<Boolean> ExistsByIdAsync(int Id);
     }

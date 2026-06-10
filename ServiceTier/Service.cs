@@ -29,10 +29,6 @@ namespace ServiceTier
         {
             return await _repo.ExistsByIdAsync(Id);
         }
-
-        public async Task<T?> FindByIdAsync(int Id)
-        {
-            return await _repo.FindByIdAsync(Id);
-        }
+         
     }
 }

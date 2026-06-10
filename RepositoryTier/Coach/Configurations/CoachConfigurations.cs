@@ -9,9 +9,7 @@ namespace RepositoryTier.Coach.Configurations
         public void Configure(EntityTypeBuilder<Entities.Coach> builder)
         { 
 
-            builder.Property(e => e.Salary).HasColumnType("decimal(18, 2)");
-
-            builder.HasQueryFilter(e => !e.IsDeleted && e.DeletedAt != null);
+            builder.Property(e => e.Salary).HasColumnType("decimal(18, 2)"); 
         }
     }
 }

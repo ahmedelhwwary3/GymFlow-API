@@ -10,5 +10,6 @@ namespace RepositoryTier.Coach.Repositories
     public interface ICoachRepository: IRepository<Entities.Coach>
     {
         Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request);
+        Task<GetCoachByIdResponse?> GetCoachByIdAsync(int Id);
     }
 }
