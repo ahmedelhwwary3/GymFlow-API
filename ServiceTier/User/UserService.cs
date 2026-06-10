@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using RepositoryTier.API_Configurations;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.DTOs.Authentication;
 using RepositoryTier.User.Enums;
 using RepositoryTier.User.Repositories;
-using RepositoryTier.User.Results;
-using ServiceTier.Configurations;
+using RepositoryTier.User.Results; 
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,9 +22,9 @@ namespace ServiceTier.User
 {
     public class UserService : Service<models.User>, IUserService
     {
-        private readonly IUserRepository _repo;
-        private readonly JWTOptions _jwtConfigs;
-        private readonly IConfiguration _configs;
+        protected readonly IUserRepository _repo;
+        protected readonly JWTOptions _jwtConfigs;
+        protected readonly IConfiguration _configs;
         public UserService(
             IUserRepository repo,
             IOptions<JWTOptions> jwtOptions,
@@ -34,6 +34,8 @@ namespace ServiceTier.User
             _jwtConfigs = jwtOptions.Value;
             _repo = repo;
             _configs = configs;
+            if (_jwtConfigs == null)
+                throw new Exception("JWT options is not configured");
         }
 
         protected string GenerateRefreshToken()

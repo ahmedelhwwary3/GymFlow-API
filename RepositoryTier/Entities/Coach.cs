@@ -1,10 +1,11 @@
-﻿using RepositoryTier.User.Enums;
+﻿using RepositoryTier.Coach.Enums;
+using RepositoryTier.User.Enums;
 
 namespace RepositoryTier.Models;
 
 public partial class Coach:User
 {    
-    public int Specialization { get; set; }
+    public enCoachSpecialization Specialization { get; set; }
 
     public DateOnly HireDate { get; set; }
 

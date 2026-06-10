@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RepositoryTier;
+using RepositoryTier.API_Configurations;
 using RepositoryTier.Attendance.Repositories;
 using RepositoryTier.Coach.Repositories; 
 using RepositoryTier.Exercise.Repositories;
@@ -16,8 +17,7 @@ using RepositoryTier.WorkoutPlan.Repositories;
 using RepositoryTier.WorkoutPlanExercise.Repositories;
 using ServiceTier;
 using ServiceTier.Attendance;
-using ServiceTier.Coach;
-using ServiceTier.Configurations;
+using ServiceTier.Coach; 
 using ServiceTier.Exercise;
 using ServiceTier.Member;
 using ServiceTier.Payment;
@@ -49,6 +49,7 @@ namespace GymManagement
             });
 
             builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
+            builder.Services.Configure<PaganationOptions>(builder.Configuration.GetSection("Paganation"));
 
             builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();

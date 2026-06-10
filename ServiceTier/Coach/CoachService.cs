@@ -1,4 +1,5 @@
-﻿using RepositoryTier.Coach.Repositories; 
+﻿using RepositoryTier.Coach.DTOs;
+using RepositoryTier.Coach.Repositories; 
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,15 @@ namespace ServiceTier.Coach
 {
     public class CoachService : Service<models.Coach>, ICoachService
     {
-        public CoachService(ICoachRepository repo) : base(repo) { }
+        protected readonly ICoachRepository _repo;
+        public CoachService(ICoachRepository repo) : base(repo)
+        {
+            _repo=repo;
+        }
+
+        public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
+        {
+            return await _repo.GetCoachesAsync(request);
+        }
     }
 }

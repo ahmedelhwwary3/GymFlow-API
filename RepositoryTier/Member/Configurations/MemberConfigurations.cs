@@ -13,8 +13,7 @@ namespace RepositoryTier.Member.Configurations
     internal class MemberConfigurations : IEntityTypeConfiguration<models.Member>
     {
         public void Configure(EntityTypeBuilder<models.Member> builder)
-        {
-            builder.HasKey(e => e.Id).HasName("PK__Members__3214EC07ADBAE99E");
+        { 
 
             builder.HasIndex(e => e.CoachId, "IX_Members_CoachId"); 
 

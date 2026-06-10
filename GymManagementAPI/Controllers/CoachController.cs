@@ -1,19 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Mvc;
+using RepositoryTier.Coach.DTOs;
+using ServiceTier.Coach;
 
 namespace GymManagementAPI.Controllers
 {
     [Route("api/Coach")]
     [ApiController]
     public class CoachController : ControllerBase
-    { 
-
-
-        [HttpGet("All",Name ="GetAll")]
-        public IEnumerable<string> Get()
+    {
+        private readonly ICoachService _coachService;
+        public CoachController(ICoachService coachService)
         {
+            _coachService= coachService;
+        }
 
+        [HttpGet("Coaches",Name = "GetCoaches")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<GetCoachesResponse>>>
+            GetCoaches([FromQuery]GetCoachesRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-            return null;
+            var response = await _coachService
+                .GetCoachesAsync(request);
+
+            if (response == null || response.Coaches.Count==0)
+                return NotFound("Coaches not found");
+
+            return Ok(response);
         }
 
 

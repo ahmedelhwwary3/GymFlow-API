@@ -1,4 +1,4 @@
-﻿namespace ServiceTier.Configurations
+﻿namespace RepositoryTier.API_Configurations
 {
     public class JWTOptions
     {
