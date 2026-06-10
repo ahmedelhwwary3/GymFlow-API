@@ -1,5 +1,6 @@
 ﻿using RepositoryTier.Coach.DTOs;
-using RepositoryTier.Coach.Repositories; 
+using RepositoryTier.Coach.Repositories;
+using RepositoryTier.User.Enums;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace ServiceTier.Coach
         }
 
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
-        {
+        {  
             return await _repo.GetCoachesAsync(request);
         }
     }

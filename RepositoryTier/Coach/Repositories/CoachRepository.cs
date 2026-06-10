@@ -33,7 +33,8 @@ namespace RepositoryTier.Coach.Repositories
             int pageSize = request.PageSize ?? (Convert.ToInt32(_paganationOptions.TinyPageSize));
 
             var query = _context.Coaches
-                .Where(c => (request.Specialization == null ||
+                .Where(c => !c.IsDeleted &&
+                (request.Specialization == null ||
                 c.Specialization == request.Specialization) &&
             (request.Status == enUserActivityStatus.All ||
             (c.IsActive == (request.Status == enUserActivityStatus.Active ? true : false))) &&
