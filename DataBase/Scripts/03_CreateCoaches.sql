@@ -10,18 +10,6 @@ CREATE TABLE Coaches
 
     Salary DECIMAL(18,2) NOT NULL,
 
-    IsActive BIT NOT NULL
-        CONSTRAINT DF_Coaches_IsActive DEFAULT(1),
-
-    CreatedAt DATETIME2 NOT NULL,
-
-    UpdatedAt DATETIME2 NULL,
-
-    IsDeleted BIT NOT NULL
-        CONSTRAINT DF_Coaches_IsDeleted DEFAULT(0),
-
-    DeletedAt DATETIME2 NULL,
-
     CONSTRAINT UQ_Coaches_UserId
         UNIQUE(UserId),
 

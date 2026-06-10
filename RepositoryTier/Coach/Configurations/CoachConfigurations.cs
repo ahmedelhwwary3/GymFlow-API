@@ -11,9 +11,8 @@ namespace RepositoryTier.Coach.Configurations
         {
             builder.HasKey(e => e.Id).HasName("PK__Coaches__3214EC07E0D177E5");
 
-            builder.HasIndex(e => e.UserId, "UQ_Coaches_UserId").IsUnique();
+            builder.HasIndex(e => e.UserId, "UQ_Coaches_UserId").IsUnique(); 
 
-            builder.Property(e => e.IsActive).HasDefaultValue(true);
             builder.Property(e => e.Salary).HasColumnType("decimal(18, 2)");
 
             builder.HasOne(d => d.User).WithOne(p => p.Coach)

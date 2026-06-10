@@ -15,17 +15,7 @@ public partial class Coach
 
     public DateOnly HireDate { get; set; }
 
-    public decimal Salary { get; set; }
-
-    public bool IsActive { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
-
-    public bool IsDeleted { get; set; }
-
-    public DateTime? DeletedAt { get; set; }
+    public decimal Salary { get; set; }  
 
     public virtual ICollection<Member> Members { get; set; } = new List<Member>();
 

@@ -10,16 +10,7 @@ CREATE TABLE Members
 
     Height DECIMAL(5,2) NOT NULL,
 
-    FitnessGoal INT NOT NULL,
-
-    CreatedAt DATETIME2 NOT NULL,
-
-    UpdatedAt DATETIME2 NULL,
-
-    IsDeleted BIT NOT NULL
-        CONSTRAINT DF_Members_IsDeleted DEFAULT(0),
-
-    DeletedAt DATETIME2 NULL,
+    FitnessGoal INT NOT NULL, 
 
     CONSTRAINT UQ_Members_UserId
         UNIQUE(UserId),

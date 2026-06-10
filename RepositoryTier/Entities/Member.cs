@@ -15,15 +15,7 @@ public partial class Member
 
     public decimal Height { get; set; }
 
-    public int FitnessGoal { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
-
-    public bool IsDeleted { get; set; }
-
-    public DateTime? DeletedAt { get; set; }
+    public int FitnessGoal { get; set; } 
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 

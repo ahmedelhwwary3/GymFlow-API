@@ -69,18 +69,6 @@ CREATE TABLE Coaches
 
     Salary DECIMAL(18,2) NOT NULL,
 
-    IsActive BIT NOT NULL
-        CONSTRAINT DF_Coaches_IsActive DEFAULT(1),
-
-    CreatedAt DATETIME2 NOT NULL,
-
-    UpdatedAt DATETIME2 NULL,
-
-    IsDeleted BIT NOT NULL
-        CONSTRAINT DF_Coaches_IsDeleted DEFAULT(0),
-
-    DeletedAt DATETIME2 NULL,
-
     CONSTRAINT UQ_Coaches_UserId
         UNIQUE(UserId),
 
@@ -95,6 +83,7 @@ CREATE TABLE Coaches
         CHECK (Salary >= 0)
 );
 
+
 CREATE TABLE Members
 (
     Id INT IDENTITY(1,1) PRIMARY KEY,
@@ -107,16 +96,7 @@ CREATE TABLE Members
 
     Height DECIMAL(5,2) NOT NULL,
 
-    FitnessGoal INT NOT NULL,
-
-    CreatedAt DATETIME2 NOT NULL,
-
-    UpdatedAt DATETIME2 NULL,
-
-    IsDeleted BIT NOT NULL
-        CONSTRAINT DF_Members_IsDeleted DEFAULT(0),
-
-    DeletedAt DATETIME2 NULL,
+    FitnessGoal INT NOT NULL, 
 
     CONSTRAINT UQ_Members_UserId
         UNIQUE(UserId),
