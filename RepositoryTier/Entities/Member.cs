@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RepositoryTier.User.Enums;
 
 namespace RepositoryTier.Models;
 
@@ -23,4 +24,9 @@ public partial class Member:User
     public virtual ICollection<WeightRecord> WeightRecords { get; set; } = new List<WeightRecord>();
 
     public virtual ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
+
+    public Member()
+    {
+        base.Role = enUserRole.Member;
+    }
 }

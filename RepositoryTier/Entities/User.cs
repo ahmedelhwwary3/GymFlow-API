@@ -1,4 +1,5 @@
 ﻿
+using RepositoryTier.User.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -20,7 +21,7 @@ public partial class User
 
     public string PasswordHash { get; set; } = null!;
 
-    public int Role { get; set; }
+    public enUserRole Role { get; set; }
 
     public string? RefreshTokenHash { get; set; }
 
