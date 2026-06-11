@@ -59,7 +59,7 @@ namespace GymManagementAPI.Controllers
             RefreshResult result = await _userService.RefreshAsync(request);
 
             return result.RefreshStatus == enRefreshStatus.Succeeded ?
-                Ok(result.RefreshStatus) : Unauthorized("Refresh token is no longer valid");
+                Ok(result.TokenResponse) : Unauthorized("Refresh token is no longer valid");
         }
 
         [HttpPost("Logout", Name = "Logout")]
