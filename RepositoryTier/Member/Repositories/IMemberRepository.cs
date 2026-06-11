@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.Member.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace RepositoryTier.Member.Repositories
 {
     public interface IMemberRepository : IRepository<Entities.Member>
     {
+        Task<GetAssignedMembersForCoachResponse>
+            GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request);
     }
 }

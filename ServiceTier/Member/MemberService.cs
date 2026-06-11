@@ -1,4 +1,5 @@
-﻿ 
+﻿
+using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Repositories;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,17 @@ namespace ServiceTier.Member
 {
     public class MemberService: Service<RepositoryTier.Entities.Member>, IMemberService
     {
-        public MemberService(IMemberRepository repo) : base(repo) { }
+        protected readonly IMemberRepository _repo;
+        public MemberService(IMemberRepository repo) : base(repo) 
+        {
+            _repo = repo;
+        }
+
+
+        public async Task<GetAssignedMembersForCoachResponse>
+            GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request)
+        {
+            return await _repo.GetAssignedMembersForCoachAsync(request);
+        }
     }
 }

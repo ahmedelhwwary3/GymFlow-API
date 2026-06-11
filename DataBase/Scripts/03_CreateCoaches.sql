@@ -1,8 +1,6 @@
 CREATE TABLE Coaches
 (
-    Id INT PRIMARY KEY,
-
-    UserId INT NOT NULL,
+    Id INT PRIMARY KEY 
 
     Specialization INT NOT NULL,
 
@@ -10,11 +8,8 @@ CREATE TABLE Coaches
 
     Salary DECIMAL(18,2) NOT NULL,
 
-    CONSTRAINT UQ_Coaches_UserId
-        UNIQUE(UserId),
-
     CONSTRAINT FK_Coaches_Users
-        FOREIGN KEY(UserId)
+        FOREIGN KEY(Id)
         REFERENCES Users(Id),
 
     CONSTRAINT CK_Coaches_Specialization

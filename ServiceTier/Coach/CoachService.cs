@@ -9,10 +9,10 @@ namespace ServiceTier.Coach
 {
     public class CoachService : Service<RepositoryTier.Entities.Coach>, ICoachService
     {
-        protected readonly ICoachRepository _repo;
-        public CoachService(ICoachRepository repo) : base(repo)
-        {
-            _repo=repo;
+        private readonly ICoachRepository _repo;
+        public CoachService(ICoachRepository repo) : base(repo) 
+        { 
+            _repo = repo;
         }
 
         public async Task<AddCoachResponse> AddAsync(AddCoachRequest request)

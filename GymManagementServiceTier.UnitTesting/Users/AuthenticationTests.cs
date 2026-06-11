@@ -2,12 +2,10 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using RepositoryTier.API_Configurations;
-using RepositoryTier.Models;
+using RepositoryTier.API_Configurations; 
 using RepositoryTier.User.DTOs.Authentication;
 using RepositoryTier.User.Repositories;
-using ServiceTier;
-using ServiceTier.Configurations;
+using ServiceTier; 
 using ServiceTier.User;
 using System.Security.Cryptography; 
 

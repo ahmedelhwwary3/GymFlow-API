@@ -59,9 +59,7 @@ CREATE TABLE Users
 
 CREATE TABLE Coaches
 (
-    Id INT PRIMARY KEY,
-
-    UserId INT NOT NULL,
+    Id INT PRIMARY KEY 
 
     Specialization INT NOT NULL,
 
@@ -69,11 +67,8 @@ CREATE TABLE Coaches
 
     Salary DECIMAL(18,2) NOT NULL,
 
-    CONSTRAINT UQ_Coaches_UserId
-        UNIQUE(UserId),
-
     CONSTRAINT FK_Coaches_Users
-        FOREIGN KEY(UserId)
+        FOREIGN KEY(Id)
         REFERENCES Users(Id),
 
     CONSTRAINT CK_Coaches_Specialization
@@ -86,9 +81,7 @@ CREATE TABLE Coaches
 
 CREATE TABLE Members
 (
-    Id INT PRIMARY KEY,
-
-    UserId INT NOT NULL,
+    Id INT PRIMARY KEY, 
 
     CoachId INT NULL,
 
@@ -96,18 +89,15 @@ CREATE TABLE Members
 
     Height DECIMAL(5,2) NOT NULL,
 
-    FitnessGoal INT NOT NULL, 
-
-    CONSTRAINT UQ_Members_UserId
-        UNIQUE(UserId),
-
-    CONSTRAINT FK_Members_Users
-        FOREIGN KEY(UserId)
-        REFERENCES Users(Id),
+    FitnessGoal INT NOT NULL,  
 
     CONSTRAINT FK_Members_Coaches
         FOREIGN KEY(CoachId)
         REFERENCES Coaches(Id),
+
+        CONSTRAINT FK_Members_Users
+        FOREIGN KEY(Id)
+        REFERENCES Users(Id),
 
     CONSTRAINT CK_Members_Height
         CHECK (Height > 0),
@@ -115,6 +105,7 @@ CREATE TABLE Members
     CONSTRAINT CK_Members_FitnessGoal
         CHECK (FitnessGoal IN (1,2,3))
 );
+
 
 CREATE TABLE WeightRecords
 (

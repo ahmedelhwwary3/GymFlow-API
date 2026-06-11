@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RepositoryTier.User.Enums;
+using RepositoryTier.Member.Enums;
 
 namespace RepositoryTier.Entities;
 
@@ -13,7 +14,7 @@ public partial class Member:User
 
     public decimal Height { get; set; }
 
-    public int FitnessGoal { get; set; } 
+    public enMemberFitnessGoal FitnessGoal { get; set; } 
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 

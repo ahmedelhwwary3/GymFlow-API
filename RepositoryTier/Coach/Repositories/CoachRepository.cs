@@ -15,21 +15,21 @@ namespace RepositoryTier.Coach.Repositories
 {
     public class CoachRepository : Repository<Entities.Coach>, ICoachRepository
     {
-        protected readonly PaganationOptions _paganationOptions;
+        protected readonly PaganationOptions PaganationOptions;
         public CoachRepository(
             GymManagementDbContext context
             , IOptions<PaganationOptions> configs) : base(context) 
         {
-            _paganationOptions = configs.Value;
-            if (_paganationOptions == null)
-                throw new Exception("JWT options is not configured");
+            PaganationOptions = configs.Value;
+            if (PaganationOptions == null)
+                throw new Exception("Paganation options is not configured");
         }
          
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
         {
             string? search = request.Search?.Trim();
-            int page = request.Page ?? (Convert.ToInt32(_paganationOptions.Page));
-            int pageSize = request.PageSize ?? (Convert.ToInt32(_paganationOptions.TinyPageSize));
+            int page = request.Page ?? (Convert.ToInt32(PaganationOptions.Page));
+            int pageSize = request.PageSize ?? (Convert.ToInt32(PaganationOptions.TinyPageSize));
 
             var query = _context.Coaches
                 .AsNoTracking() // Read-Only (Better C# performance)

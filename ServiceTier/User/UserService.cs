@@ -20,7 +20,7 @@ namespace ServiceTier.User
 {
     public class UserService : Service<RepositoryTier.Entities.User>, IUserService
     {
-        protected readonly IUserRepository _repo;
+        private readonly IUserRepository _repo;
         protected readonly JWTOptions _jwtConfigs;
         protected readonly IConfiguration _configs;
         public UserService(
