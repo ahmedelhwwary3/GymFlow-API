@@ -12,5 +12,6 @@ namespace RepositoryTier.Coach.DTOs
     {
         public List<CoachResponse> Coaches { get; set; } 
         public List<enCoachSpecialization> Specializations { get; set; }
+        public int Count { get; set; }
     }
 }

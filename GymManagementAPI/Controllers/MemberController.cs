@@ -38,14 +38,14 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<GetAssignedMembersForCoachResponse>>
-            GetMembers([FromQuery] GetAssignedMembersForCoachRequest request)
+        public async Task<ActionResult<GetMembersResopnse>>
+            GetMembers([FromQuery] GetMembersRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var response = await _memberService
-                .GetAssignedMembersForCoachAsync(request);
+                .GetMembersAsync(request);
 
             if (response == null || response.Count == 0)
                 return NotFound("Members not found");

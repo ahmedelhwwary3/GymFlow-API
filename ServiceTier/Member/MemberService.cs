@@ -23,5 +23,11 @@ namespace ServiceTier.Member
         {
             return await _repo.GetAssignedMembersForCoachAsync(request);
         }
+
+        public async Task<GetMembersResopnse> 
+            GetMembersAsync(GetMembersRequest request)
+        {
+            return await _repo.GetMembersAsync(request);
+        }
     }
 }

@@ -62,10 +62,13 @@ namespace RepositoryTier.Coach.Repositories
                 .Take(pageSize);
 
             var coaches = await query.ToListAsync();
+            int count = await _context.Coaches.CountAsync();
+
             var response = new GetCoachesResponse()
             {
-                Coaches=coaches,
-                Specializations=Enum.GetValues<enCoachSpecialization>().ToList()
+                Coaches = coaches,
+                Specializations = Enum.GetValues<enCoachSpecialization>().ToList(),
+                Count = count
             };
 
             return response;

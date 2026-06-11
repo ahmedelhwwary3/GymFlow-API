@@ -10,14 +10,16 @@ namespace RepositoryTier.Member.DTOs
     {
         public int Id { get; set; }
 
+        public int? CoachId { get; set; }
+
+        public string CoachName { get; set; }
+
         public string FullName { get; set; }
 
         public string Email { get; set; }
 
         public string Phone {  get; set; }
-
-        public string CoachName { get; set; }
-
+         
         public bool IsActive { get; set; }
 
     }

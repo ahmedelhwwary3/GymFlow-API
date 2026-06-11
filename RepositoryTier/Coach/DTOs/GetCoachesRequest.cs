@@ -15,11 +15,13 @@ namespace RepositoryTier.Coach.DTOs
 
         public bool? IsActive { get; set; }
 
+        [EnumDataType(typeof(enCoachSpecialization))]
         public enCoachSpecialization? Specialization { get; set; }
 
         public int? Page { get; set; } 
 
         public int? PageSize { get; set; }
+
 
         [EnumDataType(typeof(enCoachSort))]
         public enCoachSort? Sort { get; set; }
