@@ -15,7 +15,7 @@ public partial class User
 
     public string Phone { get; set; } = null!;
 
-    public enUserGender Gender { get; set; }
+    public enGender Gender { get; set; }
 
     public DateOnly DateOfBirth { get; set; }
 

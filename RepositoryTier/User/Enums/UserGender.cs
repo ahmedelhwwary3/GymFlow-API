@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.User.Enums
 {
-    public enum enUserGender
+    public enum enGender
     {
         Male = 1,
         Female = 2

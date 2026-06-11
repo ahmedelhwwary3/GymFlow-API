@@ -22,6 +22,6 @@ namespace RepositoryTier.Coach.DTOs
 
         public int AssignedMembersCount { get; set; } = 0;
 
-        public enUserActivityStatus Status { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -34,10 +34,9 @@ namespace RepositoryTier.Coach.Repositories
 
             var query = _context.Coaches
                 .AsNoTracking() // Read-Only (Better C# performance)
-                .Where(c =>(request.Specialization == null ||
+                .Where(c => (request.Specialization == null ||
                 c.Specialization == request.Specialization) &&
-            (request.Status == enUserActivityStatus.All ||
-            (c.IsActive == (request.Status == enUserActivityStatus.Active ? true : false))) &&
+            (request.IsActive == null || (c.IsActive == request.IsActive)) &&
             (string.IsNullOrEmpty(search) ||
             (c.FullName.Contains(search) || c.Email.Contains(search) || c.Phone.Contains(search))))
                 .Select(c => new CoachResponse()
@@ -48,7 +47,7 @@ namespace RepositoryTier.Coach.Repositories
                     Id = c.Id,
                     Phone = c.Phone,
                     Specialization = c.Specialization,
-                    Status= c.IsActive ? enUserActivityStatus.Active : enUserActivityStatus.Inactive
+                    IsActive = c.IsActive
                 });
 
             query = request.Sort switch
@@ -66,8 +65,7 @@ namespace RepositoryTier.Coach.Repositories
             var response = new GetCoachesResponse()
             {
                 Coaches=coaches,
-                Specializations=Enum.GetValues<enCoachSpecialization>().ToList(),
-                Statuses=Enum.GetValues<enUserActivityStatus>().ToList(),
+                Specializations=Enum.GetValues<enCoachSpecialization>().ToList()
             };
 
             return response;
@@ -89,7 +87,7 @@ namespace RepositoryTier.Coach.Repositories
                     Phone = c.Phone,
                     Salary = c.Salary,
                     Specialization = c.Specialization,
-                    Status = c.IsActive ? enUserActivityStatus.Active : enUserActivityStatus.Inactive
+                    IsActive = c.IsActive 
                 }).FirstOrDefaultAsync();
         }
     }

@@ -11,10 +11,9 @@ namespace RepositoryTier.Coach.DTOs
 {
     public class GetCoachesRequest
     { 
-        public string? Search { get; set; }
-         
-        [EnumDataType(typeof(enUserActivityStatus))]
-        public enUserActivityStatus Status { get; set; } = enUserActivityStatus.All;
+        public string? Search { get; set; } 
+
+        public bool? IsActive { get; set; }
 
         public enCoachSpecialization? Specialization { get; set; }
 

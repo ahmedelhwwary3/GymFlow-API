@@ -29,8 +29,8 @@ namespace RepositoryTier.Coach.DTOs
         [Phone]
         public string Phone { get; set; } = null!;
 
-        [EnumDataType(typeof(enUserGender))]
-        public enUserGender Gender { get; set; }
+        [EnumDataType(typeof(enGender))]
+        public enGender Gender { get; set; }
 
         [AgeRange(21,60)]
         public DateOnly DateOfBirth { get; set; }

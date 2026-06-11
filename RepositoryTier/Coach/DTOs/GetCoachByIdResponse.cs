@@ -19,7 +19,7 @@ namespace RepositoryTier.Coach.DTOs
 
         public string Phone { get; set; }
 
-        public enUserGender Gender { get; set; }
+        public enGender Gender { get; set; }
 
         public DateOnly HireDate { get; set; }
 
@@ -27,7 +27,7 @@ namespace RepositoryTier.Coach.DTOs
 
         public decimal Salary { get; set; }
 
-        public enUserActivityStatus Status { get; set; }
+        public bool IsActive { get; set; }
 
 
     }

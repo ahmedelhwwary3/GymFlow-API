@@ -10,8 +10,7 @@ namespace RepositoryTier.Coach.DTOs
 {
     public class GetCoachesResponse
     {
-        public List<CoachResponse> Coaches { get; set; }
-        public List<enUserActivityStatus> Statuses { get; set; }
+        public List<CoachResponse> Coaches { get; set; } 
         public List<enCoachSpecialization> Specializations { get; set; }
     }
 }
