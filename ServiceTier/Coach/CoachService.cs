@@ -17,52 +17,24 @@ namespace ServiceTier.Coach
     {
         private readonly ICoachRepository _repo;
         private readonly IUserRepository _userRepo;
+        private readonly IUserService _userService;
         public CoachService(
             ICoachRepository repo,
-            IUserRepository userService) 
+            IUserRepository userRepo,
+            IUserService userService) 
             : base(repo) 
         { 
             _repo = repo;
-            _userRepo = userService;
+            _userRepo = userRepo;
+            _userService = userService;
         }
          
-        private async Task<Boolean> IsUniquePhone(string phone, int userId = 0)
-        {
-            if (userId>0) //Update
-            {
-                var user = await _userRepo.FindByIdAsync(userId);
-                if (user == null)
-                    return false;
-                //Same user
-                if (user.Phone == phone)
-                    return true;
-            } 
-            //Add
-            return !await _userRepo
-                .ExistsByPhoneAsync(phone);
-        }
-
-        private async Task<Boolean> IsUniqueEmail(string email, int userId = 0)
-        {
-            if (userId>0) //Update
-            {
-                var user = await _userRepo.FindByIdAsync(userId);
-                if (user == null)
-                    return false;
-
-                //Same user
-                if (user.Email == email)
-                    return true;
-            }
-            //Add
-            return !await _userRepo
-                .ExistsByEmailAsync(email);
-        }
+        
 
         public async Task<AddCoachResult> AddAsync(AddCoachRequest request)
         {
-            bool isUniqueEmail = await IsUniqueEmail(request.Email);
-            bool isUniquePhone = await IsUniquePhone(request.Phone);
+            bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email);
+            bool isUniquePhone = await _userService.IsUniquePhoneAsync(request.Phone);
 
             if (!isUniqueEmail)
                 return new AddCoachResult(enAddCoachStatus.NotUniqueEmail);
@@ -94,7 +66,7 @@ namespace ServiceTier.Coach
                 {
                     HireDate = newCoach.HireDate,
                     Salary = newCoach.Salary,
-                    Id = newCoach.Id,
+                    NewId = newCoach.Id,
                     Specialization = newCoach.Specialization
                 };
                 return new AddCoachResult(enAddCoachStatus.Succeeded,response);
@@ -119,8 +91,8 @@ namespace ServiceTier.Coach
             if (coach == null)
                 return enUpdateCoachByIdStatus.CoachNotFound;
               
-            bool isUniqueEmail = await IsUniqueEmail(request.Email, coach.Id);
-            bool isUniquePhone = await IsUniquePhone(request.Phone,coach.Id);
+            bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email, coach.Id);
+            bool isUniquePhone = await _userService.IsUniquePhoneAsync(request.Phone,coach.Id);
 
             if (!isUniqueEmail)
                 return enUpdateCoachByIdStatus.NotUniqueEmail;

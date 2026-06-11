@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.Attributes
+namespace RepositoryTier.CustomAttributes
 {
     public class AgeRangeAttribute:ValidationAttribute
     {

@@ -13,5 +13,7 @@ namespace ServiceTier.User
         Task<enChangePasswordStatus> ChangePasswordAsync(int userId,ChangePasswordRequest request);
         Task<bool> ExistsByPhoneAsync(string phone);
         Task<bool> ExistsByEmailAsync(string phone);
+        Task<Boolean> IsUniquePhoneAsync(string phone, int userId = 0);
+        Task<Boolean> IsUniqueEmailAsync(string email, int userId = 0);
     }
 }

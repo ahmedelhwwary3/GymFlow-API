@@ -34,11 +34,11 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
-        [HttpPost(Name ="Add")]
+        [HttpPost(Name ="AddCoach")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<AddCoachResponse>> Add(AddCoachRequest request)
+        public async Task<ActionResult<AddCoachResponse>> AddCoach(AddCoachRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -52,15 +52,15 @@ namespace GymManagementAPI.Controllers
 
                 enAddCoachStatus.InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
 
-                _ => CreatedAtAction("Add", result.Resopnse)
+                _ => CreatedAtRoute("GetCoachById", result.Resopnse)
             };
         }
          
-        [HttpGet("{Id}",Name = "GetById")]
+        [HttpGet("{Id}",Name = "GetCoachById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<GetCoachByIdResponse>>GetById(int Id)
+        public async Task<ActionResult<GetCoachByIdResponse>>GetCoachById(int Id)
         {
             if (Id < 1)
                 return BadRequest();
@@ -69,12 +69,12 @@ namespace GymManagementAPI.Controllers
             return response==null?NotFound("Coach not found"): Ok(response);
         }
 
-        [HttpPut("{Id}", Name = "UpdateById")]
+        [HttpPut("{Id}", Name = "UpdateCoachById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<GetCoachByIdResponse>>
-            UpdateById(int Id,UpdateCoachByIdRequest request)
+            UpdateCoachById(int Id,UpdateCoachByIdRequest request)
         {
             if (Id < 1 || !ModelState.IsValid)
                 return BadRequest();

@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Member.DTOs;
+using RepositoryTier.Member.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace ServiceTier.Member
         Task<GetAssignedMembersForCoachResponse>
             GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request);
         Task<GetMembersResopnse> GetMembersAsync(GetMembersRequest request);
+        Task<AddMemberResult> AddAsync(AddMemberRequest request);
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.CustomAttributes
 {
-    public class NotFutureDate:ValidationAttribute
+    public class NotFutureDateOnly:ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, 
             ValidationContext validationContext)

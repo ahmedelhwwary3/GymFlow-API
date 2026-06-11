@@ -15,6 +15,6 @@ namespace RepositoryTier
         Task AddAsync(T entity);
         Task<Boolean> ExistsByIdAsync(int Id);
         Task<int> SaveChangesAsync();
-        Task<List<T>> GetAllAsync();
+        Task<List<T>> GetAllAsync(); 
     }
 }

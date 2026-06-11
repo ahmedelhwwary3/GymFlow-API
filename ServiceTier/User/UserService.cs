@@ -36,6 +36,37 @@ namespace ServiceTier.User
                 throw new Exception("JWT options is not configured");
         }
 
+        public async Task<Boolean> IsUniquePhoneAsync(string phone, int userId = 0)
+        {
+            if (userId > 0) //Update
+            {
+                var user = await _repo.FindByIdAsync(userId);
+                if (user == null)
+                    return false;
+                //Same user
+                if (user.Phone == phone)
+                    return true;
+            }
+            //Add
+            return !await _repo.ExistsByPhoneAsync(phone);
+        }
+
+        public async Task<Boolean> IsUniqueEmailAsync(string email, int userId = 0)
+        {
+            if (userId > 0) //Update
+            {
+                var user = await _repo.FindByIdAsync(userId);
+                if (user == null)
+                    return false;
+
+                //Same user
+                if (user.Email == email)
+                    return true;
+            }
+            //Add
+            return !await _repo.ExistsByEmailAsync(email);
+        }
+
         protected string GenerateRefreshToken()
         {
             var randomBytes = new byte[64];

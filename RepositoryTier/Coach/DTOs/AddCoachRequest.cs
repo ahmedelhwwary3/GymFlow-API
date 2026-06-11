@@ -1,5 +1,6 @@
-﻿using RepositoryTier.Attributes;
+﻿ 
 using RepositoryTier.Coach.Enums;
+using RepositoryTier.CustomAttributes;
 using RepositoryTier.User.Enums;
 using System;
 using System.Collections.Generic;

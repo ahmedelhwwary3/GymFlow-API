@@ -11,7 +11,7 @@ namespace RepositoryTier.Coach.DTOs
 {
     public class AddCoachResponse
     {
-        public int Id { get; set; }
+        public int NewId { get; set; }
          
         public enCoachSpecialization Specialization { get; set; }
 

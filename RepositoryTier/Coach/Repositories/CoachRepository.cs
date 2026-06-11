@@ -93,5 +93,11 @@ namespace RepositoryTier.Coach.Repositories
                     IsActive = c.IsActive 
                 }).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> IsActiveByIdAsync(int Id)
+        {
+            return await _context.Coaches
+                .AnyAsync(c => c.Id == Id && c.IsActive);
+        }
     }
 }
