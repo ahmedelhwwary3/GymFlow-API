@@ -43,9 +43,17 @@ namespace GymManagementAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var response = await _coachService.AddAsync(request);
-            return response!=null? CreatedAtAction("Add",response) :
-                StatusCode(StatusCodes.Status500InternalServerError);
+            var result = await _coachService.AddAsync(request);
+            return result.Status switch {  
+
+                enAddCoachStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                enAddCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+
+                enAddCoachStatus.InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+
+                _ => CreatedAtAction("Add", result.Resopnse)
+            };
         }
          
         [HttpGet("{Id}",Name = "GetById")]

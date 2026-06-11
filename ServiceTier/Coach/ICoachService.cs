@@ -1,5 +1,6 @@
 ﻿using RepositoryTier.Coach.DTOs;
-using RepositoryTier.Coach.Enums; 
+using RepositoryTier.Coach.Enums;
+using RepositoryTier.Coach.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace ServiceTier.Coach
     public interface ICoachService:IService<RepositoryTier.Entities.Coach>
     {
         Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request);
-        Task<AddCoachResponse> AddAsync(AddCoachRequest request);
+        Task<AddCoachResult> AddAsync(AddCoachRequest request);
         Task<GetCoachByIdResponse?> GetByIdAsync(int Id);
-        Task<enUpdateCoachByIdStatus> UpdateByIdAsync(int Id,UpdateCoachByIdRequest request);
+        Task<enUpdateCoachByIdStatus> UpdateByIdAsync(int Id,UpdateCoachByIdRequest request); 
     }
 }

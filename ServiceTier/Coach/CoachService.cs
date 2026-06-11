@@ -1,6 +1,7 @@
 ﻿using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.Coach.Repositories;
+using RepositoryTier.Coach.Results;
 using RepositoryTier.Entities;
 using RepositoryTier.User.Enums;
 using ServiceTier.User;
@@ -23,35 +24,50 @@ namespace ServiceTier.Coach
             _userService = userService;
         }
          
-        private async Task<Boolean> IsUniquePhone(int userId,string phone)
+        private async Task<Boolean> IsUniquePhone(string phone, int userId = 0)
         {
-            var user = await _userService.FindByIdAsync(userId);
-            if (user == null)
-                return false; 
-            //Same user
-            if(user.Phone == phone)
-                return true;
-
+            if (userId>0) //Update
+            {
+                var user = await _userService.FindByIdAsync(userId);
+                if (user == null)
+                    return false;
+                //Same user
+                if (user.Phone == phone)
+                    return true;
+            } 
+            //Add
             return !await _userService
                 .ExistsByPhoneAsync(phone);
         }
 
-        private async Task<Boolean> IsUniqueEmail(int userId, string email)
+        private async Task<Boolean> IsUniqueEmail(string email, int userId = 0)
         {
-            var user = await _userService.FindByIdAsync(userId);
-            if (user == null)
-                return false;
+            if (userId>0) //Update
+            {
+                var user = await _userService.FindByIdAsync(userId);
+                if (user == null)
+                    return false;
 
-            //Same user
-            if (user.Email == email)
-                return true;
-
+                //Same user
+                if (user.Email == email)
+                    return true;
+            }
+            //Add
             return !await _userService
                 .ExistsByEmailAsync(email);
         }
 
-        public async Task<AddCoachResponse> AddAsync(AddCoachRequest request)
+        public async Task<AddCoachResult> AddAsync(AddCoachRequest request)
         {
+            bool isUniqueEmail = await IsUniqueEmail(request.Email);
+            bool isUniquePhone = await IsUniquePhone(request.Phone);
+
+            if (!isUniqueEmail)
+                return new AddCoachResult(enAddCoachStatus.NotUniqueEmail);
+
+            if (!isUniquePhone)
+                return new AddCoachResult(enAddCoachStatus.NotUniqueEmail);
+
             var newCoach = new RepositoryTier.Entities.Coach()
             {
                 CreatedAt=DateTime.UtcNow,
@@ -66,18 +82,23 @@ namespace ServiceTier.Coach
                 Salary=request.Salary,
                 Specialization=request.Specialization 
             };
-
+              
             await _repo.AddAsync(newCoach);
             int affectedRows= await _repo.SaveChangesAsync();
 
-            return new AddCoachResponse()
+            if (affectedRows > 0)
             {
-                HireDate=newCoach.HireDate,
-                Salary=newCoach.Salary,
-                Id=newCoach.Id,
-                Specialization=newCoach.Specialization
-            };
+                var response = new AddCoachResponse()
+                {
+                    HireDate = newCoach.HireDate,
+                    Salary = newCoach.Salary,
+                    Id = newCoach.Id,
+                    Specialization = newCoach.Specialization
+                };
+                return new AddCoachResult(enAddCoachStatus.Succeeded,response);
+            }
 
+            return new AddCoachResult(enAddCoachStatus.InternalServerError);
         }
 
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
@@ -96,13 +117,13 @@ namespace ServiceTier.Coach
             if (coach == null)
                 return enUpdateCoachByIdStatus.CoachNotFound;
               
-            bool isUniqueEmail = await IsUniqueEmail(coach.Id, request.Email);
-            bool isUniquePhone = await IsUniquePhone(coach.Id, request.Phone);
+            bool isUniqueEmail = await IsUniqueEmail(request.Email, coach.Id);
+            bool isUniquePhone = await IsUniquePhone(request.Phone,coach.Id);
 
             if (!isUniqueEmail)
                 return enUpdateCoachByIdStatus.NotUniqueEmail;
 
-            if (!isUniqueEmail)
+            if (!isUniquePhone)
                 return enUpdateCoachByIdStatus.NotUniquePhone;
 
             coach.HireDate = request.HireDate;
