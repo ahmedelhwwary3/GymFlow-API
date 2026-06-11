@@ -11,7 +11,7 @@ namespace ServiceTier.Member
 {
     public class MemberService: Service<RepositoryTier.Entities.Member>, IMemberService
     {
-        protected readonly IMemberRepository _repo;
+        private readonly IMemberRepository _repo;
         public MemberService(IMemberRepository repo) : base(repo) 
         {
             _repo = repo;
