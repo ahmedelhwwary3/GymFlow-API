@@ -17,5 +17,15 @@ namespace RepositoryTier.User.Repositories
                 .SingleOrDefaultAsync(u => u.Email == email); 
             return user;
         }
+
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> ExistsByPhoneAsync(string phone)
+        {
+            return await _context.Users.AnyAsync(u => u.Phone == phone);
+        }
     }
 }

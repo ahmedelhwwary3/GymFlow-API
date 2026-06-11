@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Coach.DTOs; 
 using ServiceTier.Coach;
+using RepositoryTier.Coach.Enums;
 
 namespace GymManagementAPI.Controllers
 {
@@ -60,8 +61,32 @@ namespace GymManagementAPI.Controllers
             return response==null?NotFound("Coach not found"): Ok(response);
         }
 
+        [HttpPut("{Id}", Name = "UpdateById")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult<GetCoachByIdResponse>>
+            UpdateById(int Id,UpdateCoachByIdRequest request)
+        {
+            if (Id < 1 || !ModelState.IsValid)
+                return BadRequest();
 
+            var response = await _coachService
+                .UpdateByIdAsync(Id,request);
 
-         
+            return response switch
+            {
+                enUpdateCoachByIdStatus.CoachNotFound => NotFound("Coach not found"),
+
+                enUpdateCoachByIdStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                enUpdateCoachByIdStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+
+                enUpdateCoachByIdStatus.DataNotChanged => BadRequest("Date not changed"),
+
+                _ => NoContent()
+            };
+        } 
+
     }
 }

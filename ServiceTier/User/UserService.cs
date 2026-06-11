@@ -201,5 +201,15 @@ namespace ServiceTier.User
 
             return enChangePasswordStatus.Succeeded;
         }
+
+        public async Task<bool> ExistsByPhoneAsync(string phone)
+        {
+            return await _repo.ExistsByPhoneAsync(phone);
+        }
+
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _repo.ExistsByEmailAsync(email);
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace ServiceTier
     { 
         Task DeleteByIdAsync(int Id); 
         Task<Boolean> ExistsByIdAsync(int Id);
+        Task<T?> FindByIdAsync(int Id);
     }
 }

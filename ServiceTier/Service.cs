@@ -29,6 +29,10 @@ namespace ServiceTier
         {
             return await _repo.ExistsByIdAsync(Id);
         }
-         
+
+        async Task<T?> IService<T>.FindByIdAsync(int Id)
+        {
+            return await _repo.FindByIdAsync(Id);
+        }
     }
 }

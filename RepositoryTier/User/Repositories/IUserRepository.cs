@@ -9,5 +9,7 @@ namespace RepositoryTier.User.Repositories
     public interface IUserRepository: IRepository<Entities.User>
     {
         Task<Entities.User?> GetByEmailAsync(string email);
+        Task<bool> ExistsByPhoneAsync(string phone);
+        Task<bool> ExistsByEmailAsync(string email);
     }
 }

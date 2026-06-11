@@ -11,5 +11,7 @@ namespace ServiceTier.User
         Task<RefreshResult> RefreshAsync(RefreshRequest request);
         Task<bool> LogoutAsync(LogoutRequest request);
         Task<enChangePasswordStatus> ChangePasswordAsync(int userId,ChangePasswordRequest request);
+        Task<bool> ExistsByPhoneAsync(string phone);
+        Task<bool> ExistsByEmailAsync(string phone);
     }
 }

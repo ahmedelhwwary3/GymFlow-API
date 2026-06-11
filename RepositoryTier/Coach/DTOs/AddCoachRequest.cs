@@ -13,6 +13,7 @@ namespace RepositoryTier.Coach.DTOs
 {
     public class AddCoachRequest
     {
+        [EnumDataType(typeof(enCoachSpecialization))]
         public enCoachSpecialization Specialization { get; set; }
 
         [Range(1,int.MaxValue)] 
@@ -28,6 +29,7 @@ namespace RepositoryTier.Coach.DTOs
         [Phone]
         public string Phone { get; set; } = null!;
 
+        [EnumDataType(typeof(enUserGender))]
         public enUserGender Gender { get; set; }
 
         [AgeRange(21,60)]
