@@ -9,11 +9,11 @@ namespace RepositoryTier.User.DTOs
 {
     public class ChangePasswordRequest
     {
-        [Required]
+        [Required] 
         public string CurrentPassword { get; set; }
 
         [Required]
-        [StringLength(8)]
+        [MinLength(8)]
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; } 
     }

@@ -25,8 +25,8 @@ namespace RepositoryTier.Member.Repositories
         public async Task<GetAssignedMembersForCoachResponse> 
             GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request)
         {
-            int page= PaganationOptions.Page;
-            int pageSize= PaganationOptions.BigPageSize;
+            int page= request.Page?? PaganationOptions.Page;
+            int pageSize=request.PageSize?? PaganationOptions.BigPageSize;
 
             int totalCount =await _context.Members
                 .Where(c => c.CoachId == request.CoachId)

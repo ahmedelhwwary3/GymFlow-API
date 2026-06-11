@@ -16,6 +16,7 @@ namespace RepositoryTier.Coach.Repositories
     public class CoachRepository : Repository<Entities.Coach>, ICoachRepository
     {
         protected readonly PaganationOptions PaganationOptions;
+    
         public CoachRepository(
             GymManagementDbContext context
             , IOptions<PaganationOptions> configs) : base(context) 
@@ -28,8 +29,8 @@ namespace RepositoryTier.Coach.Repositories
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
         {
             string? search = request.Search?.Trim();
-            int page = request.Page ?? (Convert.ToInt32(PaganationOptions.Page));
-            int pageSize = request.PageSize ?? (Convert.ToInt32(PaganationOptions.TinyPageSize));
+            int page = request.Page ?? PaganationOptions.Page;
+            int pageSize = request.PageSize ?? PaganationOptions.TinyPageSize;
 
             var query = _context.Coaches
                 .AsNoTracking() // Read-Only (Better C# performance)
@@ -46,7 +47,8 @@ namespace RepositoryTier.Coach.Repositories
                     FullName = c.FullName,
                     Id = c.Id,
                     Phone = c.Phone,
-                    Specialization = c.Specialization
+                    Specialization = c.Specialization,
+                    Status= c.IsActive ? enUserActivityStatus.Active : enUserActivityStatus.Inactive
                 });
 
             query = request.Sort switch

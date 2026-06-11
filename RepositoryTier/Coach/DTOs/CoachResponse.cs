@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Coach.Enums;
+using RepositoryTier.User.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace RepositoryTier.Coach.DTOs
         public string Phone { get; set; }
         public enCoachSpecialization Specialization { get; set; }
         public int AssignedMembersCount { get; set; } = 0;
+        public enUserActivityStatus Status { get; set; }
     }
 }

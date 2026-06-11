@@ -39,7 +39,9 @@ namespace GymManagement
 
             // Add services to the container.
 
-            builder.Services.AddControllers();  
+            builder.Services.AddControllers();
+
+            var jwt = builder.Configuration.GetSection("JWT"); 
 
             builder.Services.AddDbContext<GymManagementDbContext>(options=>
             {
@@ -48,7 +50,7 @@ namespace GymManagement
                        .EnableSensitiveDataLogging();
             });
 
-            builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
+            builder.Services.Configure<JWTOptions>(jwt);
             builder.Services.Configure<PaganationOptions>(builder.Configuration.GetSection("Paganation"));
 
             builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
@@ -74,10 +76,11 @@ namespace GymManagement
             builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
 
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                string secretKey = builder.Configuration["GYM_SECRET_KEY"];
+                string? secretKey = builder.Configuration["GYM_SECRET_KEY"];
                 if (string.IsNullOrEmpty(secretKey))
                 {
                     throw new Exception("JWT secret key is not configured.");
@@ -94,15 +97,16 @@ namespace GymManagement
                     // Ensures the token signature is valid and was signed by the API.
                     ValidateIssuerSigningKey = true,
                     // The expected issuer value (must match the issuer used when creating the JWT).
-                    ValidIssuer = "MyProject",
+                    ValidIssuer = jwt["Issuer"],
                     // The expected audience value (must match the audience used when creating the JWT).
-                    ValidAudience = "MyProjectUsers",
+                    ValidAudience = jwt["Audience"],
                     // The secret key used to validate the JWT signature.
                     // This must be the same key used when generating the token.
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(secretKey))
                 };
             });
+
             builder.Services.AddSwaggerGen();
             // Register Swagger generator and customize its behavior.
             builder.Services.AddSwaggerGen(options =>
@@ -162,6 +166,8 @@ namespace GymManagement
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

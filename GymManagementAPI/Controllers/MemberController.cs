@@ -27,6 +27,7 @@ namespace GymManagementAPI.Controllers
 
             var response = await _memberService
                 .GetAssignedMembersForCoachAsync(request);
+
             if (response == null || response.Count == 0)
                 return NotFound("Members not found");
 

@@ -34,7 +34,7 @@ namespace RepositoryTier.Coach.DTOs
         public DateOnly DateOfBirth { get; set; }
 
         [Required]
-        [StringLength(8)]
+        [MinLength(8)]
         public string Password { get; set; } = null!;    
     }
 }

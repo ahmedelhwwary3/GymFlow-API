@@ -13,7 +13,7 @@ namespace RepositoryTier.User.DTOs.Authentication
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required] 
         public string Password { get; set; }
     }
 }

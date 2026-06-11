@@ -12,6 +12,8 @@ namespace RepositoryTier.User.DTOs.Authentication
         [Required]
         public string RefreshToken { get; set; }
 
+        [EmailAddress]
+        [Required]
         public string Email { get; set; }
     }
 }
