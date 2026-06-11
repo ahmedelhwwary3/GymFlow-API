@@ -10,7 +10,11 @@ namespace ServiceTier.Payment
 {
     public class PaymentService : Service<RepositoryTier.Entities.Payment>, IPaymentService
     {
-        public PaymentService(IPaymentRepository repo) : base(repo) { }
+        private readonly IPaymentRepository _repo;
+        public PaymentService(IPaymentRepository repo) : base(repo) 
+        { 
+            _repo = repo;
+        }
 
     }
 }

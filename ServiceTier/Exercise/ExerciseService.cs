@@ -10,7 +10,11 @@ namespace ServiceTier.Exercise
 {
     public class ExerciseService : Service<RepositoryTier.Entities.Exercise>, IExerciseService
     {
-        public ExerciseService(IExerciseRepository repo) : base(repo) { }
+        private readonly IExerciseRepository _repo;
+        public ExerciseService(IExerciseRepository repo) : base(repo) 
+        { 
+            _repo = repo;
+        }
 
     }
 }

@@ -10,6 +10,10 @@ namespace ServiceTier.WeightRecord
 {
     public class WeightRecordService : Service<RepositoryTier.Entities.WeightRecord>, IWeightRecordService
     {
-        public WeightRecordService(IWeightRecordRepository repo) : base(repo) { } 
+        private readonly IWeightRecordRepository _repo;
+        public WeightRecordService(IWeightRecordRepository repo) : base(repo) 
+        {
+            _repo = repo;
+        } 
     }
 }

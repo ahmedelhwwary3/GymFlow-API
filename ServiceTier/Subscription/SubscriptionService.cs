@@ -10,7 +10,11 @@ namespace ServiceTier.Subscription
 {
     public class SubscriptionService : Service<RepositoryTier.Entities.Subscription>, ISubscriptionService
     {
-        public SubscriptionService(ISubscriptionRepository repo) : base(repo) { }
+        private readonly ISubscriptionRepository _repo;
+        public SubscriptionService(ISubscriptionRepository repo) : base(repo) 
+        { 
+            _repo=repo;
+        }
 
     }
 }

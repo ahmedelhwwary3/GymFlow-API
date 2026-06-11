@@ -6,6 +6,10 @@ namespace ServiceTier.Attendance
 {
     public class AttendanceService:Service<RepositoryTier.Entities.Attendance>, IAttendanceService
     {
-        public AttendanceService(IAttendanceRepository repo) : base(repo) { }
+        private readonly IAttendanceRepository _repo;
+        public AttendanceService(IAttendanceRepository repo) : base(repo)
+        { 
+            _repo = repo;
+        }
     }
 }

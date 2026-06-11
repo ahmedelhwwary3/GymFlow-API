@@ -8,6 +8,10 @@ namespace ServiceTier.WorkoutPlanExercise
     public class WorkoutPlanExerciseService:Service
         <RepositoryTier.Entities.WorkoutPlanExercise>,IWorkoutPlanExerciseService
     {
-        public WorkoutPlanExerciseService(IWorkoutPlanExerciseRepository repo): base(repo) { }
+        private readonly IWorkoutPlanExerciseRepository _repo;
+        public WorkoutPlanExerciseService(IWorkoutPlanExerciseRepository repo): base(repo) 
+        { 
+            _repo = repo;
+        }
     }
 }

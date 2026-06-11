@@ -10,6 +10,10 @@ namespace ServiceTier.WorkoutPlan
 {
     public class WorkoutPlanService: Service<RepositoryTier.Entities.WorkoutPlan>, IWorkoutPlanService
     {
-        public WorkoutPlanService(IWorkoutPlanRepository repo) : base(repo) { }
+        private readonly IWorkoutPlanRepository _repo;
+        public WorkoutPlanService(IWorkoutPlanRepository repo) : base(repo) 
+        {
+            _repo = repo;
+        }
     }
 }
