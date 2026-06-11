@@ -7,28 +7,30 @@ using RepositoryTier.User.Enums;
 using ServiceTier.User;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using RepositoryTier.User;
+using RepositoryTier.User.Repositories;
 
 namespace ServiceTier.Coach
 {
     public class CoachService : Service<RepositoryTier.Entities.Coach>, ICoachService
     {
         private readonly ICoachRepository _repo;
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepo;
         public CoachService(
             ICoachRepository repo,
-            IUserService userService) 
+            IUserRepository userService) 
             : base(repo) 
         { 
             _repo = repo;
-            _userService = userService;
+            _userRepo = userService;
         }
          
         private async Task<Boolean> IsUniquePhone(string phone, int userId = 0)
         {
             if (userId>0) //Update
             {
-                var user = await _userService.FindByIdAsync(userId);
+                var user = await _userRepo.FindByIdAsync(userId);
                 if (user == null)
                     return false;
                 //Same user
@@ -36,7 +38,7 @@ namespace ServiceTier.Coach
                     return true;
             } 
             //Add
-            return !await _userService
+            return !await _userRepo
                 .ExistsByPhoneAsync(phone);
         }
 
@@ -44,7 +46,7 @@ namespace ServiceTier.Coach
         {
             if (userId>0) //Update
             {
-                var user = await _userService.FindByIdAsync(userId);
+                var user = await _userRepo.FindByIdAsync(userId);
                 if (user == null)
                     return false;
 
@@ -53,7 +55,7 @@ namespace ServiceTier.Coach
                     return true;
             }
             //Add
-            return !await _userService
+            return !await _userRepo
                 .ExistsByEmailAsync(email);
         }
 
