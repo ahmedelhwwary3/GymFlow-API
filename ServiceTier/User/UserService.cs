@@ -40,7 +40,7 @@ namespace ServiceTier.User
         {
             if (userId > 0) //Update
             {
-                var user = await _repo.FindByIdAsync(userId);
+                var user = await _repo.FindAsync(userId);
                 if (user == null)
                     return false;
                 //Same user
@@ -55,7 +55,7 @@ namespace ServiceTier.User
         {
             if (userId > 0) //Update
             {
-                var user = await _repo.FindByIdAsync(userId);
+                var user = await _repo.FindAsync(userId);
                 if (user == null)
                     return false;
 
@@ -212,7 +212,7 @@ namespace ServiceTier.User
             if (request.ConfirmPassword.Trim() != request.NewPassword.Trim())
                 return enChangePasswordStatus.InvalidConfirmPassword;
 
-            var user = await _repo.FindByIdAsync(userId);
+            var user = await _repo.FindAsync(userId);
             if (user == null)
                 return enChangePasswordStatus.UserNotFound; 
 

@@ -74,7 +74,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
         {
             string refreshToken= GenerateRefreshToken();
             //1.Arrange
-            _repoMock.Setup(r => r.FindByIdAsync(1))
+            _repoMock.Setup(r => r.FindAsync(1))
                 .ReturnsAsync(new User()
             {
                 Id = 1,
@@ -117,7 +117,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
         {
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
-            _repoMock.Setup(r => r.FindByIdAsync(1))
+            _repoMock.Setup(r => r.FindAsync(1))
                 .ReturnsAsync(new User()
                 {
                     Id = 1,
@@ -160,7 +160,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
         {
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
-            _repoMock.Setup(r => r.FindByIdAsync(1))
+            _repoMock.Setup(r => r.FindAsync(1))
                 .ReturnsAsync(new User()
                 {
                     Id = 1,
@@ -203,7 +203,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
         {
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
-            _repoMock.Setup(r => r.FindByIdAsync(1))
+            _repoMock.Setup(r => r.FindAsync(1))
                 .ReturnsAsync(new User()
                 {
                     Id = 1,
@@ -246,7 +246,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
         {
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
-            _repoMock.Setup(r => r.FindByIdAsync(1))
+            _repoMock.Setup(r => r.FindAsync(1))
                 .ReturnsAsync(new User()
                 {
                     Id = 1,

@@ -83,9 +83,9 @@ namespace ServiceTier.Coach
             return await _repo.GetCoachByIdAsync(Id); 
         }
 
-        public async Task<enUpdateCoachByIdStatus> UpdateByIdAsync(int Id,UpdateCoachByIdRequest request)
+        public async Task<enUpdateCoachByIdStatus> UpdateAsync(int Id,UpdateCoachByIdRequest request)
         {
-            var coach = await _repo.FindByIdAsync(Id);
+            var coach = await _repo.FindAsync(Id);
             if (coach == null)
                 return enUpdateCoachByIdStatus.CoachNotFound;
               

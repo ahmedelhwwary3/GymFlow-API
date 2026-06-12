@@ -81,5 +81,59 @@ namespace GymManagementAPI.Controllers
                 _ => CreatedAtRoute("AddMember", result.NewId) // remember to change the route "GetMemberById"
             };
         }
+
+        [HttpPut(Name = "UpdateMember")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateMember(int Id,[FromBody]UpdateMemberRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var status = await _memberService.UpdateAsync(Id,request);
+            return status switch
+            {
+                //enAddMemberStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                //enAddMemberStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+
+                //enAddMemberStatus.CoachInactive => BadRequest("Coach must be active"),
+
+                //enAddMemberStatus.CoachNotExists => NotFound("Coach not found"),
+
+                //enAddMemberStatus.InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+
+                //_ => CreatedAtRoute("AddMember", status.NewId) // remember to change the route "GetMemberById"
+            };
+        }
+
+        [HttpPut(Name = "UpdateMemberProfile")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateMemberProfile(int Id,[FromBody] UpdateMemberProfileRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var status = await _memberService.UpdateProfileAsync(Id,request);
+            return status switch
+            {
+                //enAddMemberStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                //enAddMemberStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+
+                //enAddMemberStatus.CoachInactive => BadRequest("Coach must be active"),
+
+                //enAddMemberStatus.CoachNotExists => NotFound("Coach not found"),
+
+                //enAddMemberStatus.InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+
+                //_ => CreatedAtRoute("AddMember", status.NewId) // remember to change the route "GetMemberById"
+            };
+        }
     }
 }

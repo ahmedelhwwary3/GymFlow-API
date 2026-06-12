@@ -22,14 +22,14 @@ namespace RepositoryTier
             await _context.AddAsync(entity); 
         }
 
-        public async Task DeleteByIdAsync(int Id)
+        public async Task DeleteAsync(int Id)
         {
-            var entity = await FindByIdAsync(Id);
+            var entity = await FindAsync(Id);
             if(entity != null)
                 _context.Remove(entity); 
         }
 
-        public async Task<T?> FindByIdAsync(int Id)
+        public async Task<T?> FindAsync(int Id)
         {
             return await _context.FindAsync<T>(Id);
         }
@@ -59,7 +59,7 @@ namespace RepositoryTier
            return await _context.SaveChangesAsync();
         }
 
-        public async Task<Boolean> ExistsByIdAsync(int Id)
+        public async Task<Boolean> ExistsAsync(int Id)
         {
             return await _context.Set<T>()
                 .AnyAsync(e=>EF.Property<int>(e,"Id") == Id);

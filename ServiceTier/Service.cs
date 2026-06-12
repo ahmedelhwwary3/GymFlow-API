@@ -20,19 +20,19 @@ namespace ServiceTier
             await _repo.AddAsync(entity);
         }
 
-        public async Task DeleteByIdAsync(int Id)
+        public async Task DeleteAsync(int Id)
         {
-            await _repo.DeleteByIdAsync(Id);
+            await _repo.DeleteAsync(Id);
         }
 
-        public async Task<bool> ExistsByIdAsync(int Id)
+        public async Task<bool> ExistsAsync(int Id)
         {
-            return await _repo.ExistsByIdAsync(Id);
+            return await _repo.ExistsAsync(Id);
         }
 
-        async Task<T?> IService<T>.FindByIdAsync(int Id)
+        async Task<T?> IService<T>.FindAsync(int Id)
         {
-            return await _repo.FindByIdAsync(Id);
+            return await _repo.FindAsync(Id);
         }
     }
 }

@@ -69,18 +69,18 @@ namespace GymManagementAPI.Controllers
             return response==null?NotFound("Coach not found"): Ok(response);
         }
 
-        [HttpPut("{Id}", Name = "UpdateCoachById")]
+        [HttpPut("{Id}", Name = "UpdateCoach")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<GetCoachByIdResponse>>
-            UpdateCoachById(int Id,UpdateCoachByIdRequest request)
+            UpdateCoach(int Id,UpdateCoachByIdRequest request)
         {
             if (Id < 1 || !ModelState.IsValid)
                 return BadRequest();
 
             var response = await _coachService
-                .UpdateByIdAsync(Id,request);
+                .UpdateAsync(Id,request);
 
             return response switch
             {

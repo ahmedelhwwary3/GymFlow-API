@@ -9,8 +9,8 @@ namespace ServiceTier
 {
     public interface IService<T> where T : class
     { 
-        Task DeleteByIdAsync(int Id); 
-        Task<Boolean> ExistsByIdAsync(int Id);
-        Task<T?> FindByIdAsync(int Id);
+        Task DeleteAsync(int Id); 
+        Task<Boolean> ExistsAsync(int Id);
+        Task<T?> FindAsync(int Id);
     }
 }

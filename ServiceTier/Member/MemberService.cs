@@ -58,7 +58,7 @@ namespace ServiceTier.Member
             if (!isUniquePhone)
                 return new AddMemberResult(enAddMemberStatus.NotUniquePhone);
 
-            bool coachExists = await _coachRepo.ExistsByIdAsync(request.CoachId);
+            bool coachExists = await _coachRepo.ExistsAsync(request.CoachId);
             if(!coachExists)
                 return new AddMemberResult(enAddMemberStatus.CoachNotExists);
 
