@@ -28,9 +28,7 @@ namespace ServiceTier.Coach
             _userRepo = userRepo;
             _userService = userService;
         }
-         
-        
-
+           
         public async Task<AddCoachResult> AddAsync(AddCoachRequest request)
         {
             bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email);
@@ -111,6 +109,11 @@ namespace ServiceTier.Coach
             int affectedRows = await _repo.SaveChangesAsync();
             return affectedRows>0? enUpdateCoachByIdStatus.Succeeded:
                 enUpdateCoachByIdStatus.DataNotChanged;
+        }
+
+        public async Task<List<CoachLookUpResponse>> GetLookUpCoachesAsync()
+        {
+            return await _repo.GetLookUpCoachesAsync();
         }
     }
 }

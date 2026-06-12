@@ -99,5 +99,15 @@ namespace RepositoryTier.Coach.Repositories
             return await _context.Coaches
                 .AnyAsync(c => c.Id == Id && c.IsActive);
         }
+
+        public async Task<List<CoachLookUpResponse>> GetLookUpCoachesAsync()
+        {
+            return await _context.Coaches
+                .Select(c => new CoachLookUpResponse()
+                {
+                    FullName = c.FullName,
+                    Id = c.Id
+                }).ToListAsync();
+        }
     }
 }

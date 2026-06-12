@@ -94,7 +94,18 @@ namespace GymManagementAPI.Controllers
 
                 _ => NoContent()
             };
-        } 
+        }
+
+        [HttpGet("LookUpCoaches", Name = "GetLookUpCoaches")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)] 
+        public async Task<ActionResult<IEnumerable<CoachLookUpResponse>>>
+            GetLookUpCoaches()
+        {  
+            var response = await _coachService.GetLookUpCoachesAsync();
+            return (response == null || response.Count == 0) ?
+                NotFound("Coaches not found") : Ok(response);
+        }
 
     }
 }
