@@ -59,6 +59,11 @@ namespace RepositoryTier
            return await _context.SaveChangesAsync();
         }
 
+        public EntityState GetEntityState(T entity)
+        {
+            return _context.Entry(entity).State;
+        }
+
         public async Task<Boolean> ExistsAsync(int Id)
         {
             return await _context.Set<T>()

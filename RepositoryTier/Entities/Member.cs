@@ -16,6 +16,7 @@ public partial class Member:User
 
     public enMemberFitnessGoal FitnessGoal { get; set; } 
 
+
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
     public virtual Coach? Coach { get; set; }

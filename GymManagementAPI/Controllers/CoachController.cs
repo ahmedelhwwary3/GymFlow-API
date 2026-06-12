@@ -84,13 +84,13 @@ namespace GymManagementAPI.Controllers
 
             return response switch
             {
-                enUpdateCoachByIdStatus.CoachNotFound => NotFound("Coach not found"),
+                enUpdateCoachStatus.CoachNotFound => NotFound("Coach not found"),
 
-                enUpdateCoachByIdStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+                enUpdateCoachStatus.NotUniqueEmail => BadRequest("Email must be unique"),
 
-                enUpdateCoachByIdStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+                enUpdateCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
 
-                enUpdateCoachByIdStatus.DataNotChanged => BadRequest("Date not changed"),
+                enUpdateCoachStatus.DataNotChanged => BadRequest("Date not changed"),
 
                 _ => NoContent()
             };

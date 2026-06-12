@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,6 +16,7 @@ namespace RepositoryTier
         Task AddAsync(T entity);
         Task<Boolean> ExistsAsync(int Id);
         Task<int> SaveChangesAsync();
-        Task<List<T>> GetAllAsync(); 
+        Task<List<T>> GetAllAsync();
+        EntityState GetEntityState(T entity);
     }
 }

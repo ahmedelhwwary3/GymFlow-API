@@ -21,6 +21,8 @@ namespace RepositoryTier.Subscription.Configurations
 
             builder.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
+            builder.HasQueryFilter(e => !e.IsDeleted);
+
             builder.HasOne(d => d.CreatedByUser).WithMany()
                 .HasForeignKey(d => d.CreatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction)

@@ -8,7 +8,14 @@ namespace RepositoryTier.Member.Enums
 {
     public enum enUpdateMemberStatus
     {
-
+        NotUniqueEmail = 1,
+        NotUniquePhone = 2,
+        CoachNotExists = 3,
+        CoachInactive = 4,
+        MemberNotFound= 5,
+        DataNotChanged= 6,
+        InternalServerError= 7,
+        Succeeded = 8
     }
     public enum enUpdateMemberProfileStatus
     {

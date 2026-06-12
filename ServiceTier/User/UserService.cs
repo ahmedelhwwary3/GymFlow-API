@@ -44,11 +44,11 @@ namespace ServiceTier.User
                 if (user == null)
                     return false;
                 //Same user
-                if (user.Phone == phone)
+                if (user.Phone == phone.Trim())
                     return true;
             }
             //Add
-            return !await _repo.ExistsByPhoneAsync(phone);
+            return !await _repo.ExistsByPhoneAsync(phone.Trim());
         }
 
         public async Task<Boolean> IsUniqueEmailAsync(string email, int userId = 0)
@@ -60,11 +60,11 @@ namespace ServiceTier.User
                     return false;
 
                 //Same user
-                if (user.Email == email)
+                if (user.Email == email.Trim())
                     return true;
             }
             //Add
-            return !await _repo.ExistsByEmailAsync(email);
+            return !await _repo.ExistsByEmailAsync(email.Trim());
         }
 
         protected string GenerateRefreshToken()

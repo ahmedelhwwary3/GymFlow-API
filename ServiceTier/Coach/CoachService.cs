@@ -1,15 +1,17 @@
-﻿using RepositoryTier.Coach.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.Coach.Repositories;
 using RepositoryTier.Coach.Results;
 using RepositoryTier.Entities;
+using RepositoryTier.Member.Enums;
+using RepositoryTier.User;
 using RepositoryTier.User.Enums;
+using RepositoryTier.User.Repositories;
 using ServiceTier.User;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RepositoryTier.User;
-using RepositoryTier.User.Repositories;
 
 namespace ServiceTier.Coach
 {
@@ -83,32 +85,40 @@ namespace ServiceTier.Coach
             return await _repo.GetCoachByIdAsync(Id); 
         }
 
-        public async Task<enUpdateCoachByIdStatus> UpdateAsync(int Id,UpdateCoachByIdRequest request)
+        public async Task<enUpdateCoachStatus> UpdateAsync(int Id,UpdateCoachByIdRequest request)
         {
-            var coach = await _repo.FindAsync(Id);
-            if (coach == null)
-                return enUpdateCoachByIdStatus.CoachNotFound;
-              
-            bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email, coach.Id);
-            bool isUniquePhone = await _userService.IsUniquePhoneAsync(request.Phone,coach.Id);
+            
+            //1.Unique Email & Phone
+            bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email, Id);
+            bool isUniquePhone = await _userService.IsUniquePhoneAsync(request.Phone, Id);
 
             if (!isUniqueEmail)
-                return enUpdateCoachByIdStatus.NotUniqueEmail;
+                return enUpdateCoachStatus.NotUniqueEmail;
 
             if (!isUniquePhone)
-                return enUpdateCoachByIdStatus.NotUniquePhone;
+                return enUpdateCoachStatus.NotUniquePhone;
 
+            //2.Load then Update strategy for efCore Tracking
+            var coach = await _repo.FindAsync(Id);
+            if (coach == null)
+                return enUpdateCoachStatus.CoachNotFound;
             coach.HireDate = request.HireDate;
             coach.IsActive = request.IsActive;
-            coach.Phone = request.Phone;
-            coach.Email = request.Email;
-            coach.FullName = request.FullName;
+            coach.Phone = request.Phone.Trim();
+            coach.Email = request.Email.Trim();
+            coach.FullName = request.FullName.Trim();
             coach.Salary = request.Salary;
-            coach.Specialization = request.Specialization;
+            coach.Specialization = request.Specialization; 
 
+            EntityState state = _repo.GetEntityState(coach);
+            if (state == EntityState.Unchanged)
+                return enUpdateCoachStatus.DataNotChanged;
+            coach.UpdatedAt = DateTime.UtcNow;
+
+            //3.Save
             int affectedRows = await _repo.SaveChangesAsync();
-            return affectedRows>0? enUpdateCoachByIdStatus.Succeeded:
-                enUpdateCoachByIdStatus.DataNotChanged;
+            return affectedRows>0? enUpdateCoachStatus.Succeeded:
+                enUpdateCoachStatus.InternalServerError;
         }
 
         public async Task<List<CoachLookUpResponse>> GetLookUpCoachesAsync()

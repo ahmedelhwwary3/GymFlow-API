@@ -12,5 +12,6 @@ namespace RepositoryTier.Member.Repositories
         Task<GetAssignedMembersForCoachResponse>
             GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request);
         Task<GetMembersResopnse> GetMembersAsync(GetMembersRequest request);
+        Task<Boolean> HasActiveSubscriptionAsync(int Id);
     }
 }

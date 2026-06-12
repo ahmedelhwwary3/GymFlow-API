@@ -103,5 +103,11 @@ namespace RepositoryTier.Member.Repositories
                 Coaches = coaches
             };
         }
+
+        public async Task<bool>HasActiveSubscriptionAsync(int Id)
+        {
+            return await _context.Subscriptions
+                .AnyAsync(s => s.MemberId == Id && s.EndDate < DateOnly.FromDateTime(DateTime.UtcNow));
+        }
     }
 }
