@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.Member.DTOs;
@@ -56,6 +57,22 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{Id}", Name = "GetMemeberById")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<GetMembersResopnse>>
+            GetMembers(int Id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            //var response = await _memberService
+            //    .GetMembersAsync(request); 
+
+            return Ok();
+        }
+
         [HttpPost(Name = "AddMember")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,9 +94,9 @@ namespace GymManagementAPI.Controllers
 
                 enAddMemberStatus.CoachNotExists => NotFound("Coach not found"),
 
-                enAddMemberStatus.InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
-
-                _ => CreatedAtRoute("AddMember", result.NewId) // remember to change the route "GetMemberById"
+                enAddMemberStatus.Succeeded => CreatedAtRoute("GetMemeberById", result.NewId),
+               
+                _ => StatusCode(StatusCodes.Status500InternalServerError) 
             };
         }
 
@@ -105,18 +122,18 @@ namespace GymManagementAPI.Controllers
                 enUpdateMemberStatus.DataNotChanged => BadRequest("Data not changed"),
 
                 enUpdateMemberStatus.CoachNotExists => NotFound("Coach not found"),
-                 
+
                 enUpdateMemberStatus.MemberNotFound => NotFound("Member not found"),
 
-                enUpdateMemberStatus.InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+                enUpdateMemberStatus.Succeeded => NoContent(),
 
-                _ => NoContent()
+                _ => StatusCode(StatusCodes.Status500InternalServerError),  
             };
         }
 
         [HttpPut("me", Name = "UpdateMemberProfile")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateMemberProfile([FromBody] UpdateMemberProfileRequest request)
@@ -129,8 +146,22 @@ namespace GymManagementAPI.Controllers
                 return NotFound("Token is no longer valid");
 
             int Id = Convert.ToInt32(userId); 
-            var status = await _memberService.UpdateProfileAsync(Id,request);
-            return null;
+            enUpdateMemberProfileStatus status = await _memberService
+                .UpdateProfileAsync(Id,request);
+            return status switch
+            {
+                enUpdateMemberProfileStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                enUpdateMemberProfileStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+
+                enUpdateMemberProfileStatus.DataNotChanged => BadRequest("Data not changed"),
+
+                enUpdateMemberProfileStatus.MemberNotFound => NotFound("Member not found"),
+                 
+                enUpdateMemberProfileStatus.Succeeded => NoContent(),
+
+                _=> StatusCode(StatusCodes.Status500InternalServerError),
+            };
         }
     }
 }

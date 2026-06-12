@@ -50,9 +50,9 @@ namespace GymManagementAPI.Controllers
 
                 enAddCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
 
-                enAddCoachStatus.InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+                enAddCoachStatus.Succeeded => CreatedAtRoute("GetCoachById", result.Resopnse),
 
-                _ => CreatedAtRoute("GetCoachById", result.Resopnse)
+                _=>StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
          
@@ -92,7 +92,9 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateCoachStatus.DataNotChanged => BadRequest("Date not changed"),
 
-                _ => NoContent()
+                enUpdateCoachStatus.Succeeded=> NoContent(),
+
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 

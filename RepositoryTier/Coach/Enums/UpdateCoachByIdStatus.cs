@@ -12,7 +12,6 @@ namespace RepositoryTier.Coach.Enums
         Succeeded=2,
         NotUniquePhone=3,
         NotUniqueEmail=4,
-        DataNotChanged=5,
-        InternalServerError=6
+        DataNotChanged=5 
     }
 }

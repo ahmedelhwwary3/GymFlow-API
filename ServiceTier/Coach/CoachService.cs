@@ -60,19 +60,14 @@ namespace ServiceTier.Coach
             await _repo.AddAsync(newCoach);
             int affectedRows= await _repo.SaveChangesAsync();
 
-            if (affectedRows > 0)
+            var response = new AddCoachResponse()
             {
-                var response = new AddCoachResponse()
-                {
-                    HireDate = newCoach.HireDate,
-                    Salary = newCoach.Salary,
-                    NewId = newCoach.Id,
-                    Specialization = newCoach.Specialization
-                };
-                return new AddCoachResult(enAddCoachStatus.Succeeded,response);
-            }
-
-            return new AddCoachResult(enAddCoachStatus.InternalServerError);
+                HireDate = newCoach.HireDate,
+                Salary = newCoach.Salary,
+                NewId = newCoach.Id,
+                Specialization = newCoach.Specialization
+            };
+            return new AddCoachResult(enAddCoachStatus.Succeeded, response);
         }
 
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
@@ -117,8 +112,7 @@ namespace ServiceTier.Coach
 
             //3.Save
             int affectedRows = await _repo.SaveChangesAsync();
-            return affectedRows>0? enUpdateCoachStatus.Succeeded:
-                enUpdateCoachStatus.InternalServerError;
+            return enUpdateCoachStatus.Succeeded;
         }
 
         public async Task<List<CoachLookUpResponse>> GetLookUpCoachesAsync()

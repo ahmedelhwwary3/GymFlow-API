@@ -10,7 +10,6 @@ namespace RepositoryTier.Coach.Enums
     {
         NotUniqueEmail=1,
         NotUniquePhone=2,
-        Succeeded=3,
-        InternalServerError=4
+        Succeeded=3 
     }
 }

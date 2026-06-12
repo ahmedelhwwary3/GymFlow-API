@@ -149,10 +149,38 @@ namespace ServiceTier.Member
                 : enUpdateMemberStatus.InternalServerError;
         }
 
-        public Task<enUpdateMemberProfileStatus>
+        public async Task<enUpdateMemberProfileStatus>
             UpdateProfileAsync(int Id, UpdateMemberProfileRequest request)
         {
-            throw new NotImplementedException();
+            //1. Unique Email & Phone
+            bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email, Id);
+            bool isUniquePhone = await _userService.IsUniquePhoneAsync(request.Phone, Id);
+
+            if (!isUniqueEmail)
+                return enUpdateMemberProfileStatus.NotUniqueEmail;
+
+            if (!isUniquePhone)
+                return enUpdateMemberProfileStatus.NotUniquePhone;  
+
+            //2.Load then Update strategy for efCore Tracking
+            var member = await _repo.GetByIdAsync(Id);
+            if (member == null)
+                return enUpdateMemberProfileStatus.MemberNotFound;
+
+            member.FitnessGoal = request.FitnessGoal; 
+            member.Phone = request.Phone;
+            member.Email = request.Email; 
+            member.Height = request.Height; 
+
+            EntityState state = _repo.GetEntityState(member);
+            if (state == EntityState.Unchanged)
+                return enUpdateMemberProfileStatus.DataNotChanged;
+            member.UpdatedAt = DateTime.UtcNow;
+
+            //5.Save
+            int affectedRow = await _coachRepo.SaveChangesAsync();
+            return affectedRow > 0 ? enUpdateMemberProfileStatus.Succeeded
+                : enUpdateMemberProfileStatus.InternalServerError;
         }
     }
 }

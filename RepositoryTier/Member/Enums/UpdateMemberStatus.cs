@@ -19,6 +19,11 @@ namespace RepositoryTier.Member.Enums
     }
     public enum enUpdateMemberProfileStatus
     {
-
+        NotUniqueEmail = 1,
+        NotUniquePhone = 2, 
+        MemberNotFound = 3,
+        DataNotChanged = 4,
+        InternalServerError = 5,
+        Succeeded = 6
     }
 }
