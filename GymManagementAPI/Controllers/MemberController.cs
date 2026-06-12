@@ -57,20 +57,40 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet(Name = "GetMemeberProfile")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)] 
+        public async Task<ActionResult<GetMemberByIdResopnse>>
+            GetMemeberProfile()
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized("Token in no longer valid");
+            int Id = Convert.ToInt32(userId);
+              
+            var response = await _memberService.GetProfileAsync(Id);
+            if (response == null)
+                return NotFound();
+
+            return Ok(response);
+        }
+
         [HttpGet("{Id}", Name = "GetMemeberById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<GetMembersResopnse>>
-            GetMembers(int Id)
+        public async Task<ActionResult<GetMemberByIdResopnse>>
+            GetMemeberById(int Id)
         {
-            if (!ModelState.IsValid)
+
+            if (Id < 1)
                 return BadRequest();
 
-            //var response = await _memberService
-            //    .GetMembersAsync(request); 
+            var response = await _memberService.GetMemberByIdAsync(Id);
+            if (response == null)
+                return NotFound();
 
-            return Ok();
+            return Ok(response);
         }
 
         [HttpPost(Name = "AddMember")]
@@ -78,7 +98,7 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddMember([FromBody] AddMemberRequest request)
+        public async Task<ActionResult<int>> AddMember([FromBody] AddMemberRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -143,7 +163,7 @@ namespace GymManagementAPI.Controllers
 
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
-                return NotFound("Token is no longer valid");
+                return Unauthorized("Token is no longer valid");
 
             int Id = Convert.ToInt32(userId); 
             enUpdateMemberProfileStatus status = await _memberService

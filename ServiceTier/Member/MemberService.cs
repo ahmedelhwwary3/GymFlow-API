@@ -182,5 +182,15 @@ namespace ServiceTier.Member
             return affectedRow > 0 ? enUpdateMemberProfileStatus.Succeeded
                 : enUpdateMemberProfileStatus.InternalServerError;
         }
+
+        public async Task<GetMemberProfileResopnse?> GetProfileAsync(int Id)
+        {
+            return await _repo.GetProfileAsync(Id);
+        }
+
+        public async Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id)
+        {
+            return await _repo.GetMemberByIdAsync(Id);
+        }
     }
 }

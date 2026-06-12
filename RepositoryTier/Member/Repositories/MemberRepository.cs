@@ -109,5 +109,46 @@ namespace RepositoryTier.Member.Repositories
             return await _context.Subscriptions
                 .AnyAsync(s => s.MemberId == Id && s.EndDate < DateOnly.FromDateTime(DateTime.UtcNow));
         }
+
+        public async Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id)
+        {
+            var coaches = await _context.Coaches.Select(c => new CoachLookUpResponse()
+            {
+                FullName = c.FullName,
+                Id = c.Id
+            }).ToListAsync();
+
+            return await _context.Members
+            .Select(m => new GetMemberByIdResopnse()
+            {
+                Id = m.Id,
+                Address= m.Address,
+                CoachId=m.CoachId, 
+                DateOfBirth=m.DateOfBirth,
+                Email=m.Email,
+                FitnessGoal=m.FitnessGoal,
+                FullName=m.FullName,
+                Gender=m.Gender,
+                Height=m.Height,
+                Phone=m.Phone, 
+                Coaches=coaches
+            }).FirstOrDefaultAsync(m => m.Id == Id);
+        }
+
+        public async Task<GetMemberProfileResopnse?> GetProfileAsync(int Id)
+        {
+            return await _context.Members
+            .Where(m => m.Id == Id)
+            .Select(m => new GetMemberProfileResopnse()
+            {
+                Id=m.Id,
+                Address = m.Address,
+                Email = m.Email,
+                FitnessGoal = m.FitnessGoal,
+                Height = m.Height,
+                Phone = m.Phone,
+                CoachName = m.Coach.FullName
+            }).FirstOrDefaultAsync();
+        }
     }
 }
