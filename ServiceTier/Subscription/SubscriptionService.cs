@@ -82,8 +82,9 @@ namespace ServiceTier.Subscription
                 SubscriptionPlan=request.SubscriptionPlan,
                 StartDate=request.StartDate
             }; 
-            await _repo.AddAsync(newSubscription);
-            int affectedRows= await _repo.SaveChangesAsync();
+            await _repo.AddAsync(newSubscription); 
+            int affectedRows = await _repo.SaveChangesAsync();
+
             return new AddSubscriptionResult(enAddSubscriptionStatus.Succeeded,newSubscription.Id);
         }
     }

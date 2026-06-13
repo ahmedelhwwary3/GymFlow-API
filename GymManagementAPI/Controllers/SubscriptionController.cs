@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Subscription.DTOs;
-using ServiceTier.Subscription;
 using RepositoryTier.Subscription.Enums;
+using RepositoryTier.Subscription.Results;
+using ServiceTier.Subscription;
 
 namespace GymManagementAPI.Controllers
 { 
@@ -35,12 +38,12 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet(Name = "AddSubscription")]
+        [HttpPost(Name = "AddSubscription")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<GetSubscriptionsResponse>>
+        public async Task<ActionResult<AddSubscriptionResult>>
             AddSubscription([FromBody] AddSubscriptionRequest request)
         {
             if (!ModelState.IsValid)
@@ -51,15 +54,32 @@ namespace GymManagementAPI.Controllers
             return response.Status switch
             {
                 enAddSubscriptionStatus.MemberNotFound => NotFound("Member not found"),
+
                 enAddSubscriptionStatus.CoachNotFound => NotFound("Coach not found"),
+
                 enAddSubscriptionStatus.MemberNotAttachedToCoach => BadRequest("Member not attached to coach"),
+
                 enAddSubscriptionStatus.HasActiveOrForzenSubscription => BadRequest("Member has an active Or forzen subscription"),
+                
                 enAddSubscriptionStatus.CoachInctive => BadRequest("Coach is not active"),
-                enAddSubscriptionStatus.MemberInactive => BadRequest("Member is not active"),  
-                _ => CreatedAtRoute("GetSubscriptionById", response.Id)
+
+                enAddSubscriptionStatus.MemberInactive => BadRequest("Member is not active"),
+
+                enAddSubscriptionStatus.Succeeded=>CreatedAtRoute("GetSubscriptionById", response.Id),
+
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
-
+        [HttpGet("{Id}", Name = "GetSubscriptionById")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<GetCoachByIdResponse>> GetSubscriptionById(int Id)
+        {
+            if (Id < 1)
+                return BadRequest();
+            return null;
+        }
     }
 }
