@@ -8,9 +8,9 @@ namespace RepositoryTier.Subscription.Enums
 {
     public enum enSubscriptionPlan
     {
-        Beginner = 1,
-        WeightLoss = 2,
-        MuscleGain = 3,
-        Strength = 4
+        Monthly = 1,
+        Quarterly = 2,
+        SemiAnnual = 3,
+        Annual = 4
     }
 }

@@ -1,19 +1,26 @@
 ﻿using RepositoryTier.Subscription.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RepositoryTier.CustomAttributes;
 
 namespace RepositoryTier.Subscription.DTOs
 {
     public class AddSubscriptionRequest
     {
-        public int MemberId { get; set; } 
-        public int CoachId { get; set; } 
-        public enSubscriptionPlan SubscriptionPlan { get; set; } 
-        public decimal Price { get; set; } 
-        public DateOnly StartDate { get; set; } 
-        public DateOnly EndDate { get; set; }     
+        [Range(1,int.MaxValue)]
+        public int MemberId { get; set; }
+
+        [EnumDataType(typeof(enSubscriptionPlan))]
+        public enSubscriptionPlan SubscriptionPlan { get; set; }
+
+        [Range(1,int.MaxValue)]
+        public decimal Price { get; set; }
+
+        [NotPastDateOnly]
+        public DateOnly StartDate { get; set; }    
     }
 }

@@ -21,4 +21,10 @@ public partial class WorkoutPlan
     public virtual Member Member { get; set; } = null!;
 
     public virtual ICollection<WorkoutPlanExercise> WorkoutPlanExercises { get; set; } = new List<WorkoutPlanExercise>();
+
+    public WorkoutPlan()
+    {
+        CreatedAt = DateTime.UtcNow;
+        IsActive = true;
+    }
 }

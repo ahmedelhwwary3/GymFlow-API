@@ -1,4 +1,6 @@
-﻿using RepositoryTier.Subscription.DTOs;
+﻿using RepositoryTier.Coach.Results;
+using RepositoryTier.Subscription.DTOs;
+using RepositoryTier.Subscription.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +12,6 @@ namespace ServiceTier.Subscription
     public interface ISubscriptionService:IService<RepositoryTier.Entities.Subscription>
     {
         Task<GetSubscriptionsResponse> GetSubscriptionsAsync(GetSubscriptionsRequest request);
+        Task<AddSubscriptionResult> AddAsync(AddSubscriptionRequest request);
     }
 }

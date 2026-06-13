@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Subscription.DTOs;
 using ServiceTier.Subscription;
+using RepositoryTier.Subscription.Enums;
 
 namespace GymManagementAPI.Controllers
 { 
@@ -45,13 +46,18 @@ namespace GymManagementAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var response = await _subscriptionService
-                .GetSubscriptionsAsync(null);
+            var response = await _subscriptionService.AddAsync(request);
 
-            if (response == null || response.Count == 0)
-                return NotFound("Subscriptions not found");
-
-            return Ok(response);
+            return response.Status switch
+            {
+                enAddSubscriptionStatus.MemberNotFound => NotFound("Member not found"),
+                enAddSubscriptionStatus.CoachNotFound => NotFound("Coach not found"),
+                enAddSubscriptionStatus.MemberNotAttachedToCoach => BadRequest("Member not attached to coach"),
+                enAddSubscriptionStatus.HasActiveOrForzenSubscription => BadRequest("Member has an active Or forzen subscription"),
+                enAddSubscriptionStatus.CoachInctive => BadRequest("Coach is not active"),
+                enAddSubscriptionStatus.MemberInactive => BadRequest("Member is not active"),  
+                _ => CreatedAtRoute("GetSubscriptionById", response.Id)
+            };
         }
 
 

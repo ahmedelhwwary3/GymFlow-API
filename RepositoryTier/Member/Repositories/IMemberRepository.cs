@@ -15,5 +15,6 @@ namespace RepositoryTier.Member.Repositories
         Task<Boolean> HasActiveSubscriptionAsync(int Id);
         Task<GetMemberProfileResopnse?> GetProfileAsync(int Id);
         Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id);
+        Task<Boolean> HasActiveOrForzenSubscriptionsAsync(int Id);
     }
 }

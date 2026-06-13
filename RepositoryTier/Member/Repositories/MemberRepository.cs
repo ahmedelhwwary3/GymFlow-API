@@ -150,5 +150,15 @@ namespace RepositoryTier.Member.Repositories
                 CoachName = m.Coach.FullName
             }).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> HasActiveOrForzenSubscriptionsAsync(int Id)
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            return await _context.Subscriptions
+                .AnyAsync(s => (s.MemberId == Id) &&
+                ((s.EndDate > today && s.FreezeEndDate == null) || // Active
+                (s.FreezeEndDate > today && s.FreezeEndDate != null))); //Frozen
+        }
     }
 }
