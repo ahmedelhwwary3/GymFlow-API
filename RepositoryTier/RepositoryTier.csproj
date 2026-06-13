@@ -33,7 +33,6 @@
     <Folder Include="WorkoutPlanExercise\Enums\" />
     <Folder Include="WorkoutPlanExercise\Results\" />
     <Folder Include="WorkoutPlan\DTOs\" />
-    <Folder Include="WorkoutPlan\Enums\" />
     <Folder Include="WorkoutPlan\Results\" />
   </ItemGroup>
 

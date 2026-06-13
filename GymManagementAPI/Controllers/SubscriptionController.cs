@@ -15,13 +15,19 @@ namespace GymManagementAPI.Controllers
             _subscriptionService = subscriptionService;
         }
 
-        public async Task<ActionResult<GetSubscriptionsResponse>>GetSubscriptions(GetSubscriptionsRequest request)
+        [HttpGet("Subscriptions", Name = "GetSubscriptions")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GetSubscriptionsResponse>>
+            GetSubscriptions([FromQuery] GetSubscriptionsRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var response = await _subscriptionService
                 .GetSubscriptionsAsync(request);
+
             if (response == null || response.Count == 0)
                 return NotFound("Subscriptions not found");
 

@@ -1,5 +1,5 @@
-﻿ 
-
+﻿
+using RepositoryTier.WorkoutPlan.Enums;
 namespace RepositoryTier.Entities;
 
 public partial class WorkoutPlan
@@ -10,7 +10,7 @@ public partial class WorkoutPlan
 
     public int CoachId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public enWorkoutPlanType Type { get; set; }
 
     public bool IsActive { get; set; }
 

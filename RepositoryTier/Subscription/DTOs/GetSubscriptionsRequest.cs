@@ -13,10 +13,10 @@ namespace RepositoryTier.Subscription.DTOs
     {
         [Range(1,int.MaxValue)]
         public int? MemberId { get; set; }
-        public string? Search { get; set; } 
+        public string? Search { get; set; }
 
         [EnumDataType(typeof(enSubscriptonStatus))]
-        public enSubscriptonStatus Status { get; set; }
+        public enSubscriptonStatus? Status { get; set; } = null;
 
 
         [EnumDataType(typeof(enSubscriptonSort))]

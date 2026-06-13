@@ -19,8 +19,7 @@ namespace RepositoryTier.WorkoutPlan.Configurations
 
             builder.HasIndex(e => e.MemberId, "IX_WorkoutPlans_MemberId");
 
-            builder.Property(e => e.IsActive).HasDefaultValue(true);
-            builder.Property(e => e.Name).HasMaxLength(150);
+            builder.Property(e => e.IsActive).HasDefaultValue(true); 
 
             builder.HasOne(d => d.Coach).WithMany(p => p.WorkoutPlans)
                 .HasForeignKey(d => d.CoachId)

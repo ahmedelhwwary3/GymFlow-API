@@ -4,15 +4,15 @@ CREATE TABLE WorkoutPlans
 
     MemberId INT NOT NULL,
 
-    CoachId INT NOT NULL,
-
-    Name NVARCHAR(150) NOT NULL,
+    CoachId INT NOT NULL, 
 
     IsActive BIT NOT NULL
         CONSTRAINT DF_WorkoutPlans_IsActive DEFAULT(1),
 
     CreatedAt DATETIME2 NOT NULL, 
-    
+
+    Type int NOT NULL, 
+
     CONSTRAINT FK_WorkoutPlans_Members
         FOREIGN KEY(MemberId)
         REFERENCES Members(Id),
