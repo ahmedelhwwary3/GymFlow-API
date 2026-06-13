@@ -7,6 +7,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using RepositoryTier.API_Configurations;
 using Microsoft.EntityFrameworkCore;
+using RepositoryTier.Coach.DTOs;
 
 namespace RepositoryTier.Subscription.Repositories
 {
@@ -75,11 +76,17 @@ namespace RepositoryTier.Subscription.Repositories
                  .Take(pageSize).ToListAsync();
 
             int totalCount = await _context.Subscriptions.CountAsync();
+            var coaches = await _context.Coaches.Select(c => new CoachLookUpResponse()
+            {
+                FullName = c.FullName,
+                Id = c.Id
+            }).ToListAsync();
 
             return new GetSubscriptionsResponse()
             {
                 Count = totalCount,
-                Subscriptions = subscriptions
+                Subscriptions = subscriptions,
+                Coaches= coaches
             };
         }
     }

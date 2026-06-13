@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.Coach.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace RepositoryTier.Subscription.DTOs
     public class GetSubscriptionsResponse
     {
         public List<SubscriptionResponse> Subscriptions { get; set; }
+        public List<CoachLookUpResponse> Coaches { get; set; }
         public int Count { get; set; }
     }
 }
