@@ -77,7 +77,7 @@ namespace ServiceTier.Coach
 
         public async Task<GetCoachByIdResponse?> GetByIdAsync(int Id)
         {
-            return await _repo.GetCoachByIdAsync(Id); 
+            return await _repo.GetByIdAsync(Id); 
         }
 
         public async Task<enUpdateCoachStatus> UpdateAsync(int Id,UpdateCoachByIdRequest request)

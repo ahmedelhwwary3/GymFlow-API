@@ -73,11 +73,14 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<GetCoachByIdResponse>> GetSubscriptionById(int Id)
+        public async Task<ActionResult<GetSubscriptionByIdResponse>> 
+            GetSubscriptionById(int Id)
         {
             if (Id < 1)
                 return BadRequest();
-            return null;
+
+            var response = await _subscriptionService.GetByIdAsync(Id);
+            return response == null ? NotFound("Subscription not found") : Ok(response);
         }
 
         [HttpPatch("{Id}/FreezeSubscription", Name = "FreezeSubscriptionById")]

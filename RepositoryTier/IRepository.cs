@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 namespace RepositoryTier
 {
     public interface IRepository<T> where T : class
-    { 
-        Task<T?> GetByIdAsync(int Id,params Expression<Func<T, object>>[]includes);
+    {  
         Task<T?> FindAsync(int Id);
         Task DeleteAsync(int Id);
         Task AddAsync(T entity);

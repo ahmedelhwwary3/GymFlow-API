@@ -33,21 +33,7 @@ namespace RepositoryTier
         {
             return await _context.FindAsync<T>(Id);
         }
-
-        public async Task<T?> GetByIdAsync
-            (int Id, params Expression<Func<T, object>>[] includes)
-        {
-            var query = _context.Set<T>()
-                .Where(e => EF.Property<int>(e, "Id") == Id);
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return await query.FirstOrDefaultAsync();
-        }
-
+          
         public async Task<List<T>> GetAllAsync()
         {
             var query = _context.Set<T>(); 

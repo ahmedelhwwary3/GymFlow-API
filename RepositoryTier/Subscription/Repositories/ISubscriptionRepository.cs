@@ -10,5 +10,6 @@ namespace RepositoryTier.Subscription.Repositories
     public interface ISubscriptionRepository : IRepository<Entities.Subscription>
     {
         Task<GetSubscriptionsResponse> GetSubscriptionsAsync(GetSubscriptionsRequest request);
+        Task<GetSubscriptionByIdResponse?> GetByIdAsync(int Id);
     }
 }

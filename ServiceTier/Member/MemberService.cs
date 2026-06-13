@@ -124,7 +124,7 @@ namespace ServiceTier.Member
                 request.IsActive = true;
 
             //4.Load then Update strategy for efCore Tracking
-            var member = await _repo.GetByIdAsync(Id);
+            var member = await _repo.FindAsync(Id);
             if(member==null)
                 return enUpdateMemberStatus.MemberNotFound;
 
@@ -163,7 +163,7 @@ namespace ServiceTier.Member
                 return enUpdateMemberProfileStatus.NotUniquePhone;  
 
             //2.Load then Update strategy for efCore Tracking
-            var member = await _repo.GetByIdAsync(Id);
+            var member = await _repo.FindAsync(Id);
             if (member == null)
                 return enUpdateMemberProfileStatus.MemberNotFound;
 

@@ -75,7 +75,7 @@ namespace RepositoryTier.Coach.Repositories
             
         }
 
-        public async Task<GetCoachByIdResponse?> GetCoachByIdAsync(int Id)
+        public async Task<GetCoachByIdResponse?> GetByIdAsync(int Id)
         {
             return await _context.Coaches
                 .AsNoTracking()

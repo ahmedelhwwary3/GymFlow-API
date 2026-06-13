@@ -91,5 +91,27 @@ namespace RepositoryTier.Subscription.Repositories
                 Coaches= coaches
             };
         }
+
+        public async Task<GetSubscriptionByIdResponse?> GetByIdAsync(int Id)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            return await _context.Subscriptions.Select(s => new GetSubscriptionByIdResponse()
+            {
+                CoachId = s.CoachId,
+                CoachName = s.Coach.FullName,
+                EndDate = s.EndDate,
+                Id = s.Id,
+                StartDate = s.StartDate,
+                MemberId = s.MemberId,
+                MemberName = s.Member.FullName,
+                MemberPhone=s.Member.Phone,
+                SubscriptionPrice = s.Price,
+                Plan = s.SubscriptionPlan,
+                TotalPaid =s.Payments.Sum(p=>p.Amount),
+                Status = (s.EndDate <= today && (s.FreezeEndDate == null || s.FreezeEndDate < today)) ? enSubscriptonStatus.Active :
+                s.FreezeEndDate.HasValue && s.FreezeEndDate > today ? enSubscriptonStatus.Frozen : enSubscriptonStatus.Expired
+            }).FirstOrDefaultAsync(s=>s.Id==Id);
+        }
     }
 }

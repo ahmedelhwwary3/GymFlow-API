@@ -15,5 +15,6 @@ namespace ServiceTier.Subscription
         Task<GetSubscriptionsResponse> GetSubscriptionsAsync(GetSubscriptionsRequest request);
         Task<AddSubscriptionResult> AddAsync(AddSubscriptionRequest request);
         Task<enFreezeSubscriptionStatus> FreezeSubscriptionAsync(int Id, FreezeSubscriptionByIdRequest request);
+        Task<GetSubscriptionByIdResponse?> GetByIdAsync(int Id);
     }
 }

@@ -111,5 +111,10 @@ namespace ServiceTier.Subscription
             int affectedRows = await _repo.SaveChangesAsync();
             return enFreezeSubscriptionStatus.Succeeded;
         }
+
+        public async Task<GetSubscriptionByIdResponse?> GetByIdAsync(int Id)
+        {
+            return await _repo.GetByIdAsync(Id); 
+        }
     }
 }

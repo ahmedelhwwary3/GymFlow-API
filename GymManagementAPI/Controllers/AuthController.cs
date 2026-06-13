@@ -58,7 +58,7 @@ namespace GymManagementAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            RefreshResult result = await _userService.RefreshAsync(request);
+            var result = await _userService.RefreshAsync(request);
 
             return result.RefreshStatus == enRefreshStatus.Succeeded ?
                 Ok(result.TokenResponse) : Unauthorized("Refresh token is no longer valid");
@@ -73,9 +73,9 @@ namespace GymManagementAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var response = await _userService.LogoutAsync(request);
+            bool succeeded = await _userService.LogoutAsync(request);
             // To confuse attackers, we return 200 OK even if the logout fails (e.g., invalid token)
-            if (response == false)
+            if (!succeeded)
                 return Ok();
 
             return Ok("Logged out successfully");// Frindly message for successful logout
