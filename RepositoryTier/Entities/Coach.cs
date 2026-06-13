@@ -15,6 +15,8 @@ public partial class Coach:User
 
     public virtual ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
 
+    public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+
     public Coach()
     {
         base.Role = enUserRole.Coach;

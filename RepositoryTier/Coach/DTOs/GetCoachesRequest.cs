@@ -18,8 +18,10 @@ namespace RepositoryTier.Coach.DTOs
         [EnumDataType(typeof(enCoachSpecialization))]
         public enCoachSpecialization? Specialization { get; set; }
 
-        public int? Page { get; set; } 
+        [Range(1, int.MaxValue)]
+        public int? Page { get; set; }
 
+        [Range(1, int.MaxValue)]
         public int? PageSize { get; set; }
 
 

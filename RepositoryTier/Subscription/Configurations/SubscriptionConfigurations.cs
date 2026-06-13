@@ -32,6 +32,11 @@ namespace RepositoryTier.Subscription.Configurations
                 .HasForeignKey(d => d.MemberId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Subscriptions_Members");
+
+            builder.HasOne(d => d.Coach).WithMany(p => p.Subscriptions)
+                .HasForeignKey(d => d.CoachId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_Subscriptions_Coaches");
         }
     }
 }

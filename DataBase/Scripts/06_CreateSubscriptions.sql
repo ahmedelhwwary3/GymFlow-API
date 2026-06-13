@@ -4,6 +4,8 @@ CREATE TABLE Subscriptions
 
     MemberId INT NOT NULL,
 
+    CoachId INT NOT NULL,
+
     SubscriptionPlan INT NOT NULL,
 
     Price DECIMAL(10,2) NOT NULL,
@@ -26,6 +28,10 @@ CREATE TABLE Subscriptions
     CONSTRAINT FK_Subscriptions_Members
         FOREIGN KEY(MemberId)
         REFERENCES Members(Id),
+
+    CONSTRAINT FK_Subscriptions_Coaches
+    FOREIGN KEY(CoachId)
+    REFERENCES Coaches(Id),
 
     CONSTRAINT CK_Subscriptions_SubscriptionPlan
         CHECK (SubscriptionPlan IN (1,2,3,4)),

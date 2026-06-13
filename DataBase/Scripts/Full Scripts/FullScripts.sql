@@ -137,6 +137,8 @@ CREATE TABLE Subscriptions
 
     MemberId INT NOT NULL,
 
+    CoachId INT NOT NULL,
+
     SubscriptionPlan INT NOT NULL,
 
     Price DECIMAL(10,2) NOT NULL,
@@ -151,8 +153,6 @@ CREATE TABLE Subscriptions
 
     CreatedAt DATETIME2 NOT NULL,
 
-    CreatedByUserId INT NOT NULL,
-
     IsDeleted BIT NOT NULL
         CONSTRAINT DF_Subscriptions_IsDeleted DEFAULT(0),
 
@@ -162,9 +162,9 @@ CREATE TABLE Subscriptions
         FOREIGN KEY(MemberId)
         REFERENCES Members(Id),
 
-    CONSTRAINT FK_Subscriptions_Users
-        FOREIGN KEY(CreatedByUserId)
-        REFERENCES Users(Id), 
+    CONSTRAINT FK_Subscriptions_Coaches
+    FOREIGN KEY(CoachId)
+    REFERENCES Coaches(Id),
 
     CONSTRAINT CK_Subscriptions_SubscriptionPlan
         CHECK (SubscriptionPlan IN (1,2,3,4)),
@@ -175,6 +175,7 @@ CREATE TABLE Subscriptions
     CONSTRAINT CK_Subscriptions_Dates
         CHECK (EndDate > StartDate)
 );
+
 
 
 

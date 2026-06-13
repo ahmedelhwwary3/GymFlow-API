@@ -1,4 +1,5 @@
-﻿ 
+﻿
+using RepositoryTier.Subscription.DTOs;
 using RepositoryTier.Subscription.Repositories;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,10 @@ namespace ServiceTier.Subscription
             _repo=repo;
         }
 
+        public async Task<GetSubscriptionsResponse> 
+            GetSubscriptionsAsync(GetSubscriptionsRequest request)
+        {
+            return await _repo.GetSubscriptionsAsync(request);
+        }
     }
 }

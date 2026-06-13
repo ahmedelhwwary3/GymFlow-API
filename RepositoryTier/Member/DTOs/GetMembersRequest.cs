@@ -14,6 +14,8 @@ namespace RepositoryTier.Member.DTOs
     {
         public string? Search {  get; set; }
         public bool? IsActive { get; set; }
+
+        [Range(1, int.MaxValue)]
         public int? CoachId { get; set; }
 
         [EnumDataType(typeof(enGender))]
@@ -22,7 +24,10 @@ namespace RepositoryTier.Member.DTOs
         [EnumDataType(typeof(enMemberSort))]
         public enMemberSort? Sort { get; set; }
 
+        [Range(1, int.MaxValue)]
         public int? Page { get; set; }
+
+        [Range(1, int.MaxValue)]
         public int? PageSize { get; set; }
     }
 }
