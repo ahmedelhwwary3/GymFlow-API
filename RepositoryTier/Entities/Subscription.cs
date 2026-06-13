@@ -24,15 +24,11 @@ public partial class Subscription
 
     public DateOnly? FreezeEndDate { get; set; } = null;
 
-    public DateTime CreatedAt { get; set; } 
-
-    public int CreatedByUserId { get; set; }
+    public DateTime CreatedAt { get; set; }  
 
     public bool IsDeleted { get; set; } = false;
 
-    public DateTime? DeletedAt { get; set; } = null;
-
-    public virtual User CreatedByUser { get; set; } = null!;
+    public DateTime? DeletedAt { get; set; } = null; 
 
     public virtual Member Member { get; set; } = null!;
 

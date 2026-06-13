@@ -1,5 +1,5 @@
 ﻿
-using RepositoryTier.WorkoutPlan.Enums;
+ 
 namespace RepositoryTier.Entities;
 
 public partial class WorkoutPlan

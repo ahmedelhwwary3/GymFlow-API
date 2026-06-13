@@ -46,7 +46,7 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
 
             var response = await _subscriptionService
-                .GetSubscriptionsAsync(request);
+                .GetSubscriptionsAsync(null);
 
             if (response == null || response.Count == 0)
                 return NotFound("Subscriptions not found");

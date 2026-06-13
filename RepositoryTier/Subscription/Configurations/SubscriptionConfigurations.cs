@@ -13,20 +13,13 @@ namespace RepositoryTier.Subscription.Configurations
     {
         public void Configure(EntityTypeBuilder<Entities.Subscription> builder)
         {
-            builder.HasKey(e => e.Id).HasName("PK__Subscrip__3214EC07EB458BD3");
-
-            builder.HasIndex(e => e.CreatedByUserId, "IX_Subscriptions_CreatedByUserId");
+            builder.HasKey(e => e.Id).HasName("PK__Subscrip__3214EC07EB458BD3"); 
 
             builder.HasIndex(e => e.MemberId, "IX_Subscriptions_MemberId");
 
             builder.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
-            builder.HasQueryFilter(e => !e.IsDeleted);
-
-            builder.HasOne(d => d.CreatedByUser).WithMany()
-                .HasForeignKey(d => d.CreatedByUserId)
-                .OnDelete(DeleteBehavior.NoAction)
-                .HasConstraintName("FK_Subscriptions_Users");
+            builder.HasQueryFilter(e => !e.IsDeleted); 
 
             builder.HasOne(d => d.Member).WithMany(p => p.Subscriptions)
                 .HasForeignKey(d => d.MemberId)
