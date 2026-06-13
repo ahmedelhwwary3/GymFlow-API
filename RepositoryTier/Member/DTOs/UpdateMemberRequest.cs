@@ -28,7 +28,7 @@ namespace RepositoryTier.Member.DTOs
         [EnumDataType(typeof(enGender))]
         public enGender Gender { get; set; }
 
-        [NotFutureDateOnly]
+        [NotFutureDateOnlyAttribute]
         public DateOnly DateOfBirth { get; set; }
 
         [Length(5,100)]

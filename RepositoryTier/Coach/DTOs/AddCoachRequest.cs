@@ -33,7 +33,7 @@ namespace RepositoryTier.Coach.DTOs
         [EnumDataType(typeof(enGender))]
         public enGender Gender { get; set; }
 
-        [AgeRange(21,60)]
+        [AgeRangeFromBirthDate(21,60)]
         public DateOnly DateOfBirth { get; set; }
 
         [Required]

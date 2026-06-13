@@ -33,7 +33,7 @@ namespace RepositoryTier.Member.DTOs
         public enGender Gender { get; set; }
 
         [Required]
-        [NotFutureDateOnly] 
+        [NotFutureDateOnlyAttribute] 
         public DateOnly DateOfBirth { get; set; }
 
         [Required]

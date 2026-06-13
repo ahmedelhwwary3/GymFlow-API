@@ -1,5 +1,6 @@
 ﻿using RepositoryTier.Coach.Results;
 using RepositoryTier.Subscription.DTOs;
+using RepositoryTier.Subscription.Enums;
 using RepositoryTier.Subscription.Results;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,6 @@ namespace ServiceTier.Subscription
     {
         Task<GetSubscriptionsResponse> GetSubscriptionsAsync(GetSubscriptionsRequest request);
         Task<AddSubscriptionResult> AddAsync(AddSubscriptionRequest request);
+        Task<enFreezeSubscriptionStatus> FreezeSubscriptionAsync(int Id, FreezeSubscriptionByIdRequest request);
     }
 }

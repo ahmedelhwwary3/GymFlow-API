@@ -87,5 +87,29 @@ namespace ServiceTier.Subscription
 
             return new AddSubscriptionResult(enAddSubscriptionStatus.Succeeded,newSubscription.Id);
         }
+
+        public async Task<enFreezeSubscriptionStatus> 
+            FreezeSubscriptionAsync(int Id, FreezeSubscriptionByIdRequest request)
+        {
+            //1.Chech exists
+            var subscription = await _repo.FindAsync(Id);
+            if (subscription == null)
+                return enFreezeSubscriptionStatus.SubscriptionNotFound;
+
+            //2.Chech status (active and not frozen)
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            bool isFrozen = subscription.FreezeEndDate.HasValue && subscription.FreezeEndDate > today;
+            bool isExpired = subscription.FreezeEndDate == null && today >= subscription.EndDate;
+            if (isFrozen)
+                return enFreezeSubscriptionStatus.SubscriptionAlreadyFrozen;
+            if (isExpired)
+                return enFreezeSubscriptionStatus.SubscriptionExpired;
+
+            //3.Load Then Update Strategy & save
+            subscription.FreezeStartDate = request.FreezeStartDate;
+            subscription.FreezeEndDate = request.FreezeEndDate;
+            int affectedRows = await _repo.SaveChangesAsync();
+            return enFreezeSubscriptionStatus.Succeeded;
+        }
     }
 }

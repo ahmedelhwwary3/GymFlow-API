@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.CustomAttributes
 {
-    public class AgeRangeAttribute:ValidationAttribute
+    public class AgeRangeFromBirthDateAttribute:ValidationAttribute
     {
         private readonly int _minAge;
         private readonly int _maxAge;
 
-        public AgeRangeAttribute(int minAge, int maxAge)
+        public AgeRangeFromBirthDateAttribute(int minAge, int maxAge)
         {
             _minAge = minAge;
             _maxAge = maxAge;

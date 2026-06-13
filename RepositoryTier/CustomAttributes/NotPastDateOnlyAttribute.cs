@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.CustomAttributes
 {
-    public class NotFutureDateOnly:ValidationAttribute
-    { 
-        protected override ValidationResult? IsValid(object? value, 
+    internal class NotPastDateOnlyAttribute:ValidationAttribute
+    {
+        protected override ValidationResult? IsValid(object? value,
             ValidationContext validationContext)
         {
             if (value is not DateOnly date)
                 return ValidationResult.Success;
 
-            return date > DateOnly.FromDateTime(DateTime.UtcNow)
-                ? new ValidationResult("Date can not be in the future") 
+            return date < DateOnly.FromDateTime(DateTime.UtcNow)
+                ? new ValidationResult("Date can not be in the past")
                 : ValidationResult.Success;
         }
     }

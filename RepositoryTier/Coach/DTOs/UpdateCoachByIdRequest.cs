@@ -25,7 +25,7 @@ namespace RepositoryTier.Coach.DTOs
         [Phone]
         public string Phone { get; set; }
 
-        [NotFutureDateOnly]
+        [NotFutureDateOnlyAttribute]
         public DateOnly HireDate { get; set; }
 
         [EnumDataType(typeof(enCoachSpecialization))]

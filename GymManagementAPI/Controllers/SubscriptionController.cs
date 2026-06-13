@@ -80,15 +80,28 @@ namespace GymManagementAPI.Controllers
             return null;
         }
 
-        [HttpPost("{Id}", Name = "FreezeSubscriptionById")]
+        [HttpPatch("{Id}/FreezeSubscription", Name = "FreezeSubscriptionById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<GetCoachByIdResponse>> FreezeSubscriptionById(int Id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult>
+            FreezeSubscriptionById(int Id,FreezeSubscriptionByIdRequest request)
         {
-            if (Id < 1)
+            if (Id < 1 || !ModelState.IsValid)
                 return BadRequest();
-            return null;
+
+            enFreezeSubscriptionStatus status = await _subscriptionService
+                .FreezeSubscriptionAsync(Id, request);
+
+            return status switch
+            {
+                enFreezeSubscriptionStatus.SubscriptionExpired => BadRequest("Subscription is expired"),
+
+                enFreezeSubscriptionStatus.SubscriptionNotFound => NotFound("Subscription not found"),
+
+                _ => NoContent()
+            }; 
         }
     }
 }

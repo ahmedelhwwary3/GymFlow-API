@@ -20,7 +20,7 @@ namespace RepositoryTier.Subscription.DTOs
         [Range(1,int.MaxValue)]
         public decimal Price { get; set; }
 
-        [NotPastDateOnly]
+        [NotPastDateOnlyAttribute]
         public DateOnly StartDate { get; set; }    
     }
 }
