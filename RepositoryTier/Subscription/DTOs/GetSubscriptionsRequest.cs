@@ -18,7 +18,9 @@ namespace RepositoryTier.Subscription.DTOs
         [EnumDataType(typeof(enSubscriptonStatus))]
         public enSubscriptonStatus? Status { get; set; } = null;
 
-
+        [EnumDataType(typeof(enSubscriptionPlan))]
+        public enSubscriptionPlan? Plan { get; set; } = null;
+         
         [EnumDataType(typeof(enSubscriptonSort))]
         public enSubscriptonSort? Sort { get; set; }
 

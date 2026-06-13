@@ -34,7 +34,25 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet(Name = "AddSubscription")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<GetSubscriptionsResponse>>
+            AddSubscription([FromBody] AddSubscriptionRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
 
+            var response = await _subscriptionService
+                .GetSubscriptionsAsync(request);
+
+            if (response == null || response.Count == 0)
+                return NotFound("Subscriptions not found");
+
+            return Ok(response);
+        }
 
 
     }

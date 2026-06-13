@@ -10,7 +10,7 @@ public partial class WorkoutPlan
 
     public int CoachId { get; set; }
 
-    public enWorkoutPlanType Type { get; set; }
+    public string Name { get; set; }
 
     public bool IsActive { get; set; }
 

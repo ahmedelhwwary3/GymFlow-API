@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.WorkoutPlan.Enums
+namespace RepositoryTier.Subscription.Enums
 {
-    public enum enWorkoutPlanType
+    public enum enSubscriptionPlan
     {
         Beginner = 1,
         WeightLoss = 2,

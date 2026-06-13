@@ -1,4 +1,6 @@
-﻿ 
+﻿
+
+using RepositoryTier.Subscription.Enums;
 
 namespace RepositoryTier.Entities;
 
@@ -10,7 +12,7 @@ public partial class Subscription
 
     public int CoachId { get; set; }
 
-    public int SubscriptionPlan { get; set; }
+    public enSubscriptionPlan SubscriptionPlan { get; set; }
 
     public decimal Price { get; set; }
 

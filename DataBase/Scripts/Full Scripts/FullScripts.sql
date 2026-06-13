@@ -265,7 +265,7 @@ CREATE TABLE WorkoutPlans
 
     CreatedAt DATETIME2 NOT NULL, 
 
-    Type int NOT NULL, 
+    Name NVARCHAR(100) NOT NULL, 
 
     CONSTRAINT FK_WorkoutPlans_Members
         FOREIGN KEY(MemberId)
@@ -275,6 +275,7 @@ CREATE TABLE WorkoutPlans
         FOREIGN KEY(CoachId)
         REFERENCES Coaches(Id)
 );
+
 
 CREATE TABLE WorkoutPlanExercises
 (

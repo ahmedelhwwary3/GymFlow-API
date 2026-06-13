@@ -35,7 +35,8 @@ namespace RepositoryTier.Subscription.Repositories
             var query = _context.Subscriptions
                 .Where(s =>
                 (request.MemberId == null || s.MemberId == request.MemberId) &&
-                (string.IsNullOrEmpty(request.Search) || s.Member.FullName.Contains(request.Search.Trim())));
+                (string.IsNullOrEmpty(request.Search) || s.Member.FullName.Contains(request.Search.Trim())) &&
+                (request.Plan == null || s.SubscriptionPlan == request.Plan));
 
             DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
             if (request.Status != null) // null means All
@@ -61,6 +62,7 @@ namespace RepositoryTier.Subscription.Repositories
 
             var shapedQuery = query.Select(s => new SubscriptionResponse()
             {
+                Plan=s.SubscriptionPlan,
                 CoachName = s.Coach.FullName,
                 EndDate = s.EndDate,
                 Id = s.Id,

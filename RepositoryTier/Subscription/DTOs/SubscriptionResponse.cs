@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace RepositoryTier.Subscription.DTOs
         public DateOnly StartDate { get; set; } 
         public DateOnly EndDate { get; set; }
         public enSubscriptonStatus Status { get; set; }
+        public enSubscriptionPlan Plan { get; set; }
         public decimal Price { get; set; } 
     }
 }
