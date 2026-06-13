@@ -25,7 +25,8 @@ namespace GymManagementAPI.Controllers
         [HttpPost("Login",Name = "Login")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status200OK)] 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<TokenResponse>> Login(LoginRequest request)
         {
             if(!ModelState.IsValid)
@@ -51,6 +52,7 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<TokenResponse>> Refresh(RefreshRequest request)
         {
             if (!ModelState.IsValid)
@@ -65,6 +67,7 @@ namespace GymManagementAPI.Controllers
         [HttpPost("Logout", Name = "Logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Logout(LogoutRequest request)
         {
             if (!ModelState.IsValid)

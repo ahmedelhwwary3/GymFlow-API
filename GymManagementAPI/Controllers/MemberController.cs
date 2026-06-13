@@ -114,9 +114,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddMemberStatus.CoachNotExists => NotFound("Coach not found"),
 
-                enAddMemberStatus.Succeeded => CreatedAtRoute("GetMemeberById", result.NewId),
-               
-                _ => StatusCode(StatusCodes.Status500InternalServerError) 
+                _=> CreatedAtRoute("GetMemeberById", result.NewId) 
             };
         }
 
@@ -145,9 +143,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateMemberStatus.MemberNotFound => NotFound("Member not found"),
 
-                enUpdateMemberStatus.Succeeded => NoContent(),
-
-                _ => StatusCode(StatusCodes.Status500InternalServerError),  
+                _=> NoContent()
             };
         }
 
@@ -178,9 +174,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateMemberProfileStatus.MemberNotFound => NotFound("Member not found"),
                  
-                enUpdateMemberProfileStatus.Succeeded => NoContent(),
-
-                _=> StatusCode(StatusCodes.Status500InternalServerError),
+                _=> NoContent()
             };
         }
     }

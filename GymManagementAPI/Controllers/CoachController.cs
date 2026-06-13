@@ -50,9 +50,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
 
-                enAddCoachStatus.Succeeded => CreatedAtRoute("GetCoachById", result.Resopnse),
-
-                _=>StatusCode(StatusCodes.Status500InternalServerError)
+                _=>CreatedAtRoute("GetCoachById", result.Resopnse) 
             };
         }
          
@@ -73,6 +71,7 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetCoachByIdResponse>>
             UpdateCoach(int Id,UpdateCoachByIdRequest request)
         {
@@ -92,9 +91,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateCoachStatus.DataNotChanged => BadRequest("Date not changed"),
 
-                enUpdateCoachStatus.Succeeded=> NoContent(),
-
-                _ => StatusCode(StatusCodes.Status500InternalServerError)
+                _=> NoContent()
             };
         }
 

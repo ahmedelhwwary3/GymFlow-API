@@ -65,9 +65,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddSubscriptionStatus.MemberInactive => BadRequest("Member is not active"),
 
-                enAddSubscriptionStatus.Succeeded=>CreatedAtRoute("GetSubscriptionById", response.Id),
-
-                _ => StatusCode(StatusCodes.Status500InternalServerError)
+                _=>CreatedAtRoute("GetSubscriptionById", response.Id)
             };
         }
 
@@ -76,6 +74,17 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<GetCoachByIdResponse>> GetSubscriptionById(int Id)
+        {
+            if (Id < 1)
+                return BadRequest();
+            return null;
+        }
+
+        [HttpPost("{Id}", Name = "FreezeSubscriptionById")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<GetCoachByIdResponse>> FreezeSubscriptionById(int Id)
         {
             if (Id < 1)
                 return BadRequest();
