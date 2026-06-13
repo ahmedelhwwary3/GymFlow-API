@@ -98,6 +98,8 @@ namespace GymManagementAPI.Controllers
             {
                 enFreezeSubscriptionStatus.SubscriptionExpired => BadRequest("Subscription is expired"),
 
+                enFreezeSubscriptionStatus.SubscriptionAlreadyFrozen => BadRequest("Subscription is already frozen"),
+
                 enFreezeSubscriptionStatus.SubscriptionNotFound => NotFound("Subscription not found"),
 
                 _ => NoContent()
