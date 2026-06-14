@@ -57,8 +57,8 @@ namespace GymManagementAPI.Controllers
             AddAttendance([FromBody] AddAttendanceRequest request)
         {
              
-            if (!ModelState.IsValid)
-                return BadRequest(); // notfound - 500 - IsInRole (Id)
+            if (request.Id is null && string.IsNullOrEmpty(request.Search?.Trim()))
+                return BadRequest("Identifier is required");  
 
             var response = await _attdService
                 .AddAttendancesAsync(request);
