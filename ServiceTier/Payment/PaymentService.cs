@@ -38,7 +38,7 @@ namespace ServiceTier.Payment
             if (summary.RemainingAmount < request.Amount)
                 return new AddPaymentResponse(enAddPaymentStatus.PaidExceedsRemainingAmount);
 
-            var payment = new RepositoryTier.Entities.Payment()
+            var newPayment = new RepositoryTier.Entities.Payment()
             {
                 Amount=request.Amount,
                 Notes=request.Notes,
@@ -46,9 +46,9 @@ namespace ServiceTier.Payment
                 SubscriptionId=request.SubscribtionId 
             };
 
-            await _repo.AddAsync(payment);
+            await _repo.AddAsync(newPayment);
             int affectedRows = await _repo.SaveChangesAsync();
-            return new AddPaymentResponse(enAddPaymentStatus.Succeeded, payment.Id);
+            return new AddPaymentResponse(enAddPaymentStatus.Succeeded, newPayment.Id);
         }
 
        public async Task<GetPaymentByIdResponse?> GetByIdAsync(int Id)

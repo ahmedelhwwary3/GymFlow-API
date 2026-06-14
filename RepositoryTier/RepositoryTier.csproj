@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exercise\Results\" />
     <Folder Include="Payment\Results\" />
     <Folder Include="WeightRecord\DTOs\" />
     <Folder Include="WeightRecord\Enums\" />

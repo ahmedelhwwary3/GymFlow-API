@@ -37,5 +37,10 @@ namespace RepositoryTier.Exercise.Repositories
                 Exercises= exercises
             };
         }
+
+        public async Task<bool> ExistsByNameAsync(string name)
+        {
+            return await _context.Exercises.AnyAsync(e=>e.Name==name);
+        }
     }
 }
