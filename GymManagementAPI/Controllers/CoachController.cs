@@ -50,7 +50,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
 
-                _=>CreatedAtRoute("GetCoachById", result.Resopnse) 
+                _=>CreatedAtRoute("GetCoachById",new { Id=result.Resopnse.Id}, result.Resopnse) 
             };
         }
          

@@ -65,7 +65,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddSubscriptionStatus.MemberInactive => BadRequest("Member is not active"),
 
-                _=>CreatedAtRoute("GetSubscriptionById", response.Id)
+                _=>CreatedAtRoute("GetSubscriptionById",new { Id=response.Id},null)
             };
         }
 

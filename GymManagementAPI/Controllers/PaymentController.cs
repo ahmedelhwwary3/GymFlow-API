@@ -30,21 +30,27 @@ namespace GymManagementAPI.Controllers
             return response.Status switch
             {
                 enAddPaymentStatus.SubscriptionNotFound => NotFound("Subscription not found"),
+
                 enAddPaymentStatus.SubscriptionFullPaid => BadRequest("Subscription is full paid"),
+
                 enAddPaymentStatus.PaidExceedsRemainingAmount => BadRequest("Paid amount exceeds remaining amount"),
-                _ => Ok(response.Id) 
+
+                _=> CreatedAtRoute("GetPaymentById", new { Id= response.Id },null) 
             };
         }
 
         [HttpGet("{Id}",Name = "GetPaymentById")] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPaymentById(int Id)
+        public async Task<ActionResult<GetPaymentByIdResponse>> GetPaymentById(int Id)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            return null;
+            var response = await _paymentService.GetByIdAsync(Id);
+
+            return response == null ? NotFound("Payment not found") : Ok(response);
         }
     }
 }

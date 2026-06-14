@@ -35,5 +35,20 @@ namespace RepositoryTier.Payment.Repositories
 
             return new SubscriptionPaymentSummaryResponse(true, remainingAmount);
         }
+
+        public async Task<GetPaymentByIdResponse?> GetByIdAsync(int Id)
+        {
+            return await _context.Payments.Select(p => new GetPaymentByIdResponse()
+            {
+                Amount = p.Amount,
+                Id = p.Id,
+                MemberName = p.Subscription.Member.FullName,
+                Notes = p.Notes,
+                PaymentDate = p.PaymentDate,
+                SubscriptionId = p.SubscriptionId,
+                SubscriptionPrice = p.Subscription.Price,
+                TotalPaid = p.Subscription.Payments.Sum(pm => pm.Amount)
+            }).FirstOrDefaultAsync(p => p.Id == Id);
+        }
     }
 }

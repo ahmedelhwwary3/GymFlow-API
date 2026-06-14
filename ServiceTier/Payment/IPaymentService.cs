@@ -10,5 +10,6 @@ namespace ServiceTier.Payment
     public interface IPaymentService:IService<RepositoryTier.Entities.Payment>
     {
         Task<AddPaymentResponse> AddAsync(AddPaymentRequest request);
+        Task<GetPaymentByIdResponse?> GetByIdAsync(int Id);
     }
 }

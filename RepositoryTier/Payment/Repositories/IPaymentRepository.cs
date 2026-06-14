@@ -10,5 +10,6 @@ namespace RepositoryTier.Payment.Repositories
     public interface IPaymentRepository:IRepository<Entities.Payment>
     {
         Task<SubscriptionPaymentSummaryResponse> GetSubscriptionPaymentSummaryAsync(int subscriptionId);
+        Task<GetPaymentByIdResponse?> GetByIdAsync(int Id);
     }
 }

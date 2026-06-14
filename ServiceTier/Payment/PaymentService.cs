@@ -14,16 +14,14 @@ namespace ServiceTier.Payment
 {
     public class PaymentService : Service<RepositoryTier.Entities.Payment>, IPaymentService
     {
-        private readonly IPaymentRepository _repo;
-        private readonly ISubscriptionRepository _subscriptionRepo;
+        private readonly IPaymentRepository _repo; 
         public PaymentService(
             IPaymentRepository repo,
             ISubscriptionRepository subscriptionRepo
             ) 
             : base(repo) 
         { 
-            _repo = repo;
-            _subscriptionRepo= subscriptionRepo;
+            _repo = repo; 
         }
 
         public async Task<AddPaymentResponse> AddAsync(AddPaymentRequest request)
@@ -51,6 +49,11 @@ namespace ServiceTier.Payment
             await _repo.AddAsync(payment);
             int affectedRows = await _repo.SaveChangesAsync();
             return new AddPaymentResponse(enAddPaymentStatus.Succeeded, payment.Id);
+        }
+
+       public async Task<GetPaymentByIdResponse?> GetByIdAsync(int Id)
+        {
+            return await _repo.GetByIdAsync(Id);
         }
     }
 }
