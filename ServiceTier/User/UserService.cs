@@ -100,7 +100,7 @@ namespace ServiceTier.User
             {
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.Role,user.Role.ToString())
+                new Claim(ClaimTypes.Role,$"{(int)user.Role}")
             };
             string key = _configs["GYM_SECRET_KEY"] ??
                 throw new Exception("GYM_SECRET key is not configured");
@@ -154,7 +154,7 @@ namespace ServiceTier.User
             {
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.Role,user.Role.ToString())
+                new Claim(ClaimTypes.Role,$"{(int)user.Role}")
             };
             string key = _configs["GYM_SECRET_KEY"] ??
                 throw new Exception("GYM_SECRET key is not configured");

@@ -1,4 +1,5 @@
-﻿ 
+﻿
+using RepositoryTier.WorkoutPlan.DTOs;
 using RepositoryTier.WorkoutPlan.Repositories;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,12 @@ namespace ServiceTier.WorkoutPlan
         public WorkoutPlanService(IWorkoutPlanRepository repo) : base(repo) 
         {
             _repo = repo;
+        }
+
+        public async Task<GetWorkoutPlansResponse> 
+            GetWorkoutPlansAsync(GetWorkoutPlansRequest request, int? memberId)
+        {
+            return await _repo.GetWorkoutPlansAsync(request,memberId);
         }
     }
 }

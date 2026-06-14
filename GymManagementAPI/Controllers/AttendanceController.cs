@@ -29,18 +29,18 @@ namespace GymManagementAPI.Controllers
         public async Task<ActionResult<IEnumerable<GetAttendancesResponse>>>
             GetAttendances([FromQuery] GetAttendancesRequest request)
         {
-            bool isMember = User.IsInRole(enUserRole.Member.ToString());
+            bool isMember = User.IsInRole(((int)enUserRole.Member).ToString());
             int? memberId=default;
             if(isMember)
             {
                 string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
-                    return Unauthorized();
+                    return Unauthorized("Token is no longer valid");
 
                 memberId = Convert.ToInt32(userId);
             }
             if (!ModelState.IsValid)
-                return BadRequest(); // notfound - 500 - IsInRole (Id)
+                return BadRequest(); 
 
             var response = await _attdService
                 .GetAttendancesAsync(request,memberId);

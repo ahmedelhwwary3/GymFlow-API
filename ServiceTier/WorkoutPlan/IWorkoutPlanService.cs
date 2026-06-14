@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.WorkoutPlan.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,5 +8,6 @@ namespace ServiceTier.WorkoutPlan
 {
     public interface IWorkoutPlanService: IService<RepositoryTier.Entities.WorkoutPlan>
     {
+        Task<GetWorkoutPlansResponse> GetWorkoutPlansAsync(GetWorkoutPlansRequest request,int? memberId);
     }
 }
