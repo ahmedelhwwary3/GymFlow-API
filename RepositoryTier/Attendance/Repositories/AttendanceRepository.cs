@@ -68,14 +68,17 @@ namespace RepositoryTier.Attendance.Repositories
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
             // 6.Projection then Execusion
-            var attendances = await query.Select(a => new AttendanceResponse()
-            {
-                AttendanceDate = a.AttendanceDate,
-                AttendanceId = a.Id,
-                CoachId = a.Member.CoachId.Value,
-                CoachName = a.Member.Coach.FullName,
-                MemberName = a.Member.FullName
-            }).ToListAsync();
+            var attendances = await query
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Select(a => new AttendanceResponse()
+                {
+                    AttendanceDate = a.AttendanceDate,
+                    AttendanceId = a.Id,
+                    CoachId = a.Member.CoachId.Value,
+                    CoachName = a.Member.Coach.FullName,
+                    MemberName = a.Member.FullName
+                }).ToListAsync();
 
             return new GetAttendancesResponse()
             {
