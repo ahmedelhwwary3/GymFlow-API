@@ -11,5 +11,6 @@ namespace RepositoryTier.Exercise.Repositories
     {
         Task<GetExercisesResponse> GetExercisesAsync(GetExercisesRequest request);
         Task<Boolean> ExistsByNameAsync(string name);
+        Task<String?> GetNameAsyncById(int Id);
     }
 }

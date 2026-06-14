@@ -42,5 +42,13 @@ namespace RepositoryTier.Exercise.Repositories
         {
             return await _context.Exercises.AnyAsync(e=>e.Name==name);
         }
+
+        public async Task<string?> GetNameAsyncById(int Id)
+        {
+            return await _context.Exercises
+                .Where(e => e.Id == Id)
+                .Select(e => e.Name)
+                .SingleOrDefaultAsync();
+        }
     }
 }

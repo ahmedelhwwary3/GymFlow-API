@@ -50,5 +50,21 @@ namespace RepositoryTier.User.Repositories
                 .Select(u => u.Id)
                 .SingleOrDefaultAsync();
         }
+
+        public async Task<string?> GetPhoneByIdAsync(int Id)
+        {
+            return await _context.Users
+                .Where(u => u.Id == Id)
+                .Select(u => u.Phone)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<string?> GetEmailByIdAsync(int Id)
+        {
+            return await _context.Users
+                .Where(u => u.Id == Id)
+                .Select(u => u.Email)
+                .SingleOrDefaultAsync();
+        }
     }
 }

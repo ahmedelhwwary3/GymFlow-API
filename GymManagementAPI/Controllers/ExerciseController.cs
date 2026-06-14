@@ -45,7 +45,31 @@ namespace GymManagementAPI.Controllers
             {
                 enAddExerciseStatus.NotUniqueName => BadRequest("Exercise name is not unique"),
 
-                _=>Ok(response.Id)
+                _ => Ok(response.Id)
+            };
+        }
+
+        [HttpPut("{Id}",Name = "UpdateExerciseById")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult>
+           UpdateExerciseById(int Id,UpdateExerciseRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var status = await _exerciseService.UpdateAsync(Id,request);
+            return status switch
+            {
+                enUpdateExerciseStatus.NotUniqueName => BadRequest("Exercise name is not unique"),
+
+                enUpdateExerciseStatus.DataNotChanged => BadRequest("Data not changed"),
+
+                enUpdateExerciseStatus.ExerciseNotFound => NotFound("Exercise not found"),
+
+                _ => NoContent()
             };
         }
     }

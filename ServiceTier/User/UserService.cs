@@ -40,11 +40,11 @@ namespace ServiceTier.User
         {
             if (userId > 0) //Update
             {
-                var user = await _repo.FindAsync(userId);
-                if (user == null)
-                    return false;
+                string? userPhone = await _repo.GetPhoneByIdAsync(userId);
+                if (string.IsNullOrEmpty(phone.Trim()))
+                    return false;//NotFound (Error)
                 //Same user
-                if (user.Phone == phone.Trim())
+                if (userPhone == phone.Trim())
                     return true;
             }
             //Add
@@ -55,12 +55,12 @@ namespace ServiceTier.User
         {
             if (userId > 0) //Update
             {
-                var user = await _repo.FindAsync(userId);
-                if (user == null)
+                string? userEmail = await _repo.GetEmailByIdAsync(userId);
+                if (string.IsNullOrEmpty(userEmail))
                     return false;
 
                 //Same user
-                if (user.Email == email.Trim())
+                if (userEmail == email.Trim())
                     return true;
             }
             //Add

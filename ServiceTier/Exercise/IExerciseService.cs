@@ -1,4 +1,5 @@
 ﻿using RepositoryTier.Exercise.DTOs;
+using RepositoryTier.Exercise.Enums;
 using RepositoryTier.Exercise.Results;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,6 @@ namespace ServiceTier.Exercise
     {
         Task<GetExercisesResponse> GetExercisesAsync(GetExercisesRequest request);
         Task<AddExerciseResult> AddAsync(AddExerciseRequest request);
+        Task<enUpdateExerciseStatus> UpdateAsync(int Id,UpdateExerciseRequest request);
     }
 }

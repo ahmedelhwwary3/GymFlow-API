@@ -13,5 +13,7 @@ namespace RepositoryTier.User.Repositories
         Task<int?> GetIdByIdentifierAsync(string identifier);
         Task<bool> ExistsByPhoneAsync(string phone);
         Task<bool> ExistsByEmailAsync(string email);
+        Task<String?> GetPhoneByIdAsync(int Id);
+        Task<String?> GetEmailByIdAsync(int Id);
     }
 }
