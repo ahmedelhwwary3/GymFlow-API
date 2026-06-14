@@ -33,6 +33,8 @@ namespace RepositoryTier.Subscription.Repositories
             int pageSize = request.PageSize ?? _paganationOptions.BigPageSize;
 
             var query = _context.Subscriptions
+                .IgnoreQueryFilters()
+                .AsNoTracking()
                 .Where(s =>
                 (request.MemberId == null || s.MemberId == request.MemberId) &&
                 (string.IsNullOrEmpty(request.Search) || s.Member.FullName.Contains(request.Search.Trim())) &&
@@ -60,7 +62,10 @@ namespace RepositoryTier.Subscription.Repositories
                 _ => query
             };
 
-            var shapedQuery = query.Select(s => new SubscriptionResponse()
+            var shapedQuery = query
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Select(s => new SubscriptionResponse()
             {
                 Plan=s.SubscriptionPlan,
                 CoachName = s.Coach.FullName,
@@ -96,22 +101,25 @@ namespace RepositoryTier.Subscription.Repositories
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            return await _context.Subscriptions.Select(s => new GetSubscriptionByIdResponse()
-            {
-                CoachId = s.CoachId,
-                CoachName = s.Coach.FullName,
-                EndDate = s.EndDate,
-                Id = s.Id,
-                StartDate = s.StartDate,
-                MemberId = s.MemberId,
-                MemberName = s.Member.FullName,
-                MemberPhone=s.Member.Phone,
-                SubscriptionPrice = s.Price,
-                Plan = s.SubscriptionPlan,
-                TotalPaid =s.Payments.Sum(p=>p.Amount),
-                Status = (s.EndDate <= today && (s.FreezeEndDate == null || s.FreezeEndDate < today)) ? enSubscriptonStatus.Active :
+            return await _context.Subscriptions
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Select(s => new GetSubscriptionByIdResponse()
+                {
+                    CoachId = s.CoachId,
+                    CoachName = s.Coach.FullName,
+                    EndDate = s.EndDate,
+                    Id = s.Id,
+                    StartDate = s.StartDate,
+                    MemberId = s.MemberId,
+                    MemberName = s.Member.FullName,
+                    MemberPhone = s.Member.Phone,
+                    SubscriptionPrice = s.Price,
+                    Plan = s.SubscriptionPlan,
+                    TotalPaid = s.Payments.Sum(p => p.Amount),
+                    Status = (s.EndDate <= today && (s.FreezeEndDate == null || s.FreezeEndDate < today)) ? enSubscriptonStatus.Active :
                 s.FreezeEndDate.HasValue && s.FreezeEndDate > today ? enSubscriptonStatus.Frozen : enSubscriptonStatus.Expired
-            }).FirstOrDefaultAsync(s=>s.Id==Id);
+                }).FirstOrDefaultAsync(s => s.Id == Id);
         }
     }
 }

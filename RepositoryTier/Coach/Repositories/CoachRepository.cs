@@ -103,6 +103,7 @@ namespace RepositoryTier.Coach.Repositories
         public async Task<List<CoachLookUpResponse>> GetLookUpCoachesAsync()
         {
             return await _context.Coaches
+                .AsNoTracking()
                 .Select(c => new CoachLookUpResponse()
                 {
                     FullName = c.FullName,

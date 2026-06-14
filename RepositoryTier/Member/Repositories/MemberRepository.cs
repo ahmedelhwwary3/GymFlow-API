@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using RepositoryTier.API_Configurations;
 using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Coach.Enums;
+using RepositoryTier.Entities;
 using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Enums;
 using System;
@@ -25,6 +26,18 @@ namespace RepositoryTier.Member.Repositories
                 throw new Exception("Paganation options is not configured");
         }
 
+        private async Task<List<CoachLookUpResponse>>GetLookupCoachesAsync()
+        {
+            return await _context.Coaches
+                .AsNoTracking()
+                .Select(c =>
+            new CoachLookUpResponse()
+            {
+                FullName = c.FullName,
+                Id = c.Id
+            }).ToListAsync();
+        }
+
         public async Task<GetAssignedMembersForCoachResponse> 
             GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request)
         {
@@ -32,6 +45,7 @@ namespace RepositoryTier.Member.Repositories
             int pageSize=request.PageSize?? PaganationOptions.BigPageSize;
 
             int totalCount =await _context.Members
+                .IgnoreQueryFilters()
                 .Where(c => c.CoachId == request.CoachId)
                 .CountAsync();
 
@@ -62,6 +76,8 @@ namespace RepositoryTier.Member.Repositories
             int totalCount = await _context.Members.CountAsync();
 
             var query = _context.Members
+               .IgnoreQueryFilters()
+               .AsNoTracking()
                .Where(m => (request.CoachId == null || m.CoachId == request.CoachId) &&
                (string.IsNullOrEmpty(request.Search) || m.Phone.Contains(request.Search)
                || m.Email.Contains(request.Search) || m.FullName.Contains(request.Search)) &&
@@ -89,12 +105,7 @@ namespace RepositoryTier.Member.Repositories
                    CoachId = m.CoachId
                }).ToListAsync();
 
-            var coaches = await _context.Coaches.Select(c =>
-            new CoachLookUpResponse()
-            {
-                FullName = c.FullName,
-                Id = c.Id
-            }).ToListAsync();
+            var coaches =await GetLookupCoachesAsync();
 
             return new GetMembersResopnse()
             {
@@ -107,18 +118,16 @@ namespace RepositoryTier.Member.Repositories
         public async Task<bool>HasActiveSubscriptionAsync(int Id)
         {
             return await _context.Subscriptions
-                .AnyAsync(s => s.MemberId == Id && s.EndDate < DateOnly.FromDateTime(DateTime.UtcNow));
+                .AnyAsync(s => s.MemberId == Id &&
+                s.EndDate < DateOnly.FromDateTime(DateTime.UtcNow));
         }
 
         public async Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id)
         {
-            var coaches = await _context.Coaches.Select(c => new CoachLookUpResponse()
-            {
-                FullName = c.FullName,
-                Id = c.Id
-            }).ToListAsync();
+            var coaches = await GetLookupCoachesAsync();
 
             return await _context.Members
+            .AsNoTracking()
             .Select(m => new GetMemberByIdResopnse()
             {
                 Id = m.Id,
@@ -138,6 +147,8 @@ namespace RepositoryTier.Member.Repositories
         public async Task<GetMemberProfileResopnse?> GetProfileAsync(int Id)
         {
             return await _context.Members
+            .IgnoreQueryFilters()
+            .AsNoTracking()
             .Where(m => m.Id == Id)
             .Select(m => new GetMemberProfileResopnse()
             {

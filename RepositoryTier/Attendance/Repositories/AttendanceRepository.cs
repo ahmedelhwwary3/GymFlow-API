@@ -35,6 +35,8 @@ namespace RepositoryTier.Attendance.Repositories
             int pageSize = request.PageSize ?? _paganationOptions.TinyPageSize;
 
             var query = _context.Attendances //1.Both Filtering
+                .IgnoreQueryFilters()
+                .AsNoTracking()
                 .Where(a =>
                 (request.FromDate == null || a.AttendanceDate >= request.FromDate) &&
                 (request.ToDate == null || a.AttendanceDate <= request.ToDate));
