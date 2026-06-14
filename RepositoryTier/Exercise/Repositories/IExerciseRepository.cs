@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.Exercise.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace RepositoryTier.Exercise.Repositories
 {
     public interface IExerciseRepository:IRepository<Entities.Exercise>
     {
+        Task<GetExercisesResponse> GetExercisesAsync(GetExercisesRequest request);
     }
 }

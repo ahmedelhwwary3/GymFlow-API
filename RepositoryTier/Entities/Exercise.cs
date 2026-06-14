@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using RepositoryTier.Exercise.Enums;
 namespace RepositoryTier.Entities;
 
 public partial class Exercise
@@ -11,7 +11,7 @@ public partial class Exercise
 
     public string? Description { get; set; }
 
-    public int TargetMuscleGroup { get; set; }
+    public enTargetMuscleGroup TargetMuscleGroup { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

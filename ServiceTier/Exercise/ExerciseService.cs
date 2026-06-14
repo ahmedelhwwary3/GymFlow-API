@@ -1,4 +1,5 @@
-﻿ 
+﻿
+using RepositoryTier.Exercise.DTOs;
 using RepositoryTier.Exercise.Repositories;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,9 @@ namespace ServiceTier.Exercise
             _repo = repo;
         }
 
+        public async Task<GetExercisesResponse> GetExercisesAsync(GetExercisesRequest request)
+        {
+            return await _repo.GetExercisesAsync(request);
+        }
     }
 }

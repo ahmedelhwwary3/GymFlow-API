@@ -17,6 +17,8 @@ namespace RepositoryTier.Exercise.Configurations
 
             builder.HasIndex(e => e.Name, "UQ_Exercises_Name").IsUnique();
 
+            builder.HasQueryFilter(e => !e.IsDeleted);
+
             builder.Property(e => e.Description).HasMaxLength(1000);
             builder.Property(e => e.Name).HasMaxLength(150);
         } 
