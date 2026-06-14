@@ -17,8 +17,8 @@ namespace GymManagementAPI.Controllers
 
         [HttpGet("Coaches",Name = "GetCoaches")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<GetCoachesResponse>>>
             GetCoaches([FromQuery]GetCoachesRequest request)
         {
@@ -26,10 +26,7 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
 
             var response = await _coachService
-                .GetCoachesAsync(request);
-
-            if (response == null || response.Coaches.Count==0)
-                return NotFound("Coaches not found");
+                .GetCoachesAsync(request); 
 
             return Ok(response);
         }
@@ -58,6 +55,7 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetCoachByIdResponse>>GetCoachById(int Id)
         {
             if (Id < 1)
@@ -97,13 +95,13 @@ namespace GymManagementAPI.Controllers
 
         [HttpGet("LookUpCoaches", Name = "GetLookUpCoaches")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)] 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<CoachLookUpResponse>>>
             GetLookUpCoaches()
         {  
             var response = await _coachService.GetLookUpCoachesAsync();
-            return (response == null || response.Count == 0) ?
-                NotFound("Coaches not found") : Ok(response);
+            return Ok(response);
         }
 
     }

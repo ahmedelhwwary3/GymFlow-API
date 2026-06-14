@@ -19,8 +19,8 @@ namespace GymManagementAPI.Controllers
             _memberService = memberService;
         }
 
-        [HttpGet("AssignedMembersForCoach", Name = "GetAssignedMembersForCoach")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("AssignedMembersForCoach", Name = "GetAssignedMembersForCoach")] 
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<GetAssignedMembersForCoachResponse>>
@@ -38,10 +38,10 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("Members", Name = "GetMembers")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("Members", Name = "GetMembers")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetMembersResopnse>>
             GetMembers([FromQuery] GetMembersRequest request)
         {
@@ -59,7 +59,8 @@ namespace GymManagementAPI.Controllers
 
         [HttpGet(Name = "GetMemeberProfile")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)] 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetMemberByIdResopnse>>
             GetMemeberProfile()
         {
@@ -78,6 +79,7 @@ namespace GymManagementAPI.Controllers
         [HttpGet("{Id}", Name = "GetMemeberById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<GetMemberByIdResopnse>>
             GetMemeberById(int Id)

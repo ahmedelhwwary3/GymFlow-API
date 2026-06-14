@@ -20,6 +20,8 @@ namespace GymManagementAPI.Controllers
         [HttpGet("Attendances", Name = "GetAttendances")]
         [ProducesResponseType(StatusCodes.Status200OK)] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<GetAttendancesResponse>>>
             GetAttendances([FromQuery] GetAttendancesRequest request)
         {
