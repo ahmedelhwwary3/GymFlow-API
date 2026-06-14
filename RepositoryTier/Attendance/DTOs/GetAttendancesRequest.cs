@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RepositoryTier.Attendance.DTOs
+{
+    public class GetAttendancesRequest
+    {
+        public string? Search { get; set; }
+
+        public int? CoachId { get; set; }
+
+        public DateOnly? FromDate { get; set; }
+
+        public DateOnly? ToDate { get; set; }
+
+        public int? Page { get; set; }
+
+        public int? PageSize { get; set; }
+    }
+}

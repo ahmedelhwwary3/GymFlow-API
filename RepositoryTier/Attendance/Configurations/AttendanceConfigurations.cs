@@ -15,7 +15,7 @@ namespace RepositoryTier.Attendance.Configurations
 
             builder.HasIndex(e => new { e.MemberId, e.AttendanceDate }, "UQ_Attendances_MemberId_AttendanceDate").IsUnique();
 
-            builder.Property(e => e.Notes).HasMaxLength(500);
+            builder.Property(e => e.Notes).HasMaxLength(500); 
 
             builder.HasOne(d => d.Member).WithMany(p => p.Attendances)
                 .HasForeignKey(d => d.MemberId)

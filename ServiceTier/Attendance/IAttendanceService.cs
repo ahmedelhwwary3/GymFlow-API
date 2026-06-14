@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.Attendance.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace ServiceTier.Attendance
 {
     public interface IAttendanceService:IService<RepositoryTier.Entities.Attendance>
     {
+        Task<GetAttendancesResponse> GetAttendancesAsync(GetAttendancesRequest request, int? memberId = null);
     }
 }
