@@ -162,14 +162,23 @@ namespace RepositoryTier.Member.Repositories
             }).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> HasActiveOrForzenSubscriptionsAsync(int Id)
+        public async Task<bool> HasActiveSubscriptionsAsync(int Id) 
         {
-            DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
             return await _context.Subscriptions
                 .AnyAsync(s => (s.MemberId == Id) &&
-                ((s.EndDate > today && s.FreezeEndDate == null) || // Active
-                (s.FreezeEndDate > today && s.FreezeEndDate != null))); //Frozen
+                (s.FreezeEndDate == null && s.EndDate > today)); 
+
+        }
+
+        public async Task<bool> HasForzenSubscriptionsAsync(int Id)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            return await _context.Subscriptions
+                .AnyAsync(s => (s.MemberId == Id) &&
+                (s.FreezeEndDate != null && s.FreezeEndDate > today)); 
         }
     }
 }

@@ -11,10 +11,10 @@ namespace RepositoryTier.Member.Repositories
     {
         Task<GetAssignedMembersForCoachResponse>
             GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request);
-        Task<GetMembersResopnse> GetMembersAsync(GetMembersRequest request);
-        Task<Boolean> HasActiveSubscriptionAsync(int Id);
+        Task<GetMembersResopnse> GetMembersAsync(GetMembersRequest request); 
         Task<GetMemberProfileResopnse?> GetProfileAsync(int Id);
         Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id);
-        Task<Boolean> HasActiveOrForzenSubscriptionsAsync(int Id);
+        Task<Boolean> HasActiveSubscriptionsAsync(int memberId); 
+        Task<Boolean> HasForzenSubscriptionsAsync(int memberId);
     }
 }

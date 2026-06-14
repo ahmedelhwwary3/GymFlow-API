@@ -119,7 +119,7 @@ namespace ServiceTier.Member
             }
 
             //3.Update IsActive only if has no active subscription
-            bool hasActiveSubscription = await _repo.HasActiveSubscriptionAsync(Id);
+            bool hasActiveSubscription = await _repo.HasActiveSubscriptionsAsync(Id);
             if (hasActiveSubscription)
                 request.IsActive = true;
 
@@ -145,8 +145,7 @@ namespace ServiceTier.Member
 
             //5.Save
             int affectedRow = await _coachRepo.SaveChangesAsync();
-            return affectedRow > 0 ? enUpdateMemberStatus.Succeeded 
-                : enUpdateMemberStatus.InternalServerError;
+            return enUpdateMemberStatus.Succeeded;
         }
 
         public async Task<enUpdateMemberProfileStatus>
@@ -179,8 +178,7 @@ namespace ServiceTier.Member
 
             //5.Save
             int affectedRow = await _coachRepo.SaveChangesAsync();
-            return affectedRow > 0 ? enUpdateMemberProfileStatus.Succeeded
-                : enUpdateMemberProfileStatus.InternalServerError;
+            return enUpdateMemberProfileStatus.Succeeded;
         }
 
         public async Task<GetMemberProfileResopnse?> GetProfileAsync(int Id)

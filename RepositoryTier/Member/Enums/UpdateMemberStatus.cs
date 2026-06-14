@@ -13,17 +13,15 @@ namespace RepositoryTier.Member.Enums
         CoachNotExists = 3,
         CoachInactive = 4,
         MemberNotFound= 5,
-        DataNotChanged= 6,
-        InternalServerError= 7,
-        Succeeded = 8
+        DataNotChanged= 6, 
+        Succeeded = 7
     }
     public enum enUpdateMemberProfileStatus
     {
         NotUniqueEmail = 1,
         NotUniquePhone = 2, 
         MemberNotFound = 3,
-        DataNotChanged = 4,
-        InternalServerError = 5,
-        Succeeded = 6
+        DataNotChanged = 4, 
+        Succeeded =5
     }
 }

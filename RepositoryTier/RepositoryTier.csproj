@@ -16,8 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Attendance\Enums\" />
-    <Folder Include="Attendance\Results\" />
     <Folder Include="Exercise\DTOs\" />
     <Folder Include="Exercise\Enums\" />
     <Folder Include="Exercise\Results\" />

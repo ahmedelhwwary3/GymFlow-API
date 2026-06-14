@@ -66,10 +66,17 @@ namespace ServiceTier.Subscription
                 return new AddSubscriptionResult(enAddSubscriptionStatus.CoachInctive);
 
             //3.Old subscriptions must be expired
-            bool hasActiveOrForzenSubscriptions = await _memberRepo
-                .HasActiveOrForzenSubscriptionsAsync(request.MemberId);
-            if(hasActiveOrForzenSubscriptions)
-                return new AddSubscriptionResult(enAddSubscriptionStatus.HasActiveOrForzenSubscription);
+            bool hasActiveSubscriptions = await _memberRepo
+                .HasActiveSubscriptionsAsync(request.MemberId);
+
+            bool hasFrozenSubscriptions = await _memberRepo
+                .HasActiveSubscriptionsAsync(request.MemberId);
+
+            if (hasActiveSubscriptions)
+                return new AddSubscriptionResult(enAddSubscriptionStatus.HasActiveSubscription);
+
+            if (hasFrozenSubscriptions)
+                return new AddSubscriptionResult(enAddSubscriptionStatus.HasForzenSubscription);
 
             //4.Create subscription
             var newSubscription = new RepositoryTier.Entities.Subscription()

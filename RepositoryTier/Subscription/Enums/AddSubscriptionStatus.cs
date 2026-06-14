@@ -13,7 +13,8 @@ namespace RepositoryTier.Subscription.Enums
         MemberNotAttachedToCoach = 3,
         CoachNotFound = 4, 
         CoachInctive = 5, 
-        HasActiveOrForzenSubscription = 6,
-        Succeeded= 7
+        HasActiveSubscription = 6,
+        Succeeded= 7,
+        HasForzenSubscription=8
     }
 }

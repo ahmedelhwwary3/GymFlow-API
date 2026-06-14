@@ -56,8 +56,10 @@ namespace GymManagementAPI.Controllers
 
                 enAddSubscriptionStatus.MemberNotAttachedToCoach => BadRequest("Member not attached to coach"),
 
-                enAddSubscriptionStatus.HasActiveOrForzenSubscription => BadRequest("Member has an active Or forzen subscription"),
-                
+                enAddSubscriptionStatus.HasActiveSubscription => BadRequest("Member has an active subscription"),
+
+                enAddSubscriptionStatus.HasForzenSubscription => BadRequest("Member has a frozen subscription"),
+
                 enAddSubscriptionStatus.CoachInctive => BadRequest("Coach is not active"),
 
                 enAddSubscriptionStatus.MemberInactive => BadRequest("Member is not active"),
