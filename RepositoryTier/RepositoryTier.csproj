@@ -22,8 +22,6 @@
     <Folder Include="Exercise\DTOs\" />
     <Folder Include="Exercise\Enums\" />
     <Folder Include="Exercise\Results\" />
-    <Folder Include="Payment\DTOs\" />
-    <Folder Include="Payment\Enums\" />
     <Folder Include="Payment\Results\" />
     <Folder Include="WeightRecord\DTOs\" />
     <Folder Include="WeightRecord\Enums\" />

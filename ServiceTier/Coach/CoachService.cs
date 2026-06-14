@@ -64,7 +64,7 @@ namespace ServiceTier.Coach
             {
                 HireDate = newCoach.HireDate,
                 Salary = newCoach.Salary,
-                NewId = newCoach.Id,
+                Id = newCoach.Id,
                 Specialization = newCoach.Specialization
             };
             return new AddCoachResult(enAddCoachStatus.Succeeded, response);

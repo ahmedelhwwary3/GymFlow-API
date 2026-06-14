@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.Payment.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace RepositoryTier.Payment.Repositories
 {
     public interface IPaymentRepository:IRepository<Entities.Payment>
     {
+        Task<SubscriptionPaymentSummaryResponse> GetSubscriptionPaymentSummaryAsync(int subscriptionId);
     }
 }

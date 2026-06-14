@@ -1,0 +1,50 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using RepositoryTier.Payment.DTOs;
+using ServiceTier.Payment;
+using RepositoryTier.Payment.Enums;
+
+namespace GymManagementAPI.Controllers
+{
+    [Route("api/Payment")]
+    [ApiController]
+    public class PaymentController : ControllerBase
+    {
+        private readonly IPaymentService _paymentService;
+        public PaymentController(IPaymentService paymentService)
+        {
+            _paymentService= paymentService;
+        }
+
+        [HttpPost(Name = "AddPayment")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<int>> AddPayment(AddPaymentRequest request) 
+        {
+            if(!ModelState.IsValid)
+                return BadRequest();
+            
+            var response = await _paymentService.AddAsync(request);
+            return response.Status switch
+            {
+                enAddPaymentStatus.SubscriptionNotFound => NotFound("Subscription not found"),
+                enAddPaymentStatus.SubscriptionFullPaid => BadRequest("Subscription is full paid"),
+                enAddPaymentStatus.PaidExceedsRemainingAmount => BadRequest("Paid amount exceeds remaining amount"),
+                _ => Ok(response.Id) 
+            };
+        }
+
+        [HttpGet("{Id}",Name = "GetPaymentById")] 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPaymentById(int Id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return null;
+        }
+    }
+}

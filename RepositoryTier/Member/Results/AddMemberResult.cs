@@ -10,11 +10,11 @@ namespace RepositoryTier.Member.Results
     public class AddMemberResult
     {
         public enAddMemberStatus Status { get; set; }
-        public Nullable<int> NewId { get; set; }
+        public Nullable<int> Id { get; set; }
         public AddMemberResult(enAddMemberStatus status,int? newId=null)
         {
             this.Status = status;
-            this.NewId = newId;
+            this.Id = newId;
         }
     }
 }

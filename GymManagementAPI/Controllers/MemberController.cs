@@ -114,7 +114,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddMemberStatus.CoachNotExists => NotFound("Coach not found"),
 
-                _=> CreatedAtRoute("GetMemeberById", result.NewId) 
+                _=> CreatedAtRoute("GetMemeberById", result.Id) 
             };
         }
 
