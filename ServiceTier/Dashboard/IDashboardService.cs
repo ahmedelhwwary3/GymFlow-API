@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.Dashboard.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,8 @@ namespace ServiceTier.Dashboard
 {
     public interface IDashboardService
     {
+        Task<AdminDashboardResponse> GetForAdminAsync();
+        Task<CoachDashboardResponse> GetForCoachAsync(int coachId); 
+        Task<MemberDashboardResponse?> GetForMemberAsync(int memberId);
     }
 }

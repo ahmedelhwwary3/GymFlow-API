@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Dashboard\Enums\" />
+    <Folder Include="Dashboard\Results\" />
     <Folder Include="Payment\Results\" />
     <Folder Include="WeightRecord\DTOs\" />
     <Folder Include="WeightRecord\Enums\" />
