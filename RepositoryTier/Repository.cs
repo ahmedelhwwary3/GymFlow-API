@@ -55,5 +55,10 @@ namespace RepositoryTier
             return await _context.Set<T>()
                 .AnyAsync(e=>EF.Property<int>(e,"Id") == Id);
         }
+
+        public void ChangeAutoDetectChangesStatus(bool enabled=false)
+        {
+            _context.ChangeTracker.AutoDetectChangesEnabled=enabled;
+        }
     }
 }

@@ -10,5 +10,6 @@ namespace RepositoryTier.WorkoutPlan.Repositories
     public interface IWorkoutPlanRepository : IRepository<Entities.WorkoutPlan>
     {
         Task<GetWorkoutPlansResponse> GetWorkoutPlansAsync(GetWorkoutPlansRequest request,int? memberId);
+        Task<Entities.WorkoutPlan?> GetLastByMemberIdAsync(int memberId);
     }
 }

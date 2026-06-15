@@ -50,5 +50,11 @@ namespace RepositoryTier.Exercise.Repositories
                 .Select(e => e.Name)
                 .SingleOrDefaultAsync();
         }
+
+       public async Task<bool> AllExistAsync(IEnumerable<int> exerciseIds)
+        {
+            return await _context.Exercises
+                .AnyAsync(e => exerciseIds.Contains(e.Id));
+        }
     }
 }

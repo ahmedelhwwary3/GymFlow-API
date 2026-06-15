@@ -122,7 +122,7 @@ namespace RepositoryTier.Member.Repositories
                 s.EndDate < DateOnly.FromDateTime(DateTime.UtcNow));
         }
 
-        public async Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id)
+        public async Task<GetMemberByIdResopnse?> GetByIdAsync(int Id)
         {
             var coaches = await GetLookupCoachesAsync();
 

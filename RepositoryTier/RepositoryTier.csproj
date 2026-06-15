@@ -23,8 +23,6 @@
     <Folder Include="WorkoutPlanExercise\DTOs\" />
     <Folder Include="WorkoutPlanExercise\Enums\" />
     <Folder Include="WorkoutPlanExercise\Results\" />
-    <Folder Include="WorkoutPlan\Enums\" />
-    <Folder Include="WorkoutPlan\Results\" />
   </ItemGroup>
 
 </Project>

@@ -110,5 +110,13 @@ namespace RepositoryTier.Coach.Repositories
                     Id = c.Id
                 }).ToListAsync();
         }
+
+        public async Task<bool?> IsActiveAsync(int Id)
+        {
+            return await _context.Coaches
+                .Where(c=>c.Id==Id)
+                .Select(c => c.IsActive)
+                .SingleOrDefaultAsync();
+        }
     }
 }

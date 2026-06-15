@@ -13,5 +13,6 @@ namespace RepositoryTier.Coach.Repositories
         Task<GetCoachByIdResponse?> GetByIdAsync(int Id);
         Task<bool> IsActiveByIdAsync(int Id);
         Task<List<CoachLookUpResponse>> GetLookUpCoachesAsync();
+        Task<bool?> IsActiveAsync(int Id);
     }
 }

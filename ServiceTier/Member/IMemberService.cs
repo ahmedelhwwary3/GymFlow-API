@@ -19,6 +19,6 @@ namespace ServiceTier.Member
         Task<enUpdateMemberStatus> UpdateAsync(int Id,UpdateMemberRequest request);
         Task<enUpdateMemberProfileStatus> UpdateProfileAsync(int Id, UpdateMemberProfileRequest request);
         Task<GetMemberProfileResopnse?> GetProfileAsync(int Id);
-        Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id);
+        Task<GetMemberByIdResopnse?> GetByIdAsync(int Id);
     }
 }

@@ -88,7 +88,7 @@ namespace GymManagementAPI.Controllers
             if (Id < 1)
                 return BadRequest();
 
-            var response = await _memberService.GetMemberByIdAsync(Id);
+            var response = await _memberService.GetByIdAsync(Id);
             if (response == null)
                 return NotFound();
 
@@ -116,7 +116,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddMemberStatus.CoachNotExists => NotFound("Coach not found"),
 
-                _=> CreatedAtRoute("GetMemeberById", result.Id) 
+                _=> CreatedAtRoute("GetMemeberById", new { Id= result.Id },null) 
             };
         }
 

@@ -12,9 +12,9 @@ public partial class WorkoutPlan
 
     public string Name { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }=DateTime.UtcNow;
 
     public virtual Coach Coach { get; set; } = null!;
 

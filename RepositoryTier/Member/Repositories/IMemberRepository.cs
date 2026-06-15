@@ -13,7 +13,7 @@ namespace RepositoryTier.Member.Repositories
             GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request);
         Task<GetMembersResopnse> GetMembersAsync(GetMembersRequest request); 
         Task<GetMemberProfileResopnse?> GetProfileAsync(int Id);
-        Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id);
+        Task<GetMemberByIdResopnse?> GetByIdAsync(int Id);
         Task<Boolean> HasActiveSubscriptionsAsync(int memberId); 
         Task<Boolean> HasForzenSubscriptionsAsync(int memberId);
     }

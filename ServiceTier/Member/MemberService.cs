@@ -186,9 +186,9 @@ namespace ServiceTier.Member
             return await _repo.GetProfileAsync(Id);
         }
 
-        public async Task<GetMemberByIdResopnse?> GetMemberByIdAsync(int Id)
+        public async Task<GetMemberByIdResopnse?> GetByIdAsync(int Id)
         {
-            return await _repo.GetMemberByIdAsync(Id);
+            return await _repo.GetByIdAsync(Id);
         }
     }
 }

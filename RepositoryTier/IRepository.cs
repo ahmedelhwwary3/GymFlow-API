@@ -17,5 +17,6 @@ namespace RepositoryTier
         Task<int> SaveChangesAsync();
         Task<List<T>> GetAllAsync();
         EntityState GetEntityState(T entity);
+        void ChangeAutoDetectChangesStatus(bool enabled = false);
     }
 }

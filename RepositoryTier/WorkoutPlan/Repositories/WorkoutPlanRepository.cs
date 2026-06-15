@@ -73,5 +73,12 @@ namespace RepositoryTier.WorkoutPlan.Repositories
                 Count= count
             };
         }
+
+        public async Task<Entities.WorkoutPlan?> GetLastByMemberIdAsync(int memberId)
+        {
+            return await _context.WorkoutPlans
+               .OrderBy(w => w.Id)
+               .LastAsync(w => w.MemberId == memberId);
+        }
     }
 }

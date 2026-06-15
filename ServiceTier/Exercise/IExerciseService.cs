@@ -13,6 +13,6 @@ namespace ServiceTier.Exercise
     {
         Task<GetExercisesResponse> GetExercisesAsync(GetExercisesRequest request);
         Task<AddExerciseResult> AddAsync(AddExerciseRequest request);
-        Task<enUpdateExerciseStatus> UpdateAsync(int Id,UpdateExerciseRequest request);
+        Task<enUpdateExerciseStatus> UpdateAsync(int Id,UpdateExerciseRequest request); 
     }
 }
