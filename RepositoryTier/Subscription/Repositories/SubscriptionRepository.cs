@@ -104,6 +104,7 @@ namespace RepositoryTier.Subscription.Repositories
             return await _context.Subscriptions
                 .IgnoreQueryFilters()
                 .AsNoTracking()
+                .Where(s => s.Id == Id)
                 .Select(s => new GetSubscriptionByIdResponse()
                 {
                     CoachId = s.CoachId,
@@ -119,7 +120,7 @@ namespace RepositoryTier.Subscription.Repositories
                     TotalPaid = s.Payments.Sum(p => p.Amount),
                     Status = (s.EndDate <= today && (s.FreezeEndDate == null || s.FreezeEndDate < today)) ? enSubscriptonStatus.Active :
                 s.FreezeEndDate.HasValue && s.FreezeEndDate > today ? enSubscriptonStatus.Frozen : enSubscriptonStatus.Expired
-                }).FirstOrDefaultAsync(s => s.Id == Id);
+                }).FirstOrDefaultAsync();
         }
     }
 }

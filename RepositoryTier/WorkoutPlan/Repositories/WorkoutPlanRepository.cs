@@ -77,8 +77,8 @@ namespace RepositoryTier.WorkoutPlan.Repositories
         public async Task<Entities.WorkoutPlan?> GetLastByMemberIdAsync(int memberId)
         {
             return await _context.WorkoutPlans
-               .OrderBy(w => w.Id)
-               .LastAsync(w => w.MemberId == memberId);
+               .OrderByDescending(w => w.Id)
+               .FirstOrDefaultAsync(w => w.MemberId == memberId);
         }
 
         public async Task<GetWorkoutPlanByIdResponse?> GetByIdAsync(int Id)

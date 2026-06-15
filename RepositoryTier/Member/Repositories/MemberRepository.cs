@@ -128,6 +128,7 @@ namespace RepositoryTier.Member.Repositories
 
             return await _context.Members
             .AsNoTracking()
+            .Where(m => m.Id == Id)
             .Select(m => new GetMemberByIdResopnse()
             {
                 Id = m.Id,
@@ -141,7 +142,7 @@ namespace RepositoryTier.Member.Repositories
                 Height=m.Height,
                 Phone=m.Phone, 
                 Coaches=coaches
-            }).FirstOrDefaultAsync(m => m.Id == Id);
+            }).FirstOrDefaultAsync();
         }
 
         public async Task<GetMemberProfileResopnse?> GetProfileAsync(int Id)

@@ -41,6 +41,7 @@ namespace RepositoryTier.Payment.Repositories
         {
             return await _context.Payments
                 .AsNoTracking()
+                .Where(p => p.Id == Id)
                 .Select(p => new GetPaymentByIdResponse()
                 {
                     Amount = p.Amount,
@@ -51,7 +52,7 @@ namespace RepositoryTier.Payment.Repositories
                     SubscriptionId = p.SubscriptionId,
                     SubscriptionPrice = p.Subscription.Price,
                     TotalPaid = p.Subscription.Payments.Sum(pm => pm.Amount)
-                }).FirstOrDefaultAsync(p => p.Id == Id);
+                }).FirstOrDefaultAsync();
         }
     }
 }

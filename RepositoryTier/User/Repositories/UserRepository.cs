@@ -46,7 +46,7 @@ namespace RepositoryTier.User.Repositories
 
         public async Task<int?> GetIdByIdentifierAsync(string identifier)
         {
-            return await _context.Users
+            return await _context.Users 
                 .Where(u => u.Email == identifier || u.Phone == identifier)
                 .Select(u => u.Id)
                 .SingleOrDefaultAsync();
@@ -54,7 +54,7 @@ namespace RepositoryTier.User.Repositories
 
         public async Task<string?> GetPhoneByIdAsync(int Id)
         {
-            return await _context.Users
+            return await _context.Users 
                 .Where(u => u.Id == Id)
                 .Select(u => u.Phone)
                 .SingleOrDefaultAsync();
@@ -62,7 +62,7 @@ namespace RepositoryTier.User.Repositories
 
         public async Task<string?> GetEmailByIdAsync(int Id)
         {
-            return await _context.Users
+            return await _context.Users 
                 .Where(u => u.Id == Id)
                 .Select(u => u.Email)
                 .SingleOrDefaultAsync();
@@ -70,26 +70,19 @@ namespace RepositoryTier.User.Repositories
 
         public async Task<GetUserByIdResponse?> GetUserByIdAsync(int Id)
         {
-            try
-            {
-                return await _context.Users
-                .Where(u => u.Id == Id)
-                .Select(u => new GetUserByIdResponse()
-                {
-                    IsActive = u.IsActive,
-                    DateOfBirth = u.DateOfBirth,
-                    Email = u.Email,
-                    FullName = u.FullName,
-                    Gender = u.Gender,
-                    Id = Id,
-                    Phone = u.Phone
-                }).SingleOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-              
+            return await _context.Users
+                 .AsNoTracking()
+                 .Where(u => u.Id == Id)
+                 .Select(u => new GetUserByIdResponse()
+                 {
+                     IsActive = u.IsActive,
+                     DateOfBirth = u.DateOfBirth,
+                     Email = u.Email,
+                     FullName = u.FullName,
+                     Gender = u.Gender,
+                     Id = Id,
+                     Phone = u.Phone
+                 }).SingleOrDefaultAsync();
         }
     }
 }
