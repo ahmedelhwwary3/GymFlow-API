@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RepositoryTier.Member.Enums;
+using RepositoryTier.User.Enums;
 
-namespace RepositoryTier.Member.Results
+namespace RepositoryTier.User.Results
 {
-    public class AddMemberResult
+    public class RegisterMemberResult
     {
-        public enAddMemberStatus Status { get; set; }
+        public enRegisterMemberStatus Status { get; set; }
         public Nullable<int> Id { get; set; }
-        public AddMemberResult(enAddMemberStatus status,int? newId=null)
+        public RegisterMemberResult(enRegisterMemberStatus status,int? newId=null)
         {
             this.Status = status;
             this.Id = newId;

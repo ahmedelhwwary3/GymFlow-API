@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RepositoryTier.User.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace RepositoryTier.User.Repositories
 
             return await query.AsNoTracking()
                 .SingleOrDefaultAsync();
-        }
+        } 
 
         public async Task<Entities.User?> GetByPhoneAsync(string phone, bool isTracked)
         {
@@ -65,6 +66,30 @@ namespace RepositoryTier.User.Repositories
                 .Where(u => u.Id == Id)
                 .Select(u => u.Email)
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<GetUserByIdResponse?> GetUserByIdAsync(int Id)
+        {
+            try
+            {
+                return await _context.Users
+                .Where(u => u.Id == Id)
+                .Select(u => new GetUserByIdResponse()
+                {
+                    IsActive = u.IsActive,
+                    DateOfBirth = u.DateOfBirth,
+                    Email = u.Email,
+                    FullName = u.FullName,
+                    Gender = u.Gender,
+                    Id = Id,
+                    Phone = u.Phone
+                }).SingleOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+              
         }
     }
 }

@@ -3,7 +3,6 @@ using RepositoryTier.Coach.Enums;
 using RepositoryTier.Entities;
 using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Repositories;
-using RepositoryTier.Member.Results;
 using RepositoryTier.User.Repositories;
 using ServiceTier.User;
 using RepositoryTier.Member.Enums;
@@ -12,9 +11,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RepositoryTier.User.Enums;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 using RepositoryTier.Coach.Repositories;
 using Microsoft.EntityFrameworkCore;
+using RepositoryTier.User.Results;
 
 namespace ServiceTier.Member
 {
@@ -46,52 +46,7 @@ namespace ServiceTier.Member
             GetMembersAsync(GetMembersRequest request)
         {
             return await _repo.GetMembersAsync(request);
-        }
-
-        public async Task<AddMemberResult> AddAsync(AddMemberRequest request)
-        {
-            //1. Unique Email & Phone
-            bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email);
-            bool isUniquePhone = await _userService.IsUniquePhoneAsync(request.Phone); 
-
-            if (!isUniqueEmail)
-                return new AddMemberResult(enAddMemberStatus.NotUniqueEmail); 
-
-            if (!isUniquePhone)
-                return new AddMemberResult(enAddMemberStatus.NotUniquePhone);
-
-            //2.coach exists and Active
-            bool coachExists = await _coachRepo.ExistsAsync(request.CoachId);
-            if(!coachExists)
-                return new AddMemberResult(enAddMemberStatus.CoachNotExists);
-
-            bool isActiveCoach = await _coachRepo.IsActiveByIdAsync(request.CoachId);
-            if(!isActiveCoach)
-                return new AddMemberResult(enAddMemberStatus.CoachInactive);
-
-            var newMember = new RepositoryTier.Entities.Member()
-            {
-                IsActive = true,
-                Address = request.Address.Trim(),
-                CreatedAt = DateTime.UtcNow,
-                CoachId = request.CoachId,
-                DateOfBirth = request.DateOfBirth,
-                Email = request.Email.Trim(),
-                FitnessGoal = request.FitnessGoal,
-                FullName = request.FullName.Trim(),
-                Gender = request.Gender,
-                Height = request.Height,
-                Role = enUserRole.Member,
-                Phone = request.Phone.Trim(),
-                IsDeleted = false,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
-            };
-            //3.Add and save
-            await _repo.AddAsync(newMember);
-           int affectedRows= await _repo.SaveChangesAsync();
-            return affectedRows>0?new AddMemberResult(enAddMemberStatus.Succeeded, newMember.Id) :
-                new AddMemberResult(enAddMemberStatus.InternalServerError);
-        }
+        } 
 
         public async Task<enUpdateMemberStatus>
             UpdateAsync(int Id, UpdateMemberRequest request)

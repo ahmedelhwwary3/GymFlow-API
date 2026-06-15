@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryTier.API_Configurations;
+using RepositoryTier.Coach.Repositories;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.DTOs.Authentication;
 using RepositoryTier.User.Enums;
@@ -23,8 +24,10 @@ namespace ServiceTier.User
         private readonly IUserRepository _repo;
         protected readonly JWTOptions _jwtConfigs;
         protected readonly IConfiguration _configs;
+        private readonly ICoachRepository _coachRepo;
         public UserService(
             IUserRepository repo,
+            ICoachRepository coachRepo,
             IOptions<JWTOptions> jwtOptions,
             IConfiguration configs)
             : base(repo)
@@ -32,6 +35,7 @@ namespace ServiceTier.User
             _jwtConfigs = jwtOptions.Value;
             _repo = repo;
             _configs = configs;
+            _coachRepo= coachRepo;
             if (_jwtConfigs == null)
                 throw new Exception("JWT options is not configured");
         }
@@ -241,6 +245,127 @@ namespace ServiceTier.User
         public async Task<bool> ExistsByEmailAsync(string email)
         {
             return await _repo.ExistsByEmailAsync(email);
+        }
+
+        public async Task<RegisterCoachResult> 
+            RegitserCoachAsync(RegisterCoachRequest request)
+        {
+            bool isUniqueEmail = await IsUniqueEmailAsync(request.Email);
+            bool isUniquePhone = await IsUniquePhoneAsync(request.Phone);
+
+            if (!isUniqueEmail)
+                return new RegisterCoachResult(enRegisterCoachStatus.NotUniqueEmail);
+
+            if (!isUniquePhone)
+                return new RegisterCoachResult(enRegisterCoachStatus.NotUniqueEmail);
+
+            var newCoach = new RepositoryTier.Entities.Coach()
+            {
+                CreatedAt = DateTime.UtcNow,
+                DateOfBirth = request.DateOfBirth,
+                Email = request.Email.Trim(),
+                FullName = request.FullName.Trim(),
+                Gender = request.Gender,
+                HireDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Phone = request.Phone.Trim(),
+                Role = enUserRole.Coach,
+                Salary = request.Salary,
+                Specialization = request.Specialization
+            };
+
+            await _repo.AddAsync(newCoach);
+            int affectedRows = await _repo.SaveChangesAsync();
+
+            var response = new RegisterCoachResponse()
+            {
+                HireDate = newCoach.HireDate,
+                Salary = newCoach.Salary,
+                Id = newCoach.Id,
+                Specialization = newCoach.Specialization
+            };
+            return new RegisterCoachResult(enRegisterCoachStatus.Succeeded, response);
+        }
+
+        public async Task<RegisterMemberResult>
+            RegitserMemberAsync(RegisterMemberRequest request)
+        {
+            //1. Unique Email & Phone
+            bool isUniqueEmail = await IsUniqueEmailAsync(request.Email);
+            bool isUniquePhone = await IsUniquePhoneAsync(request.Phone);
+
+            if (!isUniqueEmail)
+                return new RegisterMemberResult(enRegisterMemberStatus.NotUniqueEmail);
+
+            if (!isUniquePhone)
+                return new RegisterMemberResult(enRegisterMemberStatus.NotUniquePhone);
+
+            //2.coach exists and Active
+            bool coachExists = await _coachRepo.ExistsAsync(request.CoachId);
+            if (!coachExists)
+                return new RegisterMemberResult(enRegisterMemberStatus.CoachNotExists);
+
+            bool isActiveCoach = await _coachRepo.IsActiveByIdAsync(request.CoachId);
+            if (!isActiveCoach)
+                return new RegisterMemberResult(enRegisterMemberStatus.CoachInactive);
+
+            var newMember = new RepositoryTier.Entities.Member()
+            {
+                IsActive = true,
+                Address = request.Address.Trim(),
+                CreatedAt = DateTime.UtcNow,
+                CoachId = request.CoachId,
+                DateOfBirth = request.DateOfBirth,
+                Email = request.Email.Trim(),
+                FitnessGoal = request.FitnessGoal,
+                FullName = request.FullName.Trim(),
+                Gender = request.Gender,
+                Height = request.Height,
+                Role = enUserRole.Member,
+                Phone = request.Phone.Trim(),
+                IsDeleted = false,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
+            };
+            //3.Add and save
+            await _repo.AddAsync(newMember);
+            int affectedRows = await _repo.SaveChangesAsync();
+            return new RegisterMemberResult(enRegisterMemberStatus.Succeeded, newMember.Id);
+        }
+
+        public async Task<RegisterAdminResult>
+            RegitserAdminAsync(RegisterAdminRequest request)
+        {
+            //1. Unique Email & Phone
+            bool isUniqueEmail = await IsUniqueEmailAsync(request.Email); 
+            bool isUniquePhone = await IsUniquePhoneAsync(request.Phone);
+
+            if (!isUniqueEmail)
+                return new RegisterAdminResult(enRegisterAdminStatus.NotUniqueEmail);
+
+            if (!isUniquePhone)
+                return new RegisterAdminResult(enRegisterAdminStatus.NotUniquePhone); 
+
+            var newMember = new RepositoryTier.Entities.User()
+            {
+                IsActive = true ,
+                CreatedAt = DateTime.UtcNow,  
+                Email = request.Email.Trim(),  
+                Role = enUserRole.Admin,
+                Phone = request.Phone.Trim(),
+                IsDeleted = false,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password), 
+                FullName= request.FullName.Trim(), 
+                Gender=request.Gender
+            };
+            //2.Add and save
+            await _repo.AddAsync(newMember);
+            int affectedRows = await _repo.SaveChangesAsync();
+            return new RegisterAdminResult(enRegisterAdminStatus.Succeeded, newMember.Id);
+        }
+
+        public async Task<GetUserByIdResponse> GetUserByIdAsync(int Id)
+        {
+            return await _repo.GetUserByIdAsync(Id);
         }
     }
 }

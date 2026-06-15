@@ -93,32 +93,7 @@ namespace GymManagementAPI.Controllers
                 return NotFound();
 
             return Ok(response);
-        }
-
-        [HttpPost(Name = "AddMember")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<int>> AddMember([FromBody] AddMemberRequest request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var result = await _memberService.AddAsync(request);
-            return result.Status switch
-            {
-                enAddMemberStatus.NotUniqueEmail => BadRequest("Email must be unique"),
-
-                enAddMemberStatus.NotUniquePhone => BadRequest("Phone must be unique"), 
-
-                enAddMemberStatus.CoachInactive => BadRequest("Coach must be active"),
-
-                enAddMemberStatus.CoachNotExists => NotFound("Coach not found"),
-
-                _=> CreatedAtRoute("GetMemeberById", new { Id= result.Id },null) 
-            };
-        }
+        } 
 
         [HttpPut("{Id}",Name = "UpdateMember")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

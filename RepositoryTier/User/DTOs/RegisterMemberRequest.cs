@@ -7,12 +7,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using RepositoryTier.CustomAttributes;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace RepositoryTier.Member.DTOs
+namespace RepositoryTier.User.DTOs
 {
-    public class AddMemberRequest
+    public class RegisterMemberRequest
     { 
         [Required]
         [EmailAddress]

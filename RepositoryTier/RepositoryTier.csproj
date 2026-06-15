@@ -16,8 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Coach\Results\" />
     <Folder Include="Dashboard\Enums\" />
     <Folder Include="Dashboard\Results\" />
+    <Folder Include="Member\Results\" />
     <Folder Include="Payment\Results\" />
     <Folder Include="WeightRecord\DTOs\" />
     <Folder Include="WeightRecord\Enums\" />

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryTier.Member.DTOs;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.Enums;
 using ServiceTier;
@@ -53,6 +54,92 @@ namespace GymManagementAPI.Controllers
 
                 _=>NotFound()
             };
+        }
+
+        [HttpPost("Member", Name = "RegisterMember")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<int>>
+            RegisterMember([FromBody] RegisterMemberRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var result = await _userService.RegitserMemberAsync(request);
+            return result.Status switch
+            {
+                enRegisterMemberStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                enRegisterMemberStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+
+                enRegisterMemberStatus.CoachInactive => BadRequest("Coach must be active"),
+
+                enRegisterMemberStatus.CoachNotExists => NotFound("Coach not found"),
+
+                _ => CreatedAtRoute("GetMemeberById", new { Id = result.Id }, null)
+            };
+        }
+
+
+        [HttpPost("Coach", Name = "RegisterCoach")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<RegisterCoachResponse>> 
+            RegisterCoach(RegisterCoachRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var result = await _userService.RegitserCoachAsync(request);
+            return result.Status switch
+            {
+
+                enRegisterCoachStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                enRegisterCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+
+                _ => CreatedAtRoute("GetCoachById", new { Id = result.Resopnse.Id }, result.Resopnse)
+            };
+        }
+
+        [HttpPost("Admin", Name = "RegisterAdmin")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<int>>
+            RegisterAdmin(RegisterAdminRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var result = await _userService.RegitserAdminAsync(request);
+            return result.Status switch
+            {
+
+                enRegisterAdminStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+
+                enRegisterAdminStatus.NotUniquePhone => BadRequest("Phone must be unique"), 
+
+                _ => CreatedAtRoute("GetUserById", new { Id = result.Id },null)
+            };
+        }
+
+        [HttpGet("{Id}", Name = "GetUserById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<GetUserByIdResponse>>
+            GetUserById(int Id)
+        {
+            if (Id < 1)
+                return BadRequest();
+
+            var response = await _userService.GetUserByIdAsync(Id);
+            return response == null ? NotFound() : Ok(response);
         }
 
     }

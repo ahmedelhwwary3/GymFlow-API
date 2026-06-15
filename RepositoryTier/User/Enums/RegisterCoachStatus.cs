@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.Coach.Enums
+namespace RepositoryTier.User.Enums
 {
-    public enum enAddCoachStatus
+    public enum enRegisterCoachStatus
     {
         NotUniqueEmail=1,
         NotUniquePhone=2,

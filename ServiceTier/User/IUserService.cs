@@ -1,7 +1,8 @@
+using RepositoryTier.Member.DTOs;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.DTOs.Authentication;
 using RepositoryTier.User.Enums;
-using RepositoryTier.User.Results; 
+using RepositoryTier.User.Results;
 
 namespace ServiceTier.User
 {
@@ -15,5 +16,10 @@ namespace ServiceTier.User
         Task<bool> ExistsByEmailAsync(string phone);
         Task<Boolean> IsUniquePhoneAsync(string phone, int userId = 0);
         Task<Boolean> IsUniqueEmailAsync(string email, int userId = 0);
+        Task<RegisterMemberResult> RegitserMemberAsync(RegisterMemberRequest request);
+        Task<RegisterCoachResult> RegitserCoachAsync(RegisterCoachRequest request);
+        Task<RegisterAdminResult> RegitserAdminAsync(RegisterAdminRequest request);
+        Task<GetUserByIdResponse> GetUserByIdAsync(int Id);
+
     }
 }

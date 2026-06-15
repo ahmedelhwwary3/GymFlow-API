@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.Member.Enums
+namespace RepositoryTier.User.Enums
 {
-    public enum enAddMemberStatus
+    public enum enRegisterMemberStatus
     {
         NotUniqueEmail = 1,
         NotUniquePhone = 2, 
         CoachNotExists = 3, 
         CoachInactive = 4, 
-        Succeeded = 5, 
-        InternalServerError = 6
+        Succeeded = 5
     }
 }

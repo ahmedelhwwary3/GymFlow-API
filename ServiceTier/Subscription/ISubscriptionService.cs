@@ -1,4 +1,4 @@
-﻿using RepositoryTier.Coach.Results;
+﻿ 
 using RepositoryTier.Subscription.DTOs;
 using RepositoryTier.Subscription.Enums;
 using RepositoryTier.Subscription.Results;

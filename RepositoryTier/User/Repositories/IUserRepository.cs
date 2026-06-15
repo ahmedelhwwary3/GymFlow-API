@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositoryTier.User.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,6 @@ namespace RepositoryTier.User.Repositories
         Task<bool> ExistsByEmailAsync(string email);
         Task<String?> GetPhoneByIdAsync(int Id);
         Task<String?> GetEmailByIdAsync(int Id);
+        Task<GetUserByIdResponse?> GetUserByIdAsync(int Id);
     }
 }

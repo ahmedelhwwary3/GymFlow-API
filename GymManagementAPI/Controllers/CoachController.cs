@@ -2,6 +2,8 @@
 using RepositoryTier.Coach.DTOs; 
 using ServiceTier.Coach;
 using RepositoryTier.Coach.Enums;
+using RepositoryTier.User.DTOs;
+using RepositoryTier.User.Enums;
 
 namespace GymManagementAPI.Controllers
 {
@@ -29,27 +31,7 @@ namespace GymManagementAPI.Controllers
                 .GetCoachesAsync(request); 
 
             return Ok(response);
-        }
-
-        [HttpPost(Name ="AddCoach")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<AddCoachResponse>> AddCoach(AddCoachRequest request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var result = await _coachService.AddAsync(request);
-            return result.Status switch {  
-
-                enAddCoachStatus.NotUniqueEmail => BadRequest("Email must be unique"),
-
-                enAddCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
-
-                _=>CreatedAtRoute("GetCoachById",new { Id=result.Resopnse.Id}, result.Resopnse) 
-            };
-        }
+        } 
          
         [HttpGet("{Id}",Name = "GetCoachById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

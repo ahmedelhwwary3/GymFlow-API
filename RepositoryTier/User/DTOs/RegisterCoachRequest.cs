@@ -1,5 +1,4 @@
-﻿ 
-using RepositoryTier.Coach.Enums;
+﻿using RepositoryTier.Coach.Enums;
 using RepositoryTier.CustomAttributes;
 using RepositoryTier.User.Enums;
 using System;
@@ -10,9 +9,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.Coach.DTOs
+namespace RepositoryTier.User.DTOs
 {
-    public class AddCoachRequest
+    public class RegisterCoachRequest
     {
         [EnumDataType(typeof(enCoachSpecialization))]
         public enCoachSpecialization Specialization { get; set; }

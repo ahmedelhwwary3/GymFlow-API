@@ -2,12 +2,13 @@
 using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.Coach.Repositories;
-using RepositoryTier.Coach.Results;
 using RepositoryTier.Entities;
 using RepositoryTier.Member.Enums;
 using RepositoryTier.User;
+using RepositoryTier.User.DTOs;
 using RepositoryTier.User.Enums;
 using RepositoryTier.User.Repositories;
+using RepositoryTier.User.Results;
 using ServiceTier.User;
 using System.Linq;
 using System.Text;
@@ -29,47 +30,7 @@ namespace ServiceTier.Coach
             _repo = repo;
             _userRepo = userRepo;
             _userService = userService;
-        }
-           
-        public async Task<AddCoachResult> AddAsync(AddCoachRequest request)
-        {
-            bool isUniqueEmail = await _userService.IsUniqueEmailAsync(request.Email);
-            bool isUniquePhone = await _userService.IsUniquePhoneAsync(request.Phone);
-
-            if (!isUniqueEmail)
-                return new AddCoachResult(enAddCoachStatus.NotUniqueEmail);
-
-            if (!isUniquePhone)
-                return new AddCoachResult(enAddCoachStatus.NotUniqueEmail);
-
-            var newCoach = new RepositoryTier.Entities.Coach()
-            {
-                CreatedAt=DateTime.UtcNow,
-                DateOfBirth=request.DateOfBirth,
-                Email=request.Email.Trim(),
-                FullName=request.FullName.Trim(),
-                Gender=request.Gender,
-                HireDate= DateOnly.FromDateTime(DateTime.UtcNow),
-                PasswordHash=BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Phone=request.Phone.Trim(),
-                Role=enUserRole.Coach,
-                Salary=request.Salary,
-                Specialization=request.Specialization 
-            };
-              
-            await _repo.AddAsync(newCoach);
-            int affectedRows= await _repo.SaveChangesAsync();
-
-            var response = new AddCoachResponse()
-            {
-                HireDate = newCoach.HireDate,
-                Salary = newCoach.Salary,
-                Id = newCoach.Id,
-                Specialization = newCoach.Specialization
-            };
-            return new AddCoachResult(enAddCoachStatus.Succeeded, response);
-        }
-
+        } 
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
         {  
             return await _repo.GetCoachesAsync(request);

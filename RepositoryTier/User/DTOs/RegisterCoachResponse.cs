@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.Coach.DTOs
+namespace RepositoryTier.User.DTOs
 {
-    public class AddCoachResponse
+    public class RegisterCoachResponse
     {
         public int Id { get; set; }
          
