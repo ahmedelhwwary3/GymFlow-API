@@ -6,7 +6,8 @@ using Microsoft.OpenApi.Models;
 using RepositoryTier;
 using RepositoryTier.API_Configurations;
 using RepositoryTier.Attendance.Repositories;
-using RepositoryTier.Coach.Repositories; 
+using RepositoryTier.Coach.Repositories;
+using RepositoryTier.Dashboard.Repositories;
 using RepositoryTier.Exercise.Repositories;
 using RepositoryTier.Member.Repositories;
 using RepositoryTier.Payment.Repositories;
@@ -17,7 +18,8 @@ using RepositoryTier.WorkoutPlan.Repositories;
 using RepositoryTier.WorkoutPlanExercise.Repositories;
 using ServiceTier;
 using ServiceTier.Attendance;
-using ServiceTier.Coach; 
+using ServiceTier.Coach;
+using ServiceTier.Dashboard;
 using ServiceTier.Exercise;
 using ServiceTier.Member;
 using ServiceTier.Payment;
@@ -63,6 +65,7 @@ namespace GymManagement
             builder.Services.AddScoped<IWeightRecordRepository, WeightRecordRepository>();
             builder.Services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
             builder.Services.AddScoped<IWorkoutPlanExerciseRepository, WorkoutPlanExerciseRepository>();
+            builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
             builder.Services.AddScoped<IAttendanceService, AttendanceService>();
             builder.Services.AddScoped<ICoachService, CoachService>();
@@ -74,6 +77,7 @@ namespace GymManagement
             builder.Services.AddScoped<IWeightRecordService, WeightRecordService>();
             builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
             builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             builder.Services.AddEndpointsApiExplorer();
 
