@@ -11,5 +11,6 @@ namespace RepositoryTier.WorkoutPlan.Repositories
     {
         Task<GetWorkoutPlansResponse> GetWorkoutPlansAsync(GetWorkoutPlansRequest request,int? memberId);
         Task<Entities.WorkoutPlan?> GetLastByMemberIdAsync(int memberId);
+        Task<GetWorkoutPlanByIdResponse?> GetByIdAsync(int Id);
     }
 }

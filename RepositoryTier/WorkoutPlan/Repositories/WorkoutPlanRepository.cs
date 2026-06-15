@@ -80,5 +80,35 @@ namespace RepositoryTier.WorkoutPlan.Repositories
                .OrderBy(w => w.Id)
                .LastAsync(w => w.MemberId == memberId);
         }
+
+        public async Task<GetWorkoutPlanByIdResponse?> GetByIdAsync(int Id)
+        {
+            return await _context.WorkoutPlans
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Where(p => p.Id == Id)
+                .Select(p =>
+                new GetWorkoutPlanByIdResponse
+                {
+                    Id = p.Id,
+                    IsActive = p.IsActive,
+                    CoachId = p.CoachId,
+                    CoachName = p.Coach.FullName,
+                    MemberId = p.MemberId,
+                    MemberName = p.Member.FullName,
+                    PlanName = p.Name,
+
+                    Exercises =
+                    p.WorkoutPlanExercises
+                    .Select(e =>
+                    new GetWorkoutPlanExerciseResponse
+                    {
+                        Id = e.Id,
+                        Notes = e.Notes,
+                        Reps = e.Reps,
+                        Sets = e.Sets
+                    }).ToList()
+                }).SingleOrDefaultAsync();
+        }
     }
 }

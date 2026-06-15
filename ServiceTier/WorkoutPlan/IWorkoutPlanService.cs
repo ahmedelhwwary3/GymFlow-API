@@ -10,6 +10,7 @@ namespace ServiceTier.WorkoutPlan
     public interface IWorkoutPlanService: IService<RepositoryTier.Entities.WorkoutPlan>
     {
         Task<GetWorkoutPlansResponse> GetWorkoutPlansAsync(GetWorkoutPlansRequest request,int? memberId);
-        Task<AddWorkoutPlanResult> AddWithExercisesAsync(AddWorkoutPlanRequest request);
+        Task<AddWorkoutPlanResult> AddFullPlanAsync(AddWorkoutPlanRequest request);
+        Task<GetWorkoutPlanByIdResponse?> GetByIdAsync(int Id);
     }
 }

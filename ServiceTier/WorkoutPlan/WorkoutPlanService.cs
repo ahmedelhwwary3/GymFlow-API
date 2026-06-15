@@ -42,7 +42,7 @@ namespace ServiceTier.WorkoutPlan
         }
 
         public async Task<AddWorkoutPlanResult> 
-            AddWithExercisesAsync(AddWorkoutPlanRequest request)
+            AddFullPlanAsync(AddWorkoutPlanRequest request)
         {
             //1.check coach exists and active
             if (request.CoachId == null)
@@ -115,6 +115,11 @@ namespace ServiceTier.WorkoutPlan
             _repo.ChangeAutoDetectChangesStatus(true);
             int affectedRows= await _userRepo.SaveChangesAsync();
             return new AddWorkoutPlanResult(enAddWorkoutPlanStatus.Succeeded);
+        }
+
+        public async Task<GetWorkoutPlanByIdResponse?> GetByIdAsync(int Id)
+        {
+            return await _repo.GetByIdAsync(Id);
         }
     }
 }

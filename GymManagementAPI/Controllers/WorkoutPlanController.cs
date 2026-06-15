@@ -73,7 +73,7 @@ namespace GymManagementAPI.Controllers
             } 
             //Here we are sure that coachId is not null
             var result = await _workoutPlanService
-                .AddWithExercisesAsync(request);
+                .AddFullPlanAsync(request);
 
             return result.Status switch
             {
@@ -93,44 +93,17 @@ namespace GymManagementAPI.Controllers
 
         [HttpGet("{Id}",Name = "GetWorkoutPlanById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]  
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<AddWorkoutPlanResult>>
-            GetWorkoutPlanById(AddWorkoutPlanRequest request)
+        public async Task<ActionResult<GetWorkoutPlanByIdResponse>> 
+            GetWorkoutPlanById(int Id)
         {
-            if (!ModelState.IsValid)
+            if (Id < 1)
                 return BadRequest();
+             
+            var response = await _workoutPlanService.GetByIdAsync(Id);
 
-            bool isAdmin = User.IsInRole(((int)enUserRole.Admin).ToString());
-            if (isAdmin && request.CoachId == null)
-                return BadRequest("Admin must select coach");
-
-            bool isCoach = User.IsInRole(((int)enUserRole.Coach).ToString());
-            if (isCoach)
-            {
-                string? coachId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(coachId))
-                    return Unauthorized("Token is no longe valid");
-                request.CoachId = Convert.ToInt32(coachId);
-            }
-            //Here we are sure that coachId is not null
-            var result = await _workoutPlanService
-                .AddWithExercisesAsync(request);
-
-            return result.Status switch
-            {
-                enAddWorkoutPlanStatus.ExerciseRepeated => BadRequest("An exercise is repeated"),
-
-                enAddWorkoutPlanStatus.ExerciseNotFound => BadRequest("An exercise is not found"),
-
-                enAddWorkoutPlanStatus.CoachNotFound => BadRequest("Coach not found"),
-
-                enAddWorkoutPlanStatus.MemberNotFound => NotFound("Member not found"),
-
-                _ => CreatedAtRoute("GetWorkoutPlanById", new { Id = result.Id }, null)
-            };
+            return Ok(response); 
         }
     }
 }
