@@ -143,7 +143,7 @@ namespace GymManagementAPI.Controllers
             return response == null ? NotFound("User is not found") : Ok(response);
         }
 
-        [HttpPut("{Id}", Name = "UpdateUser")]
+        [HttpPut("{Id}", Name = "UpdateUserById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)] 
