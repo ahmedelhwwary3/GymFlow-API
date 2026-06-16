@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Member.DTOs;
+using RepositoryTier.Member.Enums;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.Enums;
 using ServiceTier;
@@ -70,9 +71,9 @@ namespace GymManagementAPI.Controllers
             var result = await _userService.RegitserMemberAsync(request);
             return result.Status switch
             {
-                enRegisterMemberStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+                enRegisterMemberStatus.NotUniqueEmail => Conflict("Email must be unique"),
 
-                enRegisterMemberStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+                enRegisterMemberStatus.NotUniquePhone => Conflict("Phone must be unique"),
 
                 enRegisterMemberStatus.CoachInactive => BadRequest("Coach must be active"),
 
@@ -97,9 +98,9 @@ namespace GymManagementAPI.Controllers
             return result.Status switch
             {
 
-                enRegisterCoachStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+                enRegisterCoachStatus.NotUniqueEmail => Conflict("Email must be unique"),
 
-                enRegisterCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+                enRegisterCoachStatus.NotUniquePhone => Conflict("Phone must be unique"),
 
                 _ => CreatedAtRoute("GetCoachById", new { Id = result.Resopnse.Id }, result.Resopnse)
             };
@@ -119,9 +120,9 @@ namespace GymManagementAPI.Controllers
             return result.Status switch
             {
 
-                enRegisterAdminStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+                enRegisterAdminStatus.NotUniqueEmail => Conflict("Email must be unique"),
 
-                enRegisterAdminStatus.NotUniquePhone => BadRequest("Phone must be unique"), 
+                enRegisterAdminStatus.NotUniquePhone => Conflict("Phone must be unique"), 
 
                 _ => CreatedAtRoute("GetUserById", new { Id = result.Id },null)
             };
@@ -139,7 +140,33 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
 
             var response = await _userService.GetUserByIdAsync(Id);
-            return response == null ? NotFound() : Ok(response);
+            return response == null ? NotFound("User is not found") : Ok(response);
+        }
+
+        [HttpPut("{Id}", Name = "UpdateUser")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)] 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateUserById(int Id, [FromBody] UpdateUserRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var status = await _userService.UpdateUserByIdAsync(Id, request);
+            return status switch
+            {
+                enUpdateUserStatus.NotUniqueEmail => Conflict("Email must be unique"),
+
+                enUpdateUserStatus.NotUniquePhone => Conflict("Phone must be unique"), 
+
+                enUpdateUserStatus.DataNotChanged => BadRequest("Data not changed"),
+
+                enUpdateUserStatus.UserNotFound => NotFound("User not found"), 
+
+                _ => NoContent()
+            };
         }
 
     }

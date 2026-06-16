@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RepositoryTier.Coach.DTOs; 
+using RepositoryTier.Coach.DTOs;
 using ServiceTier.Coach;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.User.DTOs;
@@ -14,74 +14,73 @@ namespace GymManagementAPI.Controllers
         private readonly ICoachService _coachService;
         public CoachController(ICoachService coachService)
         {
-            _coachService= coachService;
+            _coachService = coachService;
         }
 
-        [HttpGet("Coaches",Name = "GetCoaches")]
+        [HttpGet("Coaches", Name = "GetCoaches")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<GetCoachesResponse>>>
-            GetCoaches([FromQuery]GetCoachesRequest request)
+            GetCoaches([FromQuery] GetCoachesRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var response = await _coachService
-                .GetCoachesAsync(request); 
+            var response = await _coachService.GetCoachesAsync(request);
 
             return Ok(response);
-        } 
-         
-        [HttpGet("{Id}",Name = "GetCoachById")]
+        }
+
+        [HttpGet("{Id}", Name = "GetCoachById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<GetCoachByIdResponse>>GetCoachById(int Id)
+        public async Task<ActionResult<GetCoachByIdResponse>> GetCoachById(int Id)
         {
             if (Id < 1)
                 return BadRequest();
 
             var response = await _coachService.GetByIdAsync(Id);
-            return response==null?NotFound("Coach not found"): Ok(response);
+
+            return response == null ? NotFound("Coach is not found") : Ok(response);
         }
 
         [HttpPut("{Id}", Name = "UpdateCoach")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetCoachByIdResponse>>
-            UpdateCoach(int Id,UpdateCoachByIdRequest request)
+            UpdateCoach(int Id, UpdateCoachByIdRequest request)
         {
             if (Id < 1 || !ModelState.IsValid)
                 return BadRequest();
 
-            var response = await _coachService
-                .UpdateAsync(Id,request);
+            var response = await _coachService.UpdateAsync(Id, request);
 
             return response switch
             {
                 enUpdateCoachStatus.CoachNotFound => NotFound("Coach not found"),
 
-                enUpdateCoachStatus.NotUniqueEmail => BadRequest("Email must be unique"),
+                enUpdateCoachStatus.NotUniqueEmail => Conflict("Email must be unique"),
 
-                enUpdateCoachStatus.NotUniquePhone => BadRequest("Phone must be unique"),
+                enUpdateCoachStatus.NotUniquePhone => Conflict("Phone must be unique"),
 
                 enUpdateCoachStatus.DataNotChanged => BadRequest("Date not changed"),
 
-                _=> NoContent()
+                _ => NoContent()
             };
         }
 
-        [HttpGet("LookUpCoaches", Name = "GetLookUpCoaches")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("LookUpCoaches", Name = "GetLookUpCoaches")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<CoachLookUpResponse>>>
             GetLookUpCoaches()
-        {  
+        {
             var response = await _coachService.GetLookUpCoachesAsync();
             return Ok(response);
         }

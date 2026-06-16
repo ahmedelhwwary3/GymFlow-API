@@ -9,8 +9,7 @@ namespace RepositoryTier.User.Enums
     public enum enLoginStatus
     {
         UserNotFound,
-        Inactive,
-        Deleted,
+        Inactive, 
         InvalidPassword,
         Succeeded
     }

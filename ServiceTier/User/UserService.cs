@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryTier.API_Configurations;
+using RepositoryTier.Coach.Enums;
 using RepositoryTier.Coach.Repositories;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.DTOs.Authentication;
@@ -89,10 +91,7 @@ namespace ServiceTier.User
                 return new LoginResult(enLoginStatus.UserNotFound);
 
             if (!user.IsActive)
-                return new LoginResult(enLoginStatus.Inactive);
-
-            if(user.IsDeleted)
-                return new LoginResult(enLoginStatus.Deleted);
+                return new LoginResult(enLoginStatus.Inactive); 
 
             bool isValidPassword = BCrypt.Net.BCrypt
                 .Verify(request.Password.Trim(), user.PasswordHash);
@@ -141,17 +140,14 @@ namespace ServiceTier.User
                 return new RefreshResult(enRefreshStatus.UserNotFound);
 
             if (!user.IsActive) 
-                return new RefreshResult(enRefreshStatus.Inactive);
-
-            if (user.IsDeleted)
-                return new RefreshResult(enRefreshStatus.Deleted);
+                return new RefreshResult(enRefreshStatus.Inactive); 
 
             bool isUserRefreshToken = BCrypt.Net.BCrypt
                 .Verify(request.RefreshToken.Trim(), user.RefreshTokenHash);
             if (!isUserRefreshToken ||
                 user.RefreshTokenExpiresAt < DateTime.UtcNow ||
                 user.RefreshTokenRevokedAt != null)
-                return new RefreshResult(enRefreshStatus.InvalidPassword);
+                return new RefreshResult(enRefreshStatus.InvalidToken);
             // B) refresh token is valid - generate new tokens
             //1.access token
             var Claims = new Claim[]
@@ -363,9 +359,44 @@ namespace ServiceTier.User
             return new RegisterAdminResult(enRegisterAdminStatus.Succeeded, newMember.Id);
         }
 
-        public async Task<GetUserByIdResponse> GetUserByIdAsync(int Id)
+        public async Task<GetUserByIdResponse?> GetUserByIdAsync(int Id)
         {
             return await _repo.GetUserByIdAsync(Id);
+        }
+
+        public async Task<enUpdateUserStatus> UpdateUserByIdAsync(int Id, UpdateUserRequest request)
+        {
+            //1.Unique Email & Phone
+            bool isUniqueEmail = await IsUniqueEmailAsync(request.Email, Id);
+            bool isUniquePhone = await IsUniquePhoneAsync(request.Phone, Id);
+
+            if (!isUniqueEmail)
+                return enUpdateUserStatus.NotUniqueEmail;
+
+            if (!isUniquePhone)
+                return enUpdateUserStatus.NotUniquePhone;// 
+
+            //2.Load then Update strategy for efCore Tracking
+            var user = await _repo.FindAsync(Id);
+            if (user == null)
+                return enUpdateUserStatus.UserNotFound;  
+
+            user.Phone = request.Phone.Trim();
+            user.Email = request.Email.Trim();
+            user.FullName = request.FullName.Trim();
+            user.DateOfBirth = request.DateOfBirth;
+            user.Gender = request.Gender;
+            user.Role = request.Role;
+            user.IsActive = request.IsActive;
+             
+            EntityState state = _repo.GetEntityState(user);
+            if (state == EntityState.Unchanged)
+                return enUpdateUserStatus.DataNotChanged;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            //3.Save
+            int affectedRows = await _repo.SaveChangesAsync();
+            return enUpdateUserStatus.Succeeded;
         }
     }
 }

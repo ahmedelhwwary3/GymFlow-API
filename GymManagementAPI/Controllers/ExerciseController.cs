@@ -43,7 +43,7 @@ namespace GymManagementAPI.Controllers
             var response = await _exerciseService.AddAsync(request);
             return response.Status switch
             {
-                enAddExerciseStatus.NotUniqueName => BadRequest("Exercise name is not unique"),
+                enAddExerciseStatus.NotUniqueName => Conflict("Exercise name must be unique"),
 
                 _ => Ok(response.Id)
             };
@@ -63,7 +63,7 @@ namespace GymManagementAPI.Controllers
             var status = await _exerciseService.UpdateAsync(Id,request);
             return status switch
             {
-                enUpdateExerciseStatus.NotUniqueName => BadRequest("Exercise name is not unique"),
+                enUpdateExerciseStatus.NotUniqueName => Conflict("Exercise name is not unique"),
 
                 enUpdateExerciseStatus.DataNotChanged => BadRequest("Data not changed"),
 

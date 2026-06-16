@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace RepositoryTier.User.Enums
 {
-    public enum enRefreshStatus
+    public enum enUpdateUserStatus
     {
-
-        UserNotFound=1,
-        Inactive=2,  
-        Succeeded=3,
-        InvalidToken=4
+        NotUniqueEmail = 1, 
+        NotUniquePhone = 2,
+        UserNotFound = 3,
+        DataNotChanged = 4,
+        Succeeded = 5
     }
 }

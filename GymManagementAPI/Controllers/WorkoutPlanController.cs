@@ -81,9 +81,9 @@ namespace GymManagementAPI.Controllers
 
                 enAddWorkoutPlanStatus.ExerciseNotFound => BadRequest("An exercise is not found"),
 
-                enAddWorkoutPlanStatus.CoachNotFound => BadRequest("Coach not found"), 
+                enAddWorkoutPlanStatus.CoachNotFound => NotFound("Coach not found"), 
 
-                enAddWorkoutPlanStatus.CoachInactive => BadRequest("Coach is not active"),
+                enAddWorkoutPlanStatus.CoachInactive => Unauthorized("Coach is not active"),
 
                 enAddWorkoutPlanStatus.MemberNotFound => NotFound("Member not found"),
 

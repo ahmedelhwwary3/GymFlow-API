@@ -39,6 +39,7 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<AddSubscriptionResult>>
             AddSubscription([FromBody] AddSubscriptionRequest request)
@@ -62,7 +63,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddSubscriptionStatus.CoachInctive => BadRequest("Coach is not active"),
 
-                enAddSubscriptionStatus.MemberInactive => BadRequest("Member is not active"),
+                enAddSubscriptionStatus.MemberInactive => Unauthorized("Member is not active"),
 
                 _=>CreatedAtRoute("GetSubscriptionById",new { Id=response.Id},null)
             };
@@ -80,7 +81,7 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
 
             var response = await _subscriptionService.GetByIdAsync(Id);
-            return response == null ? NotFound("Subscription not found") : Ok(response);
+            return response == null ? NotFound("Subscription is not found") : Ok(response);
         }
 
         [HttpPatch("{Id}/FreezeSubscription", Name = "FreezeSubscriptionById")]

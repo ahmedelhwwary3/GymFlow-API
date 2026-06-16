@@ -37,9 +37,7 @@ namespace GymManagementAPI.Controllers
             {
                 enLoginStatus.UserNotFound => Unauthorized("Invalid username or password"),
 
-                enLoginStatus.InvalidPassword => Unauthorized("Invalid username or password"),
-
-                enLoginStatus.Deleted => Unauthorized("User is deleted"),
+                enLoginStatus.InvalidPassword => Unauthorized("Invalid username or password"), 
 
                 enLoginStatus.Inactive => Unauthorized("User is not active"),
 
@@ -48,7 +46,7 @@ namespace GymManagementAPI.Controllers
         }
 
         [HttpPost("Refresh",Name = "Refresh")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -60,8 +58,16 @@ namespace GymManagementAPI.Controllers
 
             var result = await _userService.RefreshAsync(request);
 
-            return result.RefreshStatus == enRefreshStatus.Succeeded ?
-                Ok(result.TokenResponse) : Unauthorized("Refresh token is no longer valid");
+            return result.RefreshStatus switch
+            {
+                enRefreshStatus.Inactive => Unauthorized("User is not active"),
+
+                enRefreshStatus.UserNotFound => NotFound("User is not found"),
+
+                enRefreshStatus.InvalidToken=>Unauthorized("Token is no longer valid"),
+
+                _ => Ok(result.TokenResponse)
+            }; 
         }
 
         [HttpPost("Logout", Name = "Logout")]
@@ -74,11 +80,8 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
 
             bool succeeded = await _userService.LogoutAsync(request);
-            // To confuse attackers, we return 200 OK even if the logout fails (e.g., invalid token)
-            if (!succeeded)
-                return Ok();
-
-            return Ok("Logged out successfully");// Frindly message for successful logout
+            //OK() To confuse attackers, we return 200 OK even if the logout fails (e.g., invalid token) 
+            return succeeded ? Ok("Logged out successfully") : Ok(); 
         }
 
     }

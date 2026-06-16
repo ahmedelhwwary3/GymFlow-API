@@ -19,7 +19,8 @@ namespace ServiceTier.User
         Task<RegisterMemberResult> RegitserMemberAsync(RegisterMemberRequest request);
         Task<RegisterCoachResult> RegitserCoachAsync(RegisterCoachRequest request);
         Task<RegisterAdminResult> RegitserAdminAsync(RegisterAdminRequest request);
-        Task<GetUserByIdResponse> GetUserByIdAsync(int Id);
+        Task<GetUserByIdResponse?> GetUserByIdAsync(int Id);
+        Task<enUpdateUserStatus> UpdateUserByIdAsync(int Id,UpdateUserRequest request);
 
     }
 }

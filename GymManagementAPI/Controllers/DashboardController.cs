@@ -19,9 +19,9 @@ namespace GymManagementAPI.Controllers
 
         [HttpGet(Name = "GetDashboard")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)] 
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetDashboard()
         { 
             bool isAdmin = User.IsInRole(((int)enUserRole.Admin).ToString());
@@ -48,7 +48,7 @@ namespace GymManagementAPI.Controllers
             else
             {
                 var response = await _dashboardService.GetForMemberAsync(Id);
-                return response == null ? NotFound("Member not found") : Ok(response);
+                return response == null ? NotFound("Member is not found") : Ok(response);
             }
         }
     }
