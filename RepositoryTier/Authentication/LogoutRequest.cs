@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.User.DTOs.Authentication
+namespace RepositoryTier.Authentication
 {
     public class LogoutRequest
     {

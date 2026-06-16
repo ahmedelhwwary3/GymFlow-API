@@ -1,4 +1,5 @@
-﻿using RepositoryTier.User.DTOs.Authentication;
+﻿using RepositoryTier.Authentication;
+ 
 using RepositoryTier.User.Enums;
 using System;
 using System.Collections.Generic;
