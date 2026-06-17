@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using RepositoryTier.User.DTOs.Authentication;
+using Microsoft.AspNetCore.Mvc; 
 using RepositoryTier.User.Enums;
 using RepositoryTier.User.Results;
+using RepositoryTier.Authentication;
 using ServiceTier; 
 using ServiceTier.User;
 

@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -43,7 +44,8 @@ namespace GymManagement
 
             builder.Services.AddControllers();
 
-            var jwt = builder.Configuration.GetSection("JWT"); 
+            var jwt = builder.Configuration.GetSection("JWT");
+            string corsPolicy1 = "corsPolicy1";
 
             builder.Services.AddDbContext<GymManagementDbContext>(options=>
             {
@@ -80,6 +82,19 @@ namespace GymManagement
             builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(corsPolicy1, policy =>
+                {
+                    policy.WithOrigins(
+                    "http://localhost:5059",
+                    "https://localhost:7041")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                }
+                );
+            });
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -182,6 +197,10 @@ namespace GymManagement
                     });
                 });
             });
+
+            app.UseHttpsRedirection();
+
+            app.UseCors(corsPolicy1);
 
             app.UseHttpsRedirection();
 
