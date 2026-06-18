@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Enums;
+using RepositoryTier.User.Enums;
 using ServiceTier.Member;
 using System.Security.Claims;
 
@@ -11,6 +14,7 @@ namespace GymManagementAPI.Controllers
 {
     [Route("api/Member")]
     [ApiController]
+    [Authorize]
     public class MemberController : ControllerBase
     {
         private readonly IMemberService _memberService;
@@ -23,21 +27,33 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<GetAssignedMembersForCoachResponse>>
-            GetAssignedMembersForCoach([FromQuery] GetAssignedMembersForCoachRequest request)
+            GetAssignedMembersForCoach(int coachId,[FromQuery] GetAssignedMembersForCoachRequest request,
+            [FromServices]IAuthorizationService authService)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || coachId<1)
                 return BadRequest();
 
+            var authResult = await authService
+                .AuthorizeAsync(User,coachId,Policies.OwnerOrAdmin);
+
+            if (!authResult.Succeeded)
+                return Forbid();
+
             var response = await _memberService
-                .GetAssignedMembersForCoachAsync(request); 
+                .GetAssignedMembersForCoachAsync(coachId,request); 
 
             return Ok(response);
         }
 
+        [Authorize(Roles =UserRoles.Admin)]
         [HttpGet("Members", Name = "GetMembers")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetMembersResopnse>>
             GetMembers([FromQuery] GetMembersRequest request)
@@ -49,50 +65,63 @@ namespace GymManagementAPI.Controllers
              
             return Ok(response);
         }
-
-        [HttpGet(Name = "GetMemeberProfile")]
+         
+        [HttpGet("profile",Name = "GetMemeberProfileById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetMemberByIdResopnse>>
-            GetMemeberProfile()
+            GetMemeberProfileById(int Id, [FromServices]IAuthorizationService authService)
         {
-            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                return Unauthorized("Token in no longer valid");
-            int Id = Convert.ToInt32(userId);
-              
-            var response = await _memberService.GetProfileAsync(Id);
+            var authResult = await authService
+                .AuthorizeAsync(User,Id,Policies.OwnerOrAdmin);
+
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            var response = await _memberService.GetProfileByIdAsync(Id);
             if (response == null)
                 return NotFound();
 
             return Ok(response);
         }
-
+         
         [HttpGet("{Id}", Name = "GetMemeberById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetMemberByIdResopnse>>
-            GetMemeberById(int Id)
+            GetMemeberById(int Id, [FromServices]IAuthorizationService authService)
         { 
             if (Id < 1)
                 return BadRequest();
+
+            var authResult = await authService
+                .AuthorizeAsync(User,Id,Policies.OwnerOrAdmin);
+
+            if (!authResult.Succeeded)
+                return Forbid();
 
             var response = await _memberService.GetByIdAsync(Id);
             if (response == null)
                 return NotFound();
 
             return Ok(response);
-        } 
+        }
 
+        [Authorize(Roles =$"{UserRoles.Admin}")]
         [HttpPut("{Id}",Name = "UpdateMember")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateMember(int Id,[FromBody]UpdateMemberRequest request)
@@ -118,23 +147,27 @@ namespace GymManagementAPI.Controllers
                 _=> NoContent()
             };
         }
-
-        [HttpPut("me", Name = "UpdateMemberProfile")]
+         
+        [HttpPut("profile", Name = "UpdateMemberProfile")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateMemberProfile([FromBody] UpdateMemberProfileRequest request)
+        public async Task<IActionResult> UpdateMemberProfile(int Id,[FromBody] UpdateMemberProfileRequest request, 
+            [FromServices] IAuthorizationService authService)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-                return Unauthorized("Token is no longer valid");
+            var authResult = await authService
+               .AuthorizeAsync(User, Id, Policies.OwnerOrAdmin);
 
-            int Id = Convert.ToInt32(userId); 
+            if (!authResult.Succeeded)
+                return Forbid();
+
             enUpdateMemberProfileStatus status = await _memberService
                 .UpdateProfileAsync(Id,request);
 

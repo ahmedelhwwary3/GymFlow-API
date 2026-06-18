@@ -62,6 +62,8 @@ namespace RepositoryTier.Subscription.Repositories
                 _ => query
             };
 
+            int totalCount = await _context.Subscriptions.CountAsync();
+
             var shapedQuery = query
                 .IgnoreQueryFilters()
                 .AsNoTracking()
@@ -82,12 +84,12 @@ namespace RepositoryTier.Subscription.Repositories
                  .Skip((page - 1) * pageSize)
                  .Take(pageSize).ToListAsync();
 
-            int totalCount = await _context.Subscriptions.CountAsync();
-            var coaches = await _context.Coaches.Select(c => new CoachLookUpResponse()
-            {
-                FullName = c.FullName,
-                Id = c.Id
-            }).ToListAsync();
+            var coaches = request.MemberId.HasValue ? null :
+                await _context.Coaches.Select(c => new CoachLookUpResponse()
+                {
+                    FullName = c.FullName,
+                    Id = c.Id
+                }).ToListAsync();
 
             return new GetSubscriptionsResponse()
             {

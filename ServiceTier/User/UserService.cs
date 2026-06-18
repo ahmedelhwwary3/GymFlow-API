@@ -385,8 +385,7 @@ namespace ServiceTier.User
             user.Email = request.Email.Trim();
             user.FullName = request.FullName.Trim();
             user.DateOfBirth = request.DateOfBirth;
-            user.Gender = request.Gender;
-            user.Role = request.Role;
+            user.Gender = request.Gender; 
             user.IsActive = request.IsActive;
              
             EntityState state = _repo.GetEntityState(user);

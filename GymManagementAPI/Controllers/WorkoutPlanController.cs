@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Member.Enums;
@@ -13,6 +15,7 @@ namespace GymManagementAPI.Controllers
 {
     [Route("api/WorkoutPlan")]
     [ApiController]
+    [Authorize]
     public class WorkoutPlanController : ControllerBase
     {
         private readonly IWorkoutPlanService _workoutPlanService;
@@ -21,9 +24,11 @@ namespace GymManagementAPI.Controllers
             _workoutPlanService = workoutPlanService;
         }
 
+        [Authorize(Roles =$"{UserRoles.Admin}")]
         [HttpGet("WorkoutPlans",Name = "GetWorkoutPlans")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetWorkoutPlansResponse>> 
@@ -47,9 +52,11 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles=$"{UserRoles.Admin},{UserRoles.Coach}")] 
         [HttpPost(Name = "AddWorkoutPlan")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -93,14 +100,21 @@ namespace GymManagementAPI.Controllers
 
         [HttpGet("{Id}",Name = "GetWorkoutPlanById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]  
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetWorkoutPlanByIdResponse>> 
-            GetWorkoutPlanById(int Id)
+            GetWorkoutPlanById(int Id, [FromServices]IAuthorizationService authService)
         {
             if (Id < 1)
                 return BadRequest();
-             
+
+            var authResult = await authService.AuthorizeAsync(User,Id,Policies.WorkoutPlanOwnerOrAdmin);
+
+            if (!authResult.Succeeded)
+                return Forbid();
+
             var response = await _workoutPlanService.GetByIdAsync(Id);
 
             return Ok(response); 

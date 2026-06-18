@@ -5,11 +5,13 @@ using RepositoryTier.User.Results;
 using RepositoryTier.Authentication;
 using ServiceTier; 
 using ServiceTier.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymManagementAPI.Controllers
 {
     [Route("api/Auth")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly ILogger<AuthController> _logger;

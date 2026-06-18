@@ -1,16 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Subscription.DTOs;
 using RepositoryTier.Subscription.Enums;
 using RepositoryTier.Subscription.Results;
+using RepositoryTier.User.Enums;
 using ServiceTier.Subscription;
 
 namespace GymManagementAPI.Controllers
 { 
     [Route("api/Subscription")]
     [ApiController]
+    [Authorize]
     public class SubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService _subscriptionService;
@@ -18,16 +23,32 @@ namespace GymManagementAPI.Controllers
         {
             _subscriptionService = subscriptionService;
         }
-
+         
         [HttpGet("Subscriptions", Name = "GetSubscriptions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetSubscriptionsResponse>>
-            GetSubscriptions([FromQuery] GetSubscriptionsRequest request)
+            GetSubscriptions([FromQuery] GetSubscriptionsRequest request,
+            [FromServices]IAuthorizationService authService)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
+
+            if (request.MemberId.HasValue)
+            {
+                var authResult = await authService
+                    .AuthorizeAsync(User,request.MemberId,Policies.OwnerOrAdmin);
+
+                if (!authResult.Succeeded)
+                    return Forbid();
+            }
+
+            bool isAdmin = User.IsInRole($"{(int)enUserRole.Admin}");
+            if (!isAdmin)
+                return Forbid();
 
             var response = await _subscriptionService
                 .GetSubscriptionsAsync(request); 
@@ -35,11 +56,13 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles =UserRoles.Admin)]
         [HttpPost(Name = "AddSubscription")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<AddSubscriptionResult>>
             AddSubscription([FromBody] AddSubscriptionRequest request)
@@ -73,21 +96,32 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetSubscriptionByIdResponse>> 
-            GetSubscriptionById(int Id)
+            GetSubscriptionById(int Id, [FromServices] IAuthorizationService authService)
         {
             if (Id < 1)
                 return BadRequest();
+
+            var authResult = await authService
+                    .AuthorizeAsync(User, Id, Policies.SubscriptionOwnerOrAdmin);
+
+            if (!authResult.Succeeded)
+                return Forbid();
 
             var response = await _subscriptionService.GetByIdAsync(Id);
             return response == null ? NotFound("Subscription is not found") : Ok(response);
         }
 
+        [Authorize(Roles =$"{UserRoles.Admin}")]
         [HttpPatch("{Id}/FreezeSubscription", Name = "FreezeSubscriptionById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult>
             FreezeSubscriptionById(int Id,FreezeSubscriptionByIdRequest request)

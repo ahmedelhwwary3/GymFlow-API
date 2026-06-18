@@ -11,6 +11,7 @@ namespace RepositoryTier.Attendance.Enums
         MemberNotFound=1,
         HasExpiredSubscription=2,
         HasFrozenSubscription=3,
-        Succeeded=4
+        Succeeded=4,
+        HasTodayAttendance=5
     }
 }

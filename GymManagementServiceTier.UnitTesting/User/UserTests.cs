@@ -1,22 +1,26 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit;
 using NUnit.Framework;
-using RepositoryTier.User.Repositories; 
-using ServiceTier.User;
-using System.Security.Cryptography;
+using RepositoryTier.API_Configurations;
+using RepositoryTier.Coach.Repositories;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.Enums;
+using RepositoryTier.User.Repositories;
+using RepositoryTier.Entities;
+using ServiceTier.User;
+using System;
+using System.Security.Cryptography;
 
-namespace GymManagementServiceTier.UnitTesting.Users
+namespace GymManagementServiceTier.UnitTesting.User
 {
     [TestFixture]
     public class UserTests
     {
         private UserService _userService;
-        private Mock<IUserRepository> _repoMock; 
+        private Mock<IUserRepository> _repoMock;
+        private Mock<ICoachRepository> _coachRepoMock;
 
         [OneTimeSetUp]
         public void SetUp() 
@@ -41,6 +45,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
 
             _userService = new UserService(
                 _repoMock.Object,
+                _coachRepoMock.Object,
                 options, 
                 configs);
         }
@@ -75,7 +80,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
             string refreshToken= GenerateRefreshToken();
             //1.Arrange
             _repoMock.Setup(r => r.FindAsync(1))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new RepositoryTier.Entities.User()
             {
                 Id = 1,
                 Email = "koko@yahoo.com",
@@ -83,12 +88,12 @@ namespace GymManagementServiceTier.UnitTesting.Users
                 DeletedAt = null,
                 UpdatedAt = null,
                 IsActive = true,
-                Gender = 1,
+                Gender = enGender.Male,
                 FullName = "Ahmed Elhwwary",
                 RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
                 RefreshTokenRevokedAt = null,
                 RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
-                Role = 1,
+                Role = enUserRole.Admin,
                 DateOfBirth = new DateOnly(1990, 1, 1),
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
                 IsDeleted = false,
@@ -118,7 +123,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
             _repoMock.Setup(r => r.FindAsync(1))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new RepositoryTier.Entities.User()
                 {
                     Id = 1,
                     Email = "koko@yahoo.com",
@@ -126,12 +131,12 @@ namespace GymManagementServiceTier.UnitTesting.Users
                     DeletedAt = null,
                     UpdatedAt = null,
                     IsActive = true,
-                    Gender = 1,
+                    Gender = enGender.Male,
                     FullName = "Ahmed Elhwwary",
                     RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
                     RefreshTokenRevokedAt = null,
                     RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
-                    Role = 1,
+                    Role = enUserRole.Admin,
                     DateOfBirth = new DateOnly(1990, 1, 1),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
                     IsDeleted = false,
@@ -161,7 +166,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
             _repoMock.Setup(r => r.FindAsync(1))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new RepositoryTier.Entities.User()
                 {
                     Id = 1,
                     Email = "koko@yahoo.com",
@@ -169,12 +174,12 @@ namespace GymManagementServiceTier.UnitTesting.Users
                     DeletedAt = null,
                     UpdatedAt = null,
                     IsActive = true,
-                    Gender = 1,
+                    Gender = enGender.Male,
                     FullName = "Ahmed Elhwwary",
                     RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
                     RefreshTokenRevokedAt = null,
                     RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
-                    Role = 1,
+                    Role = enUserRole.Admin,
                     DateOfBirth = new DateOnly(1990, 1, 1),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
                     IsDeleted = false,
@@ -204,7 +209,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
             _repoMock.Setup(r => r.FindAsync(1))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new RepositoryTier.Entities.User()
                 {
                     Id = 1,
                     Email = "koko@yahoo.com",
@@ -212,12 +217,12 @@ namespace GymManagementServiceTier.UnitTesting.Users
                     DeletedAt = null,
                     UpdatedAt = null,
                     IsActive = true,
-                    Gender = 1,
+                    Gender = enGender.Male,
                     FullName = "Ahmed Elhwwary",
                     RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
                     RefreshTokenRevokedAt = null,
                     RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
-                    Role = 1,
+                    Role = enUserRole.Admin,
                     DateOfBirth = new DateOnly(1990, 1, 1),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
                     IsDeleted = false,
@@ -247,7 +252,7 @@ namespace GymManagementServiceTier.UnitTesting.Users
             string refreshToken = GenerateRefreshToken();
             //1.Arrange
             _repoMock.Setup(r => r.FindAsync(1))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new RepositoryTier.Entities.User()
                 {
                     Id = 1,
                     Email = "koko@yahoo.com",
@@ -255,12 +260,12 @@ namespace GymManagementServiceTier.UnitTesting.Users
                     DeletedAt = null,
                     UpdatedAt = null,
                     IsActive = true,
-                    Gender = 1,
+                    Gender = enGender.Male,
                     FullName = "Ahmed Elhwwary",
                     RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(5),
                     RefreshTokenRevokedAt = null,
                     RefreshTokenHash = BCrypt.Net.BCrypt.HashPassword(refreshToken),
-                    Role = 1,
+                    Role = enUserRole.Admin,
                     DateOfBirth = new DateOnly(1990, 1, 1),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("11112222"),
                     IsDeleted = false,

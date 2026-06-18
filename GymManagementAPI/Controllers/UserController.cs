@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Enums;
@@ -12,6 +14,7 @@ namespace GymManagementAPI.Controllers
 {
     [Route("api/User")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -19,12 +22,12 @@ namespace GymManagementAPI.Controllers
         {
             _userService=userService;
         }
-
+         
         [HttpPatch(Name = "ChangePassword")] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)] 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
@@ -57,11 +60,14 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [Authorize(Roles =UserRoles.Admin)] 
         [HttpPost("Member", Name = "RegisterMember")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] 
         public async Task<ActionResult<int>>
             RegisterMember([FromBody] RegisterMemberRequest request)
         {
@@ -83,10 +89,12 @@ namespace GymManagementAPI.Controllers
             };
         }
 
-
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("Coach", Name = "RegisterCoach")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<RegisterCoachResponse>> 
             RegisterCoach(RegisterCoachRequest request)
@@ -106,9 +114,12 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("Admin", Name = "RegisterAdmin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<int>>
             RegisterAdmin(RegisterAdminRequest request)
@@ -132,22 +143,33 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetUserByIdResponse>>
-            GetUserById(int Id)
+            GetUserById(int Id, [FromServices]IAuthorizationService authSerivce)
         {
             if (Id < 1)
                 return BadRequest();
 
-            var response = await _userService.GetUserByIdAsync(Id);
+            var authResult = await authSerivce
+                .AuthorizeAsync(User,Id,Policies.OwnerOrAdmin);
+
+            if (!authResult.Succeeded)
+                return Forbid();
+
+            var response = await _userService.GetUserByIdAsync(Id); 
             return response == null ? NotFound("User is not found") : Ok(response);
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPut("{Id}", Name = "UpdateUserById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status409Conflict)] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateUserById(int Id, [FromBody] UpdateUserRequest request)
         {

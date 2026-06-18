@@ -17,9 +17,7 @@ namespace RepositoryTier.User.DTOs
 
         public enGender Gender { get; set; }
 
-        public DateOnly DateOfBirth { get; set; } 
-
-        public enUserRole Role { get; set; }
+        public DateOnly DateOfBirth { get; set; }  
 
         public bool IsActive { get; set; }  
     }

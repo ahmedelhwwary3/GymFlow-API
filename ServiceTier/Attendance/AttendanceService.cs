@@ -34,21 +34,22 @@ namespace ServiceTier.Attendance
             return await _repo.GetAttendancesAsync(request,memberId);
         }
 
-        public async Task<AddAttendanceResult> AddAttendancesAsync(AddAttendanceRequest request)
+        public async Task<AddAttendanceResult> AddAttendanceAsync(AddAttendanceRequest request)
         {
             //1.chech member exists
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
             int? Id;
             // using Id
-            if (request.Id.HasValue)
+            if (request.MemberId.HasValue)
             {
-                bool exists = await _userRepo.ExistsAsync(request.Id.Value);
+                bool exists = await _memberRepo.ExistsAsync(request.MemberId.Value);
                 if (!exists)
                     return new AddAttendanceResult(enAddAttendanceStatus.MemberNotFound);
-                Id = request.Id;
+                Id = request.MemberId;
             }
             else // using phone or email
             {
-                Id = await _userRepo.GetIdByIdentifierAsync(request.Search.Trim());
+                Id = await _memberRepo.GetIdByIdentifierAsync(request.Search.Trim());
                 if (Id == null)
                     return new AddAttendanceResult(enAddAttendanceStatus.MemberNotFound);
             }
@@ -61,9 +62,13 @@ namespace ServiceTier.Attendance
             if (hasFrozenSubscription)
                 return new AddAttendanceResult(enAddAttendanceStatus.HasFrozenSubscription);
 
+            bool hasTodayAttendance = await _memberRepo.HasAttendanceInDateAsync(Id.Value,today);
+            if(hasTodayAttendance)
+                return new AddAttendanceResult(enAddAttendanceStatus.HasTodayAttendance);
+
             var attendance = new RepositoryTier.Entities.Attendance()
             {
-                AttendanceDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                AttendanceDate = today,
                 MemberId = Id.Value,
                 Notes = request.Notes?.Trim()
             };

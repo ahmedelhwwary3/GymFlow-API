@@ -8,11 +8,14 @@ using RepositoryTier.Attendance.Enums;
 using RepositoryTier.User.Enums;
 using ServiceTier.Attendance;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using GymManagementAPI.Helpers;
 
 namespace GymManagementAPI.Controllers
 {
     [Route("api/Attendance")]
     [ApiController]
+    [Authorize]
     public class AttendanceController : ControllerBase
     {
         private readonly IAttendanceService _attdService;
@@ -21,11 +24,13 @@ namespace GymManagementAPI.Controllers
             _attdService = atndService;
         }
 
+        [Authorize(Roles =UserRoles.Admin)]
         [HttpGet("Attendances", Name = "GetAttendances")]
         [ProducesResponseType(StatusCodes.Status200OK)] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<GetAttendancesResponse>>>
             GetAttendances([FromQuery] GetAttendancesRequest request)
         {
@@ -49,19 +54,22 @@ namespace GymManagementAPI.Controllers
         }
 
         [HttpPost(Name = "AddAttendance")]
+        [Authorize(Roles = UserRoles.Admin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<int>>
             AddAttendance([FromBody] AddAttendanceRequest request)
         {
              
-            if (request.Id is null && string.IsNullOrEmpty(request.Search?.Trim()))
+            if (request.MemberId is null && string.IsNullOrEmpty(request.Search?.Trim()))
                 return BadRequest("Identifier is required");  
 
             var response = await _attdService
-                .AddAttendancesAsync(request);
+                .AddAttendanceAsync(request);
 
             return response.Status switch
             {
@@ -70,7 +78,9 @@ namespace GymManagementAPI.Controllers
 
                 enAddAttendanceStatus.HasExpiredSubscription => BadRequest("Member subscription is expired"),
 
-                enAddAttendanceStatus.MemberNotFound => BadRequest("Member not found") ,
+                enAddAttendanceStatus.HasTodayAttendance => BadRequest("Member has attendance today"),
+
+                enAddAttendanceStatus.MemberNotFound => NotFound("Member not found") ,
 
                 _ => Ok(response.Id)
             };

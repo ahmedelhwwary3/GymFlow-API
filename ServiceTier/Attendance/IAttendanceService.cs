@@ -12,6 +12,6 @@ namespace ServiceTier.Attendance
     public interface IAttendanceService:IService<RepositoryTier.Entities.Attendance>
     {
         Task<GetAttendancesResponse> GetAttendancesAsync(GetAttendancesRequest request, int? memberId = null);
-        Task<AddAttendanceResult> AddAttendancesAsync(AddAttendanceRequest memberId);
+        Task<AddAttendanceResult> AddAttendanceAsync(AddAttendanceRequest memberId);
     }
 }

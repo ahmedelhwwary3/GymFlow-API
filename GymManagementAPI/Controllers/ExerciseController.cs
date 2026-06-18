@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Exercise.DTOs;
 using RepositoryTier.Exercise.Enums;
@@ -8,6 +10,7 @@ namespace GymManagementAPI.Controllers
 {
     [Route("api/Exercise")]
     [ApiController]
+    [Authorize]
     public class ExerciseController : ControllerBase
     {
         private readonly IExerciseService _exerciseService;
@@ -16,23 +19,27 @@ namespace GymManagementAPI.Controllers
             _exerciseService = exerciseService;
         }
 
-        [HttpGet("Exercises",Name = "GetExercises")]
+        [AllowAnonymous]
+        [HttpGet("Exercises",Name = "GetExercises")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetExercisesResponse>> 
             GetExercises([FromQuery] GetExercisesRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(); 
 
             var response = await _exerciseService.GetExercisesAsync(request);
             return Ok(response);
         }
 
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Coach}")]
         [HttpPost(Name = "AddExercise")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<int>>
             AddExercise([FromBody] AddExerciseRequest request)
@@ -49,9 +56,12 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Coach}")]
         [HttpPut("{Id}",Name = "UpdateExerciseById")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult>

@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryTier.Payment.DTOs;
-using ServiceTier.Payment;
 using RepositoryTier.Payment.Enums;
+using ServiceTier.Payment;
 
 namespace GymManagementAPI.Controllers
 {
     [Route("api/Payment")]
     [ApiController]
+    [Authorize]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -16,10 +19,13 @@ namespace GymManagementAPI.Controllers
             _paymentService= paymentService;
         }
 
+        [Authorize(Roles =UserRoles.Admin)]
         [HttpPost(Name = "AddPayment")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<int>> AddPayment(AddPaymentRequest request) 
         {
@@ -39,10 +45,13 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("{Id}",Name = "GetPaymentById")] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GetPaymentByIdResponse>> GetPaymentById(int Id)
         {

@@ -12,12 +12,12 @@ namespace ServiceTier.Member
     public interface IMemberService:IService<RepositoryTier.Entities.Member>
     {
         Task<GetAssignedMembersForCoachResponse>
-            GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request);
+            GetAssignedMembersForCoachAsync(int coachId,GetAssignedMembersForCoachRequest request);
         Task<GetMembersResopnse> GetMembersAsync(GetMembersRequest request);
         
         Task<enUpdateMemberStatus> UpdateAsync(int Id,UpdateMemberRequest request);
         Task<enUpdateMemberProfileStatus> UpdateProfileAsync(int Id, UpdateMemberProfileRequest request);
-        Task<GetMemberProfileResopnse?> GetProfileAsync(int Id);
+        Task<GetMemberProfileResopnse?> GetProfileByIdAsync(int Id);
         Task<GetMemberByIdResopnse?> GetByIdAsync(int Id);
     }
 }

@@ -1,5 +1,10 @@
-
+ 
+using GymManagementAPI.Authorization.OwnerOrAdmin;
+using GymManagementAPI.Authorization.SubscriptionOwnerOrAdmin;
+using GymManagementAPI.Authorization.WorkoutPlanOwnerOrAdmin;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -44,8 +49,7 @@ namespace GymManagement
 
             builder.Services.AddControllers();
 
-            var jwt = builder.Configuration.GetSection("JWT");
-            string corsPolicy1 = "corsPolicy1";
+            var jwt = builder.Configuration.GetSection("JWT"); 
 
             builder.Services.AddDbContext<GymManagementDbContext>(options=>
             {
@@ -81,11 +85,15 @@ namespace GymManagement
             builder.Services.AddScoped<IWorkoutPlanExerciseService, WorkoutPlanExerciseService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
 
+            builder.Services.AddScoped<IAuthorizationHandler, SubscriptionOwnerOrAdminHandler>(); // Because it uses context object in ctor (Scoped)
+            builder.Services.AddScoped<IAuthorizationHandler, WorkoutPlanOwnerOrAdminHandler>();// Because it uses context object in ctor (Scoped)
+            builder.Services.AddSingleton<IAuthorizationHandler, OwnerOrAdminHandler>();
+
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy(corsPolicy1, policy =>
+                options.AddPolicy(Policies.Cors, policy =>
                 {
                     policy.WithOrigins(
                     "http://localhost:5059",
@@ -124,6 +132,25 @@ namespace GymManagement
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(secretKey))
                 };
+            });
+
+            builder.Services.AddAuthorization(options =>
+            { 
+
+                options.AddPolicy(Policies.SubscriptionOwnerOrAdmin, policy =>
+                {
+                    policy.AddRequirements(new SubscriptionOwnerOrAdminRequirement());
+                });
+
+                options.AddPolicy(Policies.WorkoutPlanOwnerOrAdmin, policy =>
+                {
+                    policy.AddRequirements(new WorkoutPlanOwnerOrAdminRequirement());
+                });
+
+                options.AddPolicy(Policies.OwnerOrAdmin, policy =>
+                {
+                    policy.AddRequirements(new OwnerOrAdminRequirement());
+                });
             });
 
             builder.Services.AddSwaggerGen();
@@ -200,14 +227,14 @@ namespace GymManagement
 
             app.UseHttpsRedirection();
 
-            app.UseCors(corsPolicy1);
+            app.UseCors(Policies.Cors);
 
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
 
             app.UseAuthorization();
-
+             
             app.MapControllers();
               
             app.Run(); 

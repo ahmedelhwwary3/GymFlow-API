@@ -37,9 +37,9 @@ namespace ServiceTier.Member
          
 
         public async Task<GetAssignedMembersForCoachResponse>
-            GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request)
+            GetAssignedMembersForCoachAsync(int coachId,GetAssignedMembersForCoachRequest request)
         {
-            return await _repo.GetAssignedMembersForCoachAsync(request);
+            return await _repo.GetAssignedMembersForCoachAsync(coachId,request);
         }
 
         public async Task<GetMembersResopnse> 
@@ -136,7 +136,7 @@ namespace ServiceTier.Member
             return enUpdateMemberProfileStatus.Succeeded;
         }
 
-        public async Task<GetMemberProfileResopnse?> GetProfileAsync(int Id)
+        public async Task<GetMemberProfileResopnse?> GetProfileByIdAsync(int Id)
         {
             return await _repo.GetProfileAsync(Id);
         }

@@ -39,18 +39,18 @@ namespace RepositoryTier.Member.Repositories
         }
 
         public async Task<GetAssignedMembersForCoachResponse> 
-            GetAssignedMembersForCoachAsync(GetAssignedMembersForCoachRequest request)
+            GetAssignedMembersForCoachAsync(int coachId,GetAssignedMembersForCoachRequest request)
         {
             int page= request.Page?? PaganationOptions.Page;
             int pageSize=request.PageSize?? PaganationOptions.BigPageSize;
 
             int totalCount =await _context.Members
                 .IgnoreQueryFilters()
-                .Where(c => c.CoachId == request.CoachId)
+                .Where(c => c.CoachId == coachId)
                 .CountAsync();
 
             var members = await _context.Members
-               .Where(m => m.CoachId == request.CoachId)
+               .Where(m => m.CoachId == coachId)
                .Skip((page - 1) * pageSize)
                .Take(pageSize)
                .Select(m => new GetAssignedMemberForCoachResponse()
@@ -180,6 +180,20 @@ namespace RepositoryTier.Member.Repositories
             return await _context.Subscriptions
                 .AnyAsync(s => (s.MemberId == Id) &&
                 (s.FreezeEndDate != null && s.FreezeEndDate > today)); 
+        }
+
+        public async Task<int?> GetIdByIdentifierAsync(string identifier)
+        {
+            return await _context.Members
+               .Where(m => m.Email == identifier || m.Phone == identifier)
+               .Select(m => m.Id)
+               .SingleOrDefaultAsync();
+        }
+
+        public async Task<bool> HasAttendanceInDateAsync(int memberId,DateOnly date)
+        {
+            return await _context.Attendances
+                .AnyAsync(a => a.AttendanceDate == date && a.MemberId == memberId);
         }
     }
 }

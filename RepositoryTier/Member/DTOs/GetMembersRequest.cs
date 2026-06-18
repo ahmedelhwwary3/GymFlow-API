@@ -16,7 +16,7 @@ namespace RepositoryTier.Member.DTOs
         public bool? IsActive { get; set; }
 
         [Range(1, int.MaxValue)]
-        public int? CoachId { get; set; }
+        public int? CoachId { get; set; }    
 
         [EnumDataType(typeof(enGender))]
         public enGender? Gender { get; set; }
