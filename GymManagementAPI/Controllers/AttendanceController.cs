@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Attendance.DTOs;
+using RepositoryTier.Attendance.Enums;
 using RepositoryTier.Attendance.Results;
 using RepositoryTier.Coach.Enums;
-using RepositoryTier.Attendance.Enums;
 using RepositoryTier.User.Enums;
 using ServiceTier.Attendance;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using GymManagementAPI.Helpers;
 
 namespace GymManagementAPI.Controllers
 {
@@ -24,6 +25,7 @@ namespace GymManagementAPI.Controllers
             _attdService = atndService;
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [Authorize(Roles =UserRoles.Admin)]
         [HttpGet("Attendances", Name = "GetAttendances")]
         [ProducesResponseType(StatusCodes.Status200OK)] 
@@ -53,6 +55,7 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpPost(Name = "AddAttendance")]
         [Authorize(Roles = UserRoles.Admin)]
         [ProducesResponseType(StatusCodes.Status200OK)]

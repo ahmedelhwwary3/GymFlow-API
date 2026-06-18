@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Enums;
 using RepositoryTier.User.DTOs;
@@ -22,7 +23,8 @@ namespace GymManagementAPI.Controllers
         {
             _userService=userService;
         }
-         
+
+        [EnableRateLimiting(Policies.FixedWindowAuthLimiter)]
         [HttpPatch(Name = "ChangePassword")] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -60,6 +62,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles =UserRoles.Admin)] 
         [HttpPost("Member", Name = "RegisterMember")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,6 +92,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("Coach", Name = "RegisterCoach")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -114,6 +118,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("Admin", Name = "RegisterAdmin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -139,6 +144,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpGet("{Id}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -162,6 +168,7 @@ namespace GymManagementAPI.Controllers
             return response == null ? NotFound("User is not found") : Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpPut("{Id}", Name = "UpdateUserById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

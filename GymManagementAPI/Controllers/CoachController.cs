@@ -1,6 +1,7 @@
 ﻿using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.User.DTOs;
@@ -20,6 +21,7 @@ namespace GymManagementAPI.Controllers
             _coachService = coachService;
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("Coaches", Name = "GetCoaches")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -37,7 +39,8 @@ namespace GymManagementAPI.Controllers
 
             return Ok(response);
         }
-         
+
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpGet("{Id}", Name = "GetCoachById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -62,6 +65,7 @@ namespace GymManagementAPI.Controllers
             return response == null ? NotFound("Coach is not found") : Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpPut("{Id}", Name = "UpdateCoach")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -93,6 +97,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("LookUpCoaches", Name = "GetLookUpCoaches")] 
         [ProducesResponseType(StatusCodes.Status200OK)]

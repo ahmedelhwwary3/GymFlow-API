@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Enums;
@@ -23,6 +24,7 @@ namespace GymManagementAPI.Controllers
             _memberService = memberService;
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [HttpGet("AssignedMembersForCoach", Name = "GetAssignedMembersForCoach")] 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -48,6 +50,7 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [Authorize(Roles =UserRoles.Admin)]
         [HttpGet("Members", Name = "GetMembers")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -65,7 +68,8 @@ namespace GymManagementAPI.Controllers
              
             return Ok(response);
         }
-         
+
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpGet("profile",Name = "GetMemeberProfileById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -88,7 +92,8 @@ namespace GymManagementAPI.Controllers
 
             return Ok(response);
         }
-         
+
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpGet("{Id}", Name = "GetMemeberById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -115,6 +120,7 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles =$"{UserRoles.Admin}")]
         [HttpPut("{Id}",Name = "UpdateMember")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -147,7 +153,8 @@ namespace GymManagementAPI.Controllers
                 _=> NoContent()
             };
         }
-         
+
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpPut("profile", Name = "UpdateMemberProfile")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

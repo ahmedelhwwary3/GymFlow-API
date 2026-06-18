@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Payment.DTOs;
 using RepositoryTier.Payment.Enums;
 using ServiceTier.Payment;
@@ -19,6 +20,7 @@ namespace GymManagementAPI.Controllers
             _paymentService= paymentService;
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles =UserRoles.Admin)]
         [HttpPost(Name = "AddPayment")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -45,6 +47,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("{Id}",Name = "GetPaymentById")] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

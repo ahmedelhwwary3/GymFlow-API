@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Coach.DTOs;
 using RepositoryTier.Subscription.DTOs;
 using RepositoryTier.Subscription.Enums;
@@ -23,7 +24,8 @@ namespace GymManagementAPI.Controllers
         {
             _subscriptionService = subscriptionService;
         }
-         
+
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [HttpGet("Subscriptions", Name = "GetSubscriptions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -56,6 +58,7 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles =UserRoles.Admin)]
         [HttpPost(Name = "AddSubscription")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -92,6 +95,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpGet("{Id}", Name = "GetSubscriptionById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -115,6 +119,7 @@ namespace GymManagementAPI.Controllers
             return response == null ? NotFound("Subscription is not found") : Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles =$"{UserRoles.Admin}")]
         [HttpPatch("{Id}/FreezeSubscription", Name = "FreezeSubscriptionById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

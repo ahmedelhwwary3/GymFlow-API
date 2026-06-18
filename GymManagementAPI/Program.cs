@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RepositoryTier;
@@ -36,6 +37,7 @@ using ServiceTier.WorkoutPlan;
 using ServiceTier.WorkoutPlanExercise;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace GymManagement
 {
@@ -49,18 +51,74 @@ namespace GymManagement
 
             builder.Services.AddControllers();
 
-            var jwt = builder.Configuration.GetSection("JWT"); 
+            var jwt = builder.Configuration.GetSection("JWT");
 
-            builder.Services.AddDbContext<GymManagementDbContext>(options=>
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddPolicy(Policies.TokenBucketAuthLimiter, httpContext =>
+                {
+                    var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetTokenBucketLimiter(
+                        partitionKey: ip,
+                        factory: _ => new TokenBucketRateLimiterOptions
+                        {
+                            TokenLimit = 10, // trials
+                            TokensPerPeriod = 1, // Per 1 min
+                            ReplenishmentPeriod = TimeSpan.FromSeconds(6), // new trial every 1/5 min
+                            AutoReplenishment = true,
+                            QueueLimit = 0
+                        });
+                });
+
+                options.AddPolicy(Policies.SlidingWindowAuthLimiter, httpContext =>
+                {
+                    var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetSlidingWindowLimiter(
+                        partitionKey: ip,
+                        factory: _ => new SlidingWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,                     // أقصى عدد طلبات
+                            Window = TimeSpan.FromMinutes(1),   // آخر دقيقة
+                            SegmentsPerWindow = 6,              // تقسيم الدقيقة إلى 6 أجزاء (10 ثوانٍ لكل جزء)
+                            QueueLimit = 0
+                        });
+                });
+
+                options.AddPolicy(Policies.FixedWindowAuthLimiter, httpContext =>
+                {
+                    var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: ip,
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,                    // 5 requests
+                            Window = TimeSpan.FromMinutes(1),  // per minute
+                            QueueLimit = 0
+                        });
+                });
+
+                options.OnRejected = async (context, cancellationToken) =>
+                {
+                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+                    await context.HttpContext.Response.WriteAsync(
+                        "Too many login attempts. Please try again later.",
+                        cancellationToken);
+                };
+            });
+             
+            builder.Services.Configure<JWTOptions>(jwt);
+            builder.Services.Configure<PaganationOptions>(builder.Configuration.GetSection("Paganation"));
+
+            builder.Services.AddDbContext<GymManagementDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"));
                 options.LogTo(Console.WriteLine, LogLevel.Information)
                        .EnableSensitiveDataLogging();
             });
-
-            builder.Services.Configure<JWTOptions>(jwt);
-            builder.Services.Configure<PaganationOptions>(builder.Configuration.GetSection("Paganation"));
-
             builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
             builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
@@ -224,12 +282,14 @@ namespace GymManagement
                     });
                 });
             });
-
+             
             app.UseHttpsRedirection();
 
             app.UseCors(Policies.Cors);
 
             app.UseHttpsRedirection();
+
+            app.UseRateLimiter();
 
             app.UseAuthentication();
 

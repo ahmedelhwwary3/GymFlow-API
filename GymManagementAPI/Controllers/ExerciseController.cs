@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Exercise.DTOs;
 using RepositoryTier.Exercise.Enums;
 using ServiceTier.Exercise;
@@ -19,6 +20,7 @@ namespace GymManagementAPI.Controllers
             _exerciseService = exerciseService;
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [AllowAnonymous]
         [HttpGet("Exercises",Name = "GetExercises")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,6 +36,7 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Coach}")]
         [HttpPost(Name = "AddExercise")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -56,6 +59,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Coach}")]
         [HttpPut("{Id}",Name = "UpdateExerciseById")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

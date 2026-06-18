@@ -6,6 +6,8 @@ using RepositoryTier.Authentication;
 using ServiceTier; 
 using ServiceTier.User;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
+using GymManagementAPI.Helpers;
 
 namespace GymManagementAPI.Controllers
 {
@@ -24,6 +26,7 @@ namespace GymManagementAPI.Controllers
             _logger = logger;
         }
 
+        [EnableRateLimiting(Policies.FixedWindowAuthLimiter)]
         [HttpPost("Login",Name = "Login")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -47,6 +50,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.FixedWindowAuthLimiter)]
         [HttpPost("Refresh",Name = "Refresh")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -72,6 +76,7 @@ namespace GymManagementAPI.Controllers
             }; 
         }
 
+        [EnableRateLimiting(Policies.FixedWindowAuthLimiter)]
         [HttpPost("Logout", Name = "Logout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

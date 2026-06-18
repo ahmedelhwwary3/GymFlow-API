@@ -1,7 +1,9 @@
 ﻿using Azure;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.User.Enums;
 using ServiceTier.Dashboard;
 using System.Security.Claims;
@@ -19,6 +21,7 @@ namespace GymManagementAPI.Controllers
             _dashboardService=dashboardService;
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [HttpGet(Name = "GetDashboard")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]

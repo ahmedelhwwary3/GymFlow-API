@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Member.Enums;
 using RepositoryTier.User.Enums;
 using RepositoryTier.WorkoutPlan.DTOs;
@@ -24,6 +25,7 @@ namespace GymManagementAPI.Controllers
             _workoutPlanService = workoutPlanService;
         }
 
+        [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
         [Authorize(Roles =$"{UserRoles.Admin}")]
         [HttpGet("WorkoutPlans",Name = "GetWorkoutPlans")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -52,6 +54,7 @@ namespace GymManagementAPI.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [Authorize(Roles=$"{UserRoles.Admin},{UserRoles.Coach}")] 
         [HttpPost(Name = "AddWorkoutPlan")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -98,6 +101,7 @@ namespace GymManagementAPI.Controllers
             };
         }
 
+        [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
         [HttpGet("{Id}",Name = "GetWorkoutPlanById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
