@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryTier.Authentication
+namespace RepositoryTier.Authentication.DTOs
 {
-    public class RefreshRequest
+    public class LoginRequest
     {
         [Required]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        public string RefreshToken { get; set; }
+        [Required] 
+        public string Password { get; set; }
     }
 }

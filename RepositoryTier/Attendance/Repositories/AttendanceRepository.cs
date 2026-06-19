@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using RepositoryTier.API_Configurations;
 using RepositoryTier.Attendance.DTOs;
@@ -7,23 +8,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace RepositoryTier.Attendance.Repositories
 {
     public class AttendanceRepository : Repository<Entities.Attendance>, IAttendanceRepository
     {
         protected readonly PaganationOptions _paganationOptions;
+        private readonly ILogger _logger;
         public AttendanceRepository(
             GymManagementDbContext context,
-            IOptions<PaganationOptions>paganationOptions
-            
-            ) 
-            : base(context) 
+            IOptions<PaganationOptions> paganationOptions,
+            ILogger logger)
+            : base(context)
         {
+            _logger = logger;
             _paganationOptions = paganationOptions.Value;
             if (_paganationOptions == null)
+            {
+                _logger.LogError("Paganation options is not configured");
                 throw new Exception("Paganation options is not configured");
+            }
         }
 
         public async Task<GetAttendancesResponse>

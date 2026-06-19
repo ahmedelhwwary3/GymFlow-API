@@ -10,20 +10,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using RepositoryTier.API_Configurations;
+using Microsoft.Extensions.Logging;
 
 namespace RepositoryTier.Coach.Repositories
 {
     public class CoachRepository : Repository<Entities.Coach>, ICoachRepository
     {
         protected readonly PaganationOptions PaganationOptions;
+        private readonly ILogger _logger;
     
         public CoachRepository(
             GymManagementDbContext context
-            , IOptions<PaganationOptions> configs) : base(context) 
+            , IOptions<PaganationOptions> configs,
+            ILogger logger) 
+            : base(context) 
         {
+            _logger= logger;
             PaganationOptions = configs.Value;
             if (PaganationOptions == null)
+            {
+                _logger.LogError("Paganation options is not configured");
                 throw new Exception("Paganation options is not configured");
+            }
+                
         }
          
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)

@@ -1,36 +1,41 @@
-﻿using RepositoryTier.Subscription.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using RepositoryTier.API_Configurations;
+using RepositoryTier.Coach.DTOs;
+using RepositoryTier.Subscription.DTOs;
+using RepositoryTier.Subscription.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RepositoryTier.Subscription.Enums;
 using System.Text;
-using Microsoft.Extensions.Options;
-using RepositoryTier.API_Configurations;
-using Microsoft.EntityFrameworkCore;
-using RepositoryTier.Coach.DTOs;
 
 namespace RepositoryTier.Subscription.Repositories
 {
     public class SubscriptionRepository : Repository<Entities.Subscription>, ISubscriptionRepository
     {
-        protected readonly PaganationOptions _paganationOptions;
+        protected readonly PaganationOptions PaganationOptions;
+        private readonly ILogger _logger;
         public SubscriptionRepository(
             GymManagementDbContext context,
-            IOptions<PaganationOptions> paganationOptions
-            ) 
+            IOptions<PaganationOptions> paganationOptions,
+            ILogger logger) 
             : base(context) 
         {
-            _paganationOptions = paganationOptions.Value;
-
-            if (_paganationOptions == null)
+            _logger = logger;
+            PaganationOptions = paganationOptions.Value;
+            if (PaganationOptions == null)
+            {
+                _logger.LogError("Paganation options is not configured");
                 throw new Exception("Paganation options is not configured");
+            }
         }
 
         public async Task<GetSubscriptionsResponse> 
             GetSubscriptionsAsync(GetSubscriptionsRequest request)
         {
-            int page = request.Page ?? _paganationOptions.Page;
-            int pageSize = request.PageSize ?? _paganationOptions.BigPageSize;
+            int page = request.Page ?? PaganationOptions.Page;
+            int pageSize = request.PageSize ?? PaganationOptions.BigPageSize;
 
             var query = _context.Subscriptions
                 .IgnoreQueryFilters()

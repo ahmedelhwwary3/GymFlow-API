@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc; 
+﻿using GymManagementAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using RepositoryTier.Authentication.DTOs;
 using RepositoryTier.User.Enums;
 using RepositoryTier.User.Results;
-using RepositoryTier.Authentication;
-using ServiceTier; 
+using ServiceTier;
 using ServiceTier.User;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.RateLimiting;
-using GymManagementAPI.Helpers;
+using System.Net;
 
 namespace GymManagementAPI.Controllers
 {
@@ -18,12 +19,16 @@ namespace GymManagementAPI.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IUserService _userService;
+        private string _IPAddress;
+                
         public AuthController(
             IUserService userService,
             ILogger<AuthController> logger)
         {
             _userService = userService;
             _logger = logger;
+            _IPAddress= HttpContext.Connection.RemoteIpAddress?
+                .ToString() ?? "Unknown IP";
         }
 
         [EnableRateLimiting(Policies.FixedWindowAuthLimiter)]
@@ -36,17 +41,30 @@ namespace GymManagementAPI.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest();
+              
+            var result = await _userService.LoginAsync(request);
+            if (result.LoginStatus == enLoginStatus.Succeeded)
+            {
+                _logger.LogInformation(
+                    "Successful login for email={Email}, IP={IPAddress}",
+                    request.Email,
+                    _IPAddress);
 
-            LoginResult result = await _userService.LoginAsync(request);
+                return Ok(result.TokenResponse);
+            }
+
+            _logger.LogWarning("Invalid Login attempt for email={request.Email} , IP={IPAddress}"
+                , request.Email, _IPAddress);
+
             return result.LoginStatus switch
             {
                 enLoginStatus.UserNotFound => Unauthorized("Invalid username or password"),
 
-                enLoginStatus.InvalidPassword => Unauthorized("Invalid username or password"), 
+                enLoginStatus.InvalidPassword => Unauthorized("Invalid username or password"),
 
                 enLoginStatus.Inactive => Unauthorized("User is not active"),
 
-                _=>Ok(result.TokenResponse)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -59,10 +77,22 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<TokenResponse>> Refresh(RefreshRequest request)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) 
                 return BadRequest();
-
+             
             var result = await _userService.RefreshAsync(request);
+            if (result.RefreshStatus == enRefreshStatus.Succeeded)
+            {
+                _logger.LogInformation("Refresh token attempt succeeded for " +
+                    "email={request.Email}, IP={_IPAddress}",
+                    request.Email, _IPAddress);
+                return Ok(result.TokenResponse);
+            }
+
+            _logger.LogWarning("Invalid refresh token attempt for email= " +
+                "{request.Email} , IP={_IPAddress}",
+                request.Email,
+                _IPAddress);
 
             return result.RefreshStatus switch
             {
@@ -72,7 +102,7 @@ namespace GymManagementAPI.Controllers
 
                 enRefreshStatus.InvalidToken=>Unauthorized("Token is no longer valid"),
 
-                _ => Ok(result.TokenResponse)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             }; 
         }
 
@@ -85,6 +115,9 @@ namespace GymManagementAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest();
+            
+            _logger.LogInformation("Logout attempt for email={request.Email}, IP={_IPAddress}",
+                request.Email,_IPAddress);
 
             bool succeeded = await _userService.LogoutAsync(request);
             //OK() To confuse attackers, we return 200 OK even if the logout fails (e.g., invalid token) 

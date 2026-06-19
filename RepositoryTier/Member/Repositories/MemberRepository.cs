@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RepositoryTier.API_Configurations;
 using RepositoryTier.Coach.DTOs;
@@ -17,13 +18,20 @@ namespace RepositoryTier.Member.Repositories
     public class MemberRepository : Repository<Entities.Member>, IMemberRepository
     {
         protected readonly PaganationOptions PaganationOptions;
+        private readonly ILogger _logger;
         public MemberRepository(
             GymManagementDbContext context,
-            IOptions<PaganationOptions>paganationOptions) : base(context) 
+            IOptions<PaganationOptions>paganationOptions,
+            ILogger logger)
+            : base(context) 
         {
+            _logger=logger;
             PaganationOptions = paganationOptions.Value;
             if (PaganationOptions == null)
+            {
+                _logger.LogError("Paganation options is not configured");
                 throw new Exception("Paganation options is not configured");
+            }
         }
 
         private async Task<List<CoachLookUpResponse>>GetLookupCoachesAsync()

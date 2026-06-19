@@ -1,11 +1,11 @@
-﻿ 
+﻿
 using RepositoryTier.User.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RepositoryTier.Authentication;
 using System.Threading.Tasks;
+using RepositoryTier.Authentication.DTOs;
 
 namespace RepositoryTier.User.Results
 {

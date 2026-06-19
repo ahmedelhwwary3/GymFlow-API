@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RepositoryTier.API_Configurations;
 using RepositoryTier.WorkoutPlan.DTOs;
@@ -13,14 +14,20 @@ namespace RepositoryTier.WorkoutPlan.Repositories
     public class WorkoutPlanRepository : Repository<Entities.WorkoutPlan>, IWorkoutPlanRepository
     {
         protected readonly PaganationOptions PaganationOptions;
+        private readonly ILogger _logger;
         public WorkoutPlanRepository(
             GymManagementDbContext context,
-            IOptions<PaganationOptions> paganationOptions) 
+            IOptions<PaganationOptions> paganationOptions,
+            ILogger logger) 
             : base(context) 
         {
+            _logger = logger;
             PaganationOptions = paganationOptions.Value;
             if (PaganationOptions == null)
+            {
+                _logger.LogError("Paganation options is not configured");
                 throw new Exception("Paganation options is not configured");
+            }
         }
 
         public async Task<GetWorkoutPlansResponse> 

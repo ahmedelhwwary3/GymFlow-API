@@ -1,6 +1,6 @@
-using RepositoryTier.Authentication;
+using RepositoryTier.Authentication.DTOs;
 using RepositoryTier.Member.DTOs;
-using RepositoryTier.User.DTOs; 
+using RepositoryTier.User.DTOs;
 using RepositoryTier.User.Enums;
 using RepositoryTier.User.Results;
 

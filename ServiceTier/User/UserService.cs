@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryTier.API_Configurations;
 using RepositoryTier.Authentication;
+using RepositoryTier.Authentication.DTOs;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.Coach.Repositories;
 using RepositoryTier.User.DTOs; 

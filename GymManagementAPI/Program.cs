@@ -5,9 +5,8 @@ using GymManagementAPI.Authorization.WorkoutPlanOwnerOrAdmin;
 using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore; 
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RepositoryTier;
@@ -22,8 +21,7 @@ using RepositoryTier.Subscription.Repositories;
 using RepositoryTier.User.Repositories;
 using RepositoryTier.WeightRecord.Repositories;
 using RepositoryTier.WorkoutPlan.Repositories;
-using RepositoryTier.WorkoutPlanExercise.Repositories;
-using ServiceTier;
+using RepositoryTier.WorkoutPlanExercise.Repositories; 
 using ServiceTier.Attendance;
 using ServiceTier.Coach;
 using ServiceTier.Dashboard;
@@ -35,7 +33,7 @@ using ServiceTier.User;
 using ServiceTier.WeightRecord;
 using ServiceTier.WorkoutPlan;
 using ServiceTier.WorkoutPlanExercise;
-using System.Security.Cryptography;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
 
@@ -269,19 +267,29 @@ namespace GymManagement
                 app.UseSwaggerUI();
             }
 
-            app.UseExceptionHandler(errorApp =>
+            if (!app.Environment.IsDevelopment())
             {
-                errorApp.Run(async context =>
+                app.UseExceptionHandler(errorApp =>
                 {
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    context.Response.ContentType = "application/json";
+                    errorApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                        context.Response.ContentType = "application/json";
+                        var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
+                        var exception = exceptionFeature?.Error;
+                        var IPAddress = context.Connection.RemoteIpAddress?.ToString()??"Anonymous";
 
-                    await context.Response.WriteAsJsonAsync(new
+                        app.Logger.LogError(exception,
+                            "Unhandled exception occurred. Path={Path}, IP={ip}",
+                            context.Request.Path, IPAddress);
+
+                        await context.Response.WriteAsJsonAsync(new
                     {
                         Message = "An unexpected error occurred."
                     });
-                });
-            });
+                    });
+                }); ;
+            }
              
             app.UseHttpsRedirection();
 
@@ -294,7 +302,31 @@ namespace GymManagement
             app.UseAuthentication();
 
             app.UseAuthorization();
-             
+
+            // Global 403 logging middleware (place it HERE)
+            app.Use(async (context, next) =>
+            {
+                await next();
+
+
+                if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+                {
+                    // 1- logged user (OR) 2- public api
+                    var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "anonymous";
+                    var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                    var path = context.Request.Path.ToString();
+
+
+                    // ✅ Centralized security log for authorization abuse
+                    app.Logger.LogWarning(
+                        "Forbidden access. UserId={UserId}, Path={Path}, IP={IP} ",
+                        userId,
+                        path,
+                        ip
+                    );
+                }
+            });
+
             app.MapControllers();
               
             app.Run(); 
