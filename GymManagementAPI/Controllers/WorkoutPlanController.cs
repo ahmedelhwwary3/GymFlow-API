@@ -1,4 +1,5 @@
-﻿using GymManagementAPI.Helpers;
+﻿using GymManagementAPI.Extensions;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -11,6 +12,7 @@ using RepositoryTier.WorkoutPlan.Enums;
 using RepositoryTier.WorkoutPlan.Results;
 using ServiceTier.WorkoutPlan; 
 using System.Security.Claims;
+using log = GymManagementAPI.Extensions.IloggerExtensions;
 
 namespace GymManagementAPI.Controllers
 {
@@ -20,9 +22,16 @@ namespace GymManagementAPI.Controllers
     public class WorkoutPlanController : ControllerBase
     {
         private readonly IWorkoutPlanService _workoutPlanService;
-        public WorkoutPlanController(IWorkoutPlanService workoutPlanService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public WorkoutPlanController(IWorkoutPlanService workoutPlanService
+            ,ILogger logger)
         {
             _workoutPlanService = workoutPlanService;
+            _logger = logger;
+            _Ip = HttpContext.GetIPAddress();
+            _adminId = HttpContext.GetAdminId();
         }
 
         [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
@@ -37,7 +46,11 @@ namespace GymManagementAPI.Controllers
             GetWorkoutPlans([FromQuery] GetWorkoutPlansRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetWorkoutPlans),
+                   log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             int? memberId = default;
             bool isMember = User.IsInRole(((int)enUserRole.Member).ToString());
@@ -67,7 +80,11 @@ namespace GymManagementAPI.Controllers
             AddWorkoutPlan(AddWorkoutPlanRequest request)
         { 
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(AddWorkoutPlan),
+                  log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             bool isAdmin = User.IsInRole(((int)enUserRole.Admin).ToString());
             if (isAdmin && request.CoachId == null)
@@ -85,6 +102,14 @@ namespace GymManagementAPI.Controllers
             var result = await _workoutPlanService
                 .AddFullPlanAsync(request);
 
+            if(result.Status==enAddWorkoutPlanStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(AddWorkoutPlan),_adminId,_Ip);
+                return CreatedAtRoute("GetWorkoutPlanById", new { Id = result.Id }, null);
+            }
+
+            _logger.LogAdminInvalidAction(nameof(AddWorkoutPlan),
+               log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return result.Status switch
             {
                 enAddWorkoutPlanStatus.ExerciseRepeated => BadRequest("An exercise is repeated"),
@@ -97,7 +122,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddWorkoutPlanStatus.MemberNotFound => NotFound("Member not found"),
 
-                _ => CreatedAtRoute("GetWorkoutPlanById", new {Id=result.Id},null)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -112,8 +137,12 @@ namespace GymManagementAPI.Controllers
             GetWorkoutPlanById(int Id, [FromServices]IAuthorizationService authService)
         {
             if (Id < 1)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetWorkoutPlanById),
+                  log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+                 
             var authResult = await authService.AuthorizeAsync(User,Id,Policies.WorkoutPlanOwnerOrAdmin);
 
             if (!authResult.Succeeded)

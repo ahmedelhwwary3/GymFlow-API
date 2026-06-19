@@ -59,7 +59,7 @@ namespace ServiceTier.Exercise
             return new AddExerciseResult(enAddExerciseStatus.Succeeded, newExercise.Id);
         }
 
-        public async Task<enUpdateExerciseStatus> UpdateAsync(int Id, UpdateExerciseRequest request)
+        public async Task<enUpdateExerciseStatus> UpdateByIdAsync(int Id, UpdateExerciseRequest request)
         {
             //1.Chech uniqueness
             bool isUnique = await IsUniqueName(request.Name, Id);

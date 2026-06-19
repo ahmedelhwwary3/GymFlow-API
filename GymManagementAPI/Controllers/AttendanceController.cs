@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Attendance.DTOs;
 using RepositoryTier.Attendance.Enums;
 using RepositoryTier.Attendance.Results;
+using log=GymManagementAPI.Extensions.IloggerExtensions;
+using GymManagementAPI.Extensions;
 using RepositoryTier.Coach.Enums;
 using RepositoryTier.User.Enums;
-using ServiceTier.Attendance;
+using ServiceTier.Attendance; 
 using System.Security.Claims;
 
 namespace GymManagementAPI.Controllers
@@ -20,9 +22,16 @@ namespace GymManagementAPI.Controllers
     public class AttendanceController : ControllerBase
     {
         private readonly IAttendanceService _attdService;
-        public AttendanceController(IAttendanceService atndService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public AttendanceController(IAttendanceService atndService,
+            ILogger logger)
         {
             _attdService = atndService;
+            _logger= logger;
+            _adminId = HttpContext.GetAdminId();
+            _Ip = HttpContext.GetIPAddress();
         }
 
         [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
@@ -46,8 +55,14 @@ namespace GymManagementAPI.Controllers
 
                 memberId = Convert.ToInt32(userId);
             }
+
             if (!ModelState.IsValid)
-                return BadRequest(); 
+            {
+                _logger.LogAdminInvalidAction(nameof(GetAttendances),
+                    log.enInvalidAdminActionReason.InvalidInput,_adminId,_Ip);
+                return BadRequest();
+            }
+               
 
             var response = await _attdService
                 .GetAttendancesAsync(request,memberId);
@@ -69,11 +84,23 @@ namespace GymManagementAPI.Controllers
         {
              
             if (request.MemberId is null && string.IsNullOrEmpty(request.Search?.Trim()))
-                return BadRequest("Identifier is required");  
-
+            {
+                _logger.LogAdminInvalidAction(nameof(AddAttendance),
+                  log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip); 
+                return BadRequest("Identifier is required");
+            }
+                  
             var response = await _attdService
                 .AddAttendanceAsync(request);
 
+            if(response.Status==enAddAttendanceStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(AddAttendance), _adminId, _Ip); 
+                return Ok(response.Id);
+            }
+
+            _logger.LogAdminInvalidAction(nameof(AddAttendance),
+                log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return response.Status switch
             {
 
@@ -83,9 +110,9 @@ namespace GymManagementAPI.Controllers
 
                 enAddAttendanceStatus.HasTodayAttendance => BadRequest("Member has attendance today"),
 
-                enAddAttendanceStatus.MemberNotFound => NotFound("Member not found") ,
+                enAddAttendanceStatus.MemberNotFound => NotFound("Member not found"),
 
-                _ => Ok(response.Id)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 

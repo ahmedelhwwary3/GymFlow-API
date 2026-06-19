@@ -1,4 +1,5 @@
-﻿using GymManagementAPI.Helpers;
+﻿using GymManagementAPI.Extensions;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Exercise.DTOs;
 using RepositoryTier.Exercise.Enums;
 using ServiceTier.Exercise;
+using log = GymManagementAPI.Extensions.IloggerExtensions;
+
 
 namespace GymManagementAPI.Controllers
 {
@@ -15,9 +18,15 @@ namespace GymManagementAPI.Controllers
     public class ExerciseController : ControllerBase
     {
         private readonly IExerciseService _exerciseService;
-        public ExerciseController(IExerciseService exerciseService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public ExerciseController(IExerciseService exerciseService,ILogger logger)
         {
+            _logger = logger;
             _exerciseService = exerciseService;
+            _adminId = HttpContext.GetAdminId();
+            _Ip = HttpContext.GetIPAddress();
         }
 
         [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
@@ -30,8 +39,12 @@ namespace GymManagementAPI.Controllers
             GetExercises([FromQuery] GetExercisesRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest(); 
-
+            {
+                _logger.LogAdminInvalidAction(nameof(GetExercises),
+                    log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
+                return BadRequest();
+            }
+              
             var response = await _exerciseService.GetExercisesAsync(request);
             return Ok(response);
         }
@@ -48,14 +61,26 @@ namespace GymManagementAPI.Controllers
             AddExercise([FromBody] AddExerciseRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(AddExercise),
+                    log.enInvalidAdminActionReason.InvalidInput,_adminId,_Ip);
                 return BadRequest();
-
+            }
+                 
             var response = await _exerciseService.AddAsync(request);
+            if(response.Status==enAddExerciseStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(AddExercise),_adminId,_Ip);
+                return Ok(response.Id);
+            }
+
+            _logger.LogAdminInvalidAction(nameof(AddExercise),
+                log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return response.Status switch
             {
-                enAddExerciseStatus.NotUniqueName => Conflict("Exercise name must be unique"),
+                enAddExerciseStatus.NotUniqueName => Conflict("Exercise name must be unique"), 
 
-                _ => Ok(response.Id)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -72,9 +97,21 @@ namespace GymManagementAPI.Controllers
            UpdateExerciseById(int Id,UpdateExerciseRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(UpdateExerciseById),
+                 log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
+                
+            var status = await _exerciseService.UpdateByIdAsync(Id,request);
+            if(status==enUpdateExerciseStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(UpdateExerciseById),_adminId,_Ip);
+                return NoContent();
+            }
 
-            var status = await _exerciseService.UpdateAsync(Id,request);
+            _logger.LogAdminInvalidAction(nameof(UpdateExerciseById),
+                log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return status switch
             {
                 enUpdateExerciseStatus.NotUniqueName => Conflict("Exercise name is not unique"),
@@ -83,7 +120,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateExerciseStatus.ExerciseNotFound => NotFound("Exercise not found"),
 
-                _ => NoContent()
+                _ =>StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
     }

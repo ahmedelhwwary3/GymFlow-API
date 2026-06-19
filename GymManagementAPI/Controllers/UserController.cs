@@ -1,6 +1,9 @@
-﻿using GymManagementAPI.Helpers;
+﻿using Azure;
+using GymManagementAPI.Extensions;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Member.DTOs;
@@ -10,6 +13,7 @@ using RepositoryTier.User.Enums;
 using ServiceTier;
 using ServiceTier.User;
 using System.Security.Claims;
+using log = GymManagementAPI.Extensions.IloggerExtensions;
 
 namespace GymManagementAPI.Controllers
 {
@@ -19,16 +23,22 @@ namespace GymManagementAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public UserController(IUserService userService,ILogger logger)
         {
             _userService=userService;
+            _logger = logger;
+            _adminId = HttpContext.GetAdminId();
+            _Ip = HttpContext.GetIPAddress();
         }
 
         [EnableRateLimiting(Policies.FixedWindowAuthLimiter)]
         [HttpPatch(Name = "ChangePassword")] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)] 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
@@ -39,16 +49,25 @@ namespace GymManagementAPI.Controllers
                 return Unauthorized("Access Token is no longer valid");
 
             if(!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(ChangePassword),
+                    log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             int Id = Convert.ToInt32(userId);
-            var result = await _userService.ChangePasswordAsync(Id, request);
+            var status = await _userService.ChangePasswordAsync(Id, request);
 
-            return result switch
+            if(status==enChangePasswordStatus.Succeeded)
             {
-                enChangePasswordStatus.Succeeded =>
-                    Ok("Password changed successfully"),
+                _logger.LogAdminExecutedAction(nameof(ChangePassword),_adminId,_Ip);
+                return NoContent();
+            }
 
+            _logger.LogAdminInvalidAction(nameof(ChangePassword),
+             log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
+            return status switch
+            { 
                 enChangePasswordStatus.OldPassword =>
                     BadRequest("Password is used before"),
 
@@ -75,10 +94,22 @@ namespace GymManagementAPI.Controllers
             RegisterMember([FromBody] RegisterMemberRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(RegisterMember),
+                    log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
+                
+            var response = await _userService.RegitserMemberAsync(request);
+            if (response.Status == enRegisterMemberStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(RegisterMember), _adminId, _Ip);
+                return CreatedAtRoute("GetMemeberById", new { Id = response.Id }, null);
+            }
 
-            var result = await _userService.RegitserMemberAsync(request);
-            return result.Status switch
+            _logger.LogAdminInvalidAction(nameof(RegisterMember),
+                   log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
+            return response.Status switch
             {
                 enRegisterMemberStatus.NotUniqueEmail => Conflict("Email must be unique"),
 
@@ -88,7 +119,7 @@ namespace GymManagementAPI.Controllers
 
                 enRegisterMemberStatus.CoachNotExists => NotFound("Coach not found"),
 
-                _ => CreatedAtRoute("GetMemeberById", new { Id = result.Id }, null)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -104,9 +135,21 @@ namespace GymManagementAPI.Controllers
             RegisterCoach(RegisterCoachRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(RegisterCoach),
+                 log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             var result = await _userService.RegitserCoachAsync(request);
+            if (result.Status == enRegisterCoachStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(RegisterCoach), _adminId, _Ip);
+                return CreatedAtRoute("GetCoachById", new { Id = result.Resopnse.Id }, null);
+            }
+
+            _logger.LogAdminInvalidAction(nameof(RegisterCoach),
+                   log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return result.Status switch
             {
 
@@ -114,7 +157,7 @@ namespace GymManagementAPI.Controllers
 
                 enRegisterCoachStatus.NotUniquePhone => Conflict("Phone must be unique"),
 
-                _ => CreatedAtRoute("GetCoachById", new { Id = result.Resopnse.Id }, result.Resopnse)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -130,9 +173,21 @@ namespace GymManagementAPI.Controllers
             RegisterAdmin(RegisterAdminRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(RegisterAdmin),
+                log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             var result = await _userService.RegitserAdminAsync(request);
+            if (result.Status == enRegisterAdminStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(RegisterAdmin), _adminId, _Ip);
+                return CreatedAtRoute("GetUserById", new { Id = result.Id }, null);
+            }
+
+            _logger.LogAdminInvalidAction(nameof(RegisterAdmin),
+                   log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return result.Status switch
             {
 
@@ -140,7 +195,7 @@ namespace GymManagementAPI.Controllers
 
                 enRegisterAdminStatus.NotUniquePhone => Conflict("Phone must be unique"), 
 
-                _ => CreatedAtRoute("GetUserById", new { Id = result.Id },null)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -156,7 +211,11 @@ namespace GymManagementAPI.Controllers
             GetUserById(int Id, [FromServices]IAuthorizationService authSerivce)
         {
             if (Id < 1)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetUserById),
+                log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             var authResult = await authSerivce
                 .AuthorizeAsync(User,Id,Policies.OwnerOrAdmin);
@@ -181,9 +240,21 @@ namespace GymManagementAPI.Controllers
         public async Task<IActionResult> UpdateUserById(int Id, [FromBody] UpdateUserRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(UpdateUserById),
+                log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             var status = await _userService.UpdateUserByIdAsync(Id, request);
+            if (status == enUpdateUserStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(UpdateUserById), _adminId, _Ip);
+                return NoContent();
+            }
+
+            _logger.LogAdminInvalidAction(nameof(UpdateUserById),
+                   log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return status switch
             {
                 enUpdateUserStatus.NotUniqueEmail => Conflict("Email must be unique"),
@@ -194,7 +265,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateUserStatus.UserNotFound => NotFound("User not found"), 
 
-                _ => NoContent()
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 

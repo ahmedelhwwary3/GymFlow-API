@@ -1,4 +1,5 @@
-﻿using GymManagementAPI.Helpers;
+﻿using GymManagementAPI.Extensions;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -8,8 +9,10 @@ using RepositoryTier.Coach.Enums;
 using RepositoryTier.Member.DTOs;
 using RepositoryTier.Member.Enums;
 using RepositoryTier.User.Enums;
+using ServiceTier.Exercise;
 using ServiceTier.Member;
 using System.Security.Claims;
+using log = GymManagementAPI.Extensions.IloggerExtensions;
 
 namespace GymManagementAPI.Controllers
 {
@@ -19,9 +22,15 @@ namespace GymManagementAPI.Controllers
     public class MemberController : ControllerBase
     {
         private readonly IMemberService _memberService;
-        public MemberController(IMemberService memberService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public MemberController(IMemberService memberService,ILogger logger)
         {
             _memberService = memberService;
+            _logger = logger;
+            _adminId = HttpContext.GetAdminId();
+            _Ip = HttpContext.GetIPAddress();
         }
 
         [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
@@ -36,8 +45,12 @@ namespace GymManagementAPI.Controllers
             [FromServices]IAuthorizationService authService)
         {
             if(!ModelState.IsValid || coachId<1)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetAssignedMembersForCoach),
+             log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+          
             var authResult = await authService
                 .AuthorizeAsync(User,coachId,Policies.OwnerOrAdmin);
 
@@ -62,7 +75,11 @@ namespace GymManagementAPI.Controllers
             GetMembers([FromQuery] GetMembersRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetMembers),
+               log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            } 
 
             var response = await _memberService.GetMembersAsync(request);
              
@@ -80,6 +97,13 @@ namespace GymManagementAPI.Controllers
         public async Task<ActionResult<GetMemberByIdResopnse>>
             GetMemeberProfileById(int Id, [FromServices]IAuthorizationService authService)
         {
+            if (Id < 1)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetMemeberProfileById),
+                  log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
+                return BadRequest();
+            }
+
             var authResult = await authService
                 .AuthorizeAsync(User,Id,Policies.OwnerOrAdmin);
 
@@ -105,8 +129,12 @@ namespace GymManagementAPI.Controllers
             GetMemeberById(int Id, [FromServices]IAuthorizationService authService)
         { 
             if (Id < 1)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetMemeberById),
+                  log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+                
             var authResult = await authService
                 .AuthorizeAsync(User,Id,Policies.OwnerOrAdmin);
 
@@ -130,12 +158,22 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateMember(int Id,[FromBody]UpdateMemberRequest request)
+        public async Task<IActionResult> UpdateMemberById(int Id,[FromBody]UpdateMemberRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(UpdateMemberById),
+                log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+                
             var status = await _memberService.UpdateAsync(Id,request);
+            if(status==enUpdateMemberStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(UpdateMemberById),_adminId,_Ip);
+                return NoContent();
+            }
+
             return status switch
             {
                 enUpdateMemberStatus.NotUniqueEmail => Conflict("Email must be unique"),
@@ -150,7 +188,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateMemberStatus.MemberNotFound => NotFound("Member not found"),
 
-                _=> NoContent()
+                _=> StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -167,8 +205,12 @@ namespace GymManagementAPI.Controllers
             [FromServices] IAuthorizationService authService)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(UpdateMemberProfile),
+                log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+                 
             var authResult = await authService
                .AuthorizeAsync(User, Id, Policies.OwnerOrAdmin);
 
@@ -177,6 +219,12 @@ namespace GymManagementAPI.Controllers
 
             enUpdateMemberProfileStatus status = await _memberService
                 .UpdateProfileAsync(Id,request);
+
+            if(status==enUpdateMemberProfileStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(UpdateMemberProfile), _adminId, _Ip);
+                return NoContent();
+            }
 
             return status switch
             {
@@ -188,7 +236,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateMemberProfileStatus.MemberNotFound => NotFound("Member not found"),
                  
-                _=> NoContent()
+                _=> StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
     }

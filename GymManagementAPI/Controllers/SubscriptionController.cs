@@ -1,4 +1,6 @@
-﻿using Azure.Core;
+﻿using Azure;
+using Azure.Core;
+using GymManagementAPI.Extensions;
 using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +13,7 @@ using RepositoryTier.Subscription.Enums;
 using RepositoryTier.Subscription.Results;
 using RepositoryTier.User.Enums;
 using ServiceTier.Subscription;
+using log = GymManagementAPI.Extensions.IloggerExtensions;
 
 namespace GymManagementAPI.Controllers
 { 
@@ -20,9 +23,15 @@ namespace GymManagementAPI.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService _subscriptionService;
-        public SubscriptionController(ISubscriptionService subscriptionService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public SubscriptionController(ISubscriptionService subscriptionService,ILogger logger)
         {
             _subscriptionService = subscriptionService;
+            _logger = logger;
+            _adminId = HttpContext.GetAdminId();
+            _Ip = HttpContext.GetIPAddress();
         }
 
         [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
@@ -37,8 +46,12 @@ namespace GymManagementAPI.Controllers
             [FromServices]IAuthorizationService authService)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetSubscriptions),
+                    log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+              
             if (request.MemberId.HasValue)
             {
                 var authResult = await authService
@@ -71,9 +84,22 @@ namespace GymManagementAPI.Controllers
             AddSubscription([FromBody] AddSubscriptionRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(AddSubscription),
+                    log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
 
             var response = await _subscriptionService.AddAsync(request);
+
+            if (response.Status == enAddSubscriptionStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(AddSubscription),_adminId,_Ip);
+                return CreatedAtRoute("GetSubscriptionById", new { Id = response.Id }, null);
+            }
+
+            _logger.LogAdminInvalidAction(nameof(AddSubscription),
+                log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
 
             return response.Status switch
             {
@@ -91,7 +117,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddSubscriptionStatus.MemberInactive => Unauthorized("Member is not active"),
 
-                _=>CreatedAtRoute("GetSubscriptionById",new { Id=response.Id},null)
+                _=> StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -107,8 +133,12 @@ namespace GymManagementAPI.Controllers
             GetSubscriptionById(int Id, [FromServices] IAuthorizationService authService)
         {
             if (Id < 1)
+            {
+                _logger.LogAdminInvalidAction(nameof(AddSubscription),
+                    log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+           
             var authResult = await authService
                     .AuthorizeAsync(User, Id, Policies.SubscriptionOwnerOrAdmin);
 
@@ -132,10 +162,22 @@ namespace GymManagementAPI.Controllers
             FreezeSubscriptionById(int Id,FreezeSubscriptionByIdRequest request)
         {
             if (Id < 1 || !ModelState.IsValid)
+            {
+
                 return BadRequest();
+            }
 
             enFreezeSubscriptionStatus status = await _subscriptionService
                 .FreezeSubscriptionAsync(Id, request);
+
+            if (status == enFreezeSubscriptionStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(FreezeSubscriptionById), _adminId, _Ip);
+                return NoContent();
+            }
+
+            _logger.LogAdminInvalidAction(nameof(FreezeSubscriptionById),
+                log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
 
             return status switch
             {
@@ -145,7 +187,7 @@ namespace GymManagementAPI.Controllers
 
                 enFreezeSubscriptionStatus.SubscriptionNotFound => NotFound("Subscription not found"),
 
-                _ => NoContent()
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             }; 
         }
     }

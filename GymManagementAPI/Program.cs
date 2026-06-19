@@ -314,7 +314,7 @@ namespace GymManagement
                     // 1- logged user (OR) 2- public api
                     var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "anonymous";
                     var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-                    var path = context.Request.Path.ToString();
+                    var path = context.Request.Path.ToString();// because we don't know action name (global)
 
 
                     // ✅ Centralized security log for authorization abuse

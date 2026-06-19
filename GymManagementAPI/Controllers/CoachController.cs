@@ -1,4 +1,5 @@
-﻿using GymManagementAPI.Helpers;
+﻿using GymManagementAPI.Extensions;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -7,6 +8,7 @@ using RepositoryTier.Coach.Enums;
 using RepositoryTier.User.DTOs;
 using RepositoryTier.User.Enums;
 using ServiceTier.Coach;
+using log = GymManagementAPI.Extensions.IloggerExtensions;
 
 namespace GymManagementAPI.Controllers
 {
@@ -16,9 +18,15 @@ namespace GymManagementAPI.Controllers
     public class CoachController : ControllerBase
     {
         private readonly ICoachService _coachService;
-        public CoachController(ICoachService coachService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public CoachController(ICoachService coachService,ILogger logger)
         {
             _coachService = coachService;
+            _logger = logger;
+            _adminId = HttpContext.GetAdminId();
+            _Ip = HttpContext.GetIPAddress();
         }
 
         [EnableRateLimiting(Policies.TokenBucketAuthLimiter)]
@@ -33,7 +41,12 @@ namespace GymManagementAPI.Controllers
             GetCoaches([FromQuery] GetCoachesRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetCoaches),
+                   log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
+               
 
             var response = await _coachService.GetCoachesAsync(request);
 
@@ -52,8 +65,12 @@ namespace GymManagementAPI.Controllers
             [FromServices]IAuthorizationService authService)
         {
             if (Id < 1)
+            {
+                _logger.LogAdminInvalidAction(nameof(GetCoachById),
+                   log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+             
             var authResult = await authService
                 .AuthorizeAsync(User,Id,Policies.OwnerOrAdmin);
 
@@ -79,11 +96,24 @@ namespace GymManagementAPI.Controllers
             UpdateCoach(int Id, UpdateCoachByIdRequest request)
         {
             if (Id < 1 || !ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(UpdateCoach),
+                 log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
+            }
+               
+            var status = await _coachService.UpdateAsync(Id, request);
 
-            var response = await _coachService.UpdateAsync(Id, request);
+            if(status==enUpdateCoachStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(UpdateCoach),_adminId,_Ip);
+                return NoContent();
+            }
 
-            return response switch
+            _logger.LogAdminInvalidAction(nameof(UpdateCoach),
+                log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
+
+            return status switch
             {
                 enUpdateCoachStatus.CoachNotFound => NotFound("Coach not found"),
 
@@ -93,7 +123,7 @@ namespace GymManagementAPI.Controllers
 
                 enUpdateCoachStatus.DataNotChanged => BadRequest("Date not changed"),
 
-                _ => NoContent()
+                _ =>StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 

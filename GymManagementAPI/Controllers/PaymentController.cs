@@ -1,4 +1,5 @@
-﻿using GymManagementAPI.Helpers;
+﻿using GymManagementAPI.Extensions;
+using GymManagementAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using RepositoryTier.Payment.DTOs;
 using RepositoryTier.Payment.Enums;
 using ServiceTier.Payment;
+using log = GymManagementAPI.Extensions.IloggerExtensions;
 
 namespace GymManagementAPI.Controllers
 {
@@ -15,9 +17,15 @@ namespace GymManagementAPI.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
-        public PaymentController(IPaymentService paymentService)
+        private readonly ILogger _logger;
+        private string _Ip;
+        private string _adminId;
+        public PaymentController(IPaymentService paymentService,ILogger logger)
         {
             _paymentService= paymentService;
+            _logger= logger;
+            _adminId = HttpContext.GetAdminId();
+            _Ip = HttpContext.GetIPAddress();
         }
 
         [EnableRateLimiting(Policies.SlidingWindowAuthLimiter)]
@@ -31,10 +39,22 @@ namespace GymManagementAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<int>> AddPayment(AddPaymentRequest request) 
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(AddPayment),
+                 log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-            
+            }
+                 
             var response = await _paymentService.AddAsync(request);
+            if(response.Status==enAddPaymentStatus.Succeeded)
+            {
+                _logger.LogAdminExecutedAction(nameof(AddPayment), _adminId, _Ip);
+                return CreatedAtRoute("GetPaymentById", new { Id = response.Id }, null);
+            }
+
+            _logger.LogAdminInvalidAction(nameof(AddPayment),
+            log.enInvalidAdminActionReason.LogicalError, _adminId, _Ip);
             return response.Status switch
             {
                 enAddPaymentStatus.SubscriptionNotFound => NotFound("Subscription not found"),
@@ -43,7 +63,7 @@ namespace GymManagementAPI.Controllers
 
                 enAddPaymentStatus.PaidExceedsRemainingAmount => BadRequest("Paid amount exceeds remaining amount"),
 
-                _=> CreatedAtRoute("GetPaymentById", new { Id= response.Id },null) 
+                _=> StatusCode(StatusCodes.Status500InternalServerError)
             };
         }
 
@@ -59,8 +79,12 @@ namespace GymManagementAPI.Controllers
         public async Task<ActionResult<GetPaymentByIdResponse>> GetPaymentById(int Id)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogAdminInvalidAction(nameof(AddPayment),
+                 log.enInvalidAdminActionReason.InvalidInput, _adminId, _Ip);
                 return BadRequest();
-
+            }
+         
             var response = await _paymentService.GetByIdAsync(Id);
 
             return response == null ? NotFound("Payment not found") : Ok(response);
