@@ -17,12 +17,12 @@ namespace RepositoryTier.Coach.Repositories
     public class CoachRepository : Repository<Entities.Coach>, ICoachRepository
     {
         protected readonly PaganationOptions PaganationOptions;
-        private readonly ILogger _logger;
+        private readonly ILogger<CoachRepository> _logger;
     
         public CoachRepository(
             GymManagementDbContext context
             , IOptions<PaganationOptions> configs,
-            ILogger logger) 
+            ILogger<CoachRepository> logger) 
             : base(context) 
         {
             _logger= logger;

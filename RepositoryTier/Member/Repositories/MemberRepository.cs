@@ -18,11 +18,11 @@ namespace RepositoryTier.Member.Repositories
     public class MemberRepository : Repository<Entities.Member>, IMemberRepository
     {
         protected readonly PaganationOptions PaganationOptions;
-        private readonly ILogger _logger;
+        private readonly ILogger<MemberRepository> _logger;
         public MemberRepository(
             GymManagementDbContext context,
             IOptions<PaganationOptions>paganationOptions,
-            ILogger logger)
+            ILogger<MemberRepository> logger)
             : base(context) 
         {
             _logger=logger;

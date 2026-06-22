@@ -16,11 +16,11 @@ namespace RepositoryTier.Attendance.Repositories
     public class AttendanceRepository : Repository<Entities.Attendance>, IAttendanceRepository
     {
         protected readonly PaganationOptions _paganationOptions;
-        private readonly ILogger _logger;
+        private readonly ILogger<AttendanceRepository> _logger;
         public AttendanceRepository(
             GymManagementDbContext context,
             IOptions<PaganationOptions> paganationOptions,
-            ILogger logger)
+            ILogger<AttendanceRepository> logger)
             : base(context)
         {
             _logger = logger;

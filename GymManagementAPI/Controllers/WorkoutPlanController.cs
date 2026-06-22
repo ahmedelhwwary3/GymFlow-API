@@ -22,11 +22,12 @@ namespace GymManagementAPI.Controllers
     public class WorkoutPlanController : ControllerBase
     {
         private readonly IWorkoutPlanService _workoutPlanService;
-        private readonly ILogger _logger;
+        private readonly ILogger<WorkoutPlanController> _logger;
         private string _Ip;
         private string _adminId;
-        public WorkoutPlanController(IWorkoutPlanService workoutPlanService
-            ,ILogger logger)
+        public WorkoutPlanController(
+            IWorkoutPlanService workoutPlanService
+            , ILogger<WorkoutPlanController> logger)
         {
             _workoutPlanService = workoutPlanService;
             _logger = logger;

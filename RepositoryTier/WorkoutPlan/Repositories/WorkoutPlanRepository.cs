@@ -14,11 +14,11 @@ namespace RepositoryTier.WorkoutPlan.Repositories
     public class WorkoutPlanRepository : Repository<Entities.WorkoutPlan>, IWorkoutPlanRepository
     {
         protected readonly PaganationOptions PaganationOptions;
-        private readonly ILogger _logger;
+        private readonly ILogger<WorkoutPlanRepository> _logger;
         public WorkoutPlanRepository(
             GymManagementDbContext context,
             IOptions<PaganationOptions> paganationOptions,
-            ILogger logger) 
+            ILogger<WorkoutPlanRepository> logger) 
             : base(context) 
         {
             _logger = logger;

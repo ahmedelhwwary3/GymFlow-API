@@ -23,10 +23,12 @@ namespace GymManagementAPI.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService _subscriptionService;
-        private readonly ILogger _logger;
+        private readonly ILogger<SubscriptionController> _logger;
         private string _Ip;
         private string _adminId;
-        public SubscriptionController(ISubscriptionService subscriptionService,ILogger logger)
+        public SubscriptionController(
+            ISubscriptionService subscriptionService,
+            ILogger<SubscriptionController> logger)
         {
             _subscriptionService = subscriptionService;
             _logger = logger;

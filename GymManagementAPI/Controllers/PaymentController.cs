@@ -17,10 +17,12 @@ namespace GymManagementAPI.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
-        private readonly ILogger _logger;
+        private readonly ILogger<PaymentController> _logger;
         private string _Ip;
         private string _adminId;
-        public PaymentController(IPaymentService paymentService,ILogger logger)
+        public PaymentController(
+            IPaymentService paymentService,
+            ILogger<PaymentController> logger)
         {
             _paymentService= paymentService;
             _logger= logger;

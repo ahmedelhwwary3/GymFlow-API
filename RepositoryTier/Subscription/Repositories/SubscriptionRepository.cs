@@ -15,11 +15,11 @@ namespace RepositoryTier.Subscription.Repositories
     public class SubscriptionRepository : Repository<Entities.Subscription>, ISubscriptionRepository
     {
         protected readonly PaganationOptions PaganationOptions;
-        private readonly ILogger _logger;
+        private readonly ILogger<SubscriptionRepository> _logger;
         public SubscriptionRepository(
             GymManagementDbContext context,
             IOptions<PaganationOptions> paganationOptions,
-            ILogger logger) 
+            ILogger<SubscriptionRepository> logger) 
             : base(context) 
         {
             _logger = logger;

@@ -22,10 +22,12 @@ namespace GymManagementAPI.Controllers
     public class MemberController : ControllerBase
     {
         private readonly IMemberService _memberService;
-        private readonly ILogger _logger;
+        private readonly ILogger<MemberController> _logger;
         private string _Ip;
         private string _adminId;
-        public MemberController(IMemberService memberService,ILogger logger)
+        public MemberController(
+            IMemberService memberService,
+            ILogger<MemberController> logger)
         {
             _memberService = memberService;
             _logger = logger;

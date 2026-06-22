@@ -22,11 +22,11 @@ namespace GymManagementAPI.Controllers
     public class AttendanceController : ControllerBase
     {
         private readonly IAttendanceService _attdService;
-        private readonly ILogger _logger;
+        private readonly ILogger<AttendanceController> _logger;
         private string _Ip;
         private string _adminId;
         public AttendanceController(IAttendanceService atndService,
-            ILogger logger)
+            ILogger<AttendanceController> logger)
         {
             _attdService = atndService;
             _logger= logger;

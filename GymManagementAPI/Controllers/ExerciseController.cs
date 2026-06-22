@@ -18,10 +18,12 @@ namespace GymManagementAPI.Controllers
     public class ExerciseController : ControllerBase
     {
         private readonly IExerciseService _exerciseService;
-        private readonly ILogger _logger;
+        private readonly ILogger<ExerciseController> _logger;
         private string _Ip;
         private string _adminId;
-        public ExerciseController(IExerciseService exerciseService,ILogger logger)
+        public ExerciseController(
+            IExerciseService exerciseService, 
+            ILogger<ExerciseController> logger)
         {
             _logger = logger;
             _exerciseService = exerciseService;
