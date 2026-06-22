@@ -1,0 +1,176 @@
+GymFlow API Architecture
+
+========================
+1. High Level Architecture
+========================
+
+Presentation Layer (API)
+        ↓
+Business Layer (Services)
+        ↓
+Data Access Layer (Repositories)
+        ↓
+Entity Framework Core DbContext
+        ↓
+SQL Server Database
+
+
+========================
+2. Detailed Project Structure
+========================
+
+GymManagementAPI
+│
+├── Controllers
+│   ├── AuthController
+│   ├── UserController
+│   ├── MemberController
+│   ├── CoachController
+│   ├── SubscriptionController
+│   ├── PaymentController
+│   ├── AttendanceController
+│   └── WorkoutPlanController
+│
+├── Extensions
+│   ├── ILoggerExtensions
+│   └── HttpContextExtensions
+│
+├── Authorization
+│   ├── Requirements
+│   └── Handlers
+│
+├── Helpers
+│   ├── Policies
+│   └── UserRoles
+│
+├── Program.cs
+└── appsettings.json
+
+
+ServiceTier
+│
+├── Authentication
+│   ├── AuthService
+│   └── TokenService
+│
+├── Member
+│   |── MemberService 
+│   └── IMemberService 
+│
+├── Coach
+│   |── CoachService
+│   └── ICoachService
+│
+├── Subscription
+│   |── SubscriptionService
+│   └── ISubscriptionService
+│
+├── Payment
+│   |── PaymentService
+│   └── IPaymentService
+│
+├── Attendance
+│   |── AttendanceService
+│   └── IAttendanceService
+│
+├── WorkoutPlan
+│   |── WorkoutPlanService
+│   └── IWorkoutPlanService
+│
+├── User
+│    |── UserService
+└──  └── IUserService
+
+ 
+RepositoryTier
+│
+├── DbContext
+│   └── GymManagementDbContext
+│
+├── Authentication
+│   |── DTOs
+│   |── Enums
+│   |── DTOs
+│   |── Results
+│   └── Configurations
+│
+├── Member
+│   |── Repositories
+│   |── DTOs
+│   |── Enums
+│   |── DTOs
+│   |── Results
+│   └── Configurations
+│
+├── Coach
+│   |── Repositories
+│   |── DTOs
+│   |── Enums
+│   |── DTOs
+│   |── Results
+│   └── Configurations
+│
+├── Subscription
+│   |── Repositories
+│   |── DTOs
+│   |── Enums
+│   |── DTOs
+│   |── Results
+│   └── Configurations
+│
+├── Payment
+│   |── Repositories
+│   |── DTOs
+│   |── Enums
+│   |── DTOs
+│   |── Results
+│   └── Configurations
+│
+├── Attendance
+│   |── Repositories
+│   |── DTOs
+│   |── Enums
+│   |── DTOs
+│   |── Results
+│   └── Configurations
+│
+├── WorkoutPlan
+│   |── Repositories
+│   |── DTOs
+│   |── Enums
+│   |── DTOs
+│   |── Results
+│   └── Configurations
+│
+|── GenericRepository
+└── IGenericRepository
+
+
+ 
+Models
+│
+├── User
+├── Member
+├── Coach
+├── Subscription
+├── Payment
+├── Attendance
+├── WorkoutPlan
+├── Exercise
+
+
+
+
+
+   ↓
+Controller
+   ↓
+Service Layer
+   ↓
+Repository Layer
+   ↓
+EF Core DbContext
+   ↓
+SQL Server
+
+Response follows the reverse path.

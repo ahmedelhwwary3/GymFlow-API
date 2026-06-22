@@ -3,15 +3,15 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using RepositoryTier.API_Configurations;  
+using RepositoryTier.Authentication;
+using RepositoryTier.Authentication.DTOs;
+using RepositoryTier.Coach.Repositories;
+using RepositoryTier.User.Enums;
 using RepositoryTier.User.Repositories;
 using ServiceTier; 
-using ServiceTier.User;
-using RepositoryTier.User.Enums;
-using RepositoryTier.Authentication;
-
-using System.Security.Cryptography;
 using ServiceTier.Coach;
-using RepositoryTier.Coach.Repositories;
+using ServiceTier.User;
+using System.Security.Cryptography;
 
 namespace GymManagementServiceTier.UnitTesting.User
 {
