@@ -11,11 +11,11 @@ namespace RepositoryTier.User.Results
 {
     public class RefreshResult
     {
-        public enRefreshStatus RefreshStatus { get; set; }
+        public enRefreshStatus Status { get; set; }
         public TokenResponse? TokenResponse { get; set; }
         public RefreshResult(enRefreshStatus refreshStatus, TokenResponse? tokenResponse=null)
         {
-            this.RefreshStatus= refreshStatus;
+            this.Status= refreshStatus;
             this.TokenResponse= tokenResponse;
         }
     }

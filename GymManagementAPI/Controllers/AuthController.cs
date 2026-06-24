@@ -43,7 +43,7 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
               
             var result = await _userService.LoginAsync(request);
-            if (result.LoginStatus == enLoginStatus.Succeeded)
+            if (result.Status == enLoginStatus.Succeeded)
             {
                 _logger.LogInformation(
                     "Successful login for email={Email}, IP={IPAddress}",
@@ -56,7 +56,7 @@ namespace GymManagementAPI.Controllers
             _logger.LogWarning("Invalid Login attempt for email={request.Email} , IP={IPAddress}"
                 , request.Email, _IPAddress);
 
-            return result.LoginStatus switch
+            return result.Status switch
             {
                 enLoginStatus.UserNotFound => Unauthorized("Invalid username or password"),
 
@@ -81,7 +81,7 @@ namespace GymManagementAPI.Controllers
                 return BadRequest();
              
             var result = await _userService.RefreshAsync(request);
-            if (result.RefreshStatus == enRefreshStatus.Succeeded)
+            if (result.Status == enRefreshStatus.Succeeded)
             {
                 _logger.LogInformation("Refresh token attempt succeeded for " +
                     "email={request.Email}, IP={_IPAddress}",
@@ -94,7 +94,7 @@ namespace GymManagementAPI.Controllers
                 request.Email,
                 _IPAddress);
 
-            return result.RefreshStatus switch
+            return result.Status switch
             {
                 enRefreshStatus.Inactive => Unauthorized("User is not active"),
 

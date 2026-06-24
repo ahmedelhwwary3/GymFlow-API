@@ -10,11 +10,11 @@ namespace RepositoryTier.User.Results
 {
     public class LoginResult
     {
-        public enLoginStatus LoginStatus { get; set; }
+        public enLoginStatus Status { get; set; }
         public TokenResponse? TokenResponse { get; set; }
         public LoginResult(enLoginStatus LoginStatus, TokenResponse? tokenResponse=null)
         {
-            this.LoginStatus = LoginStatus;
+            this.Status = LoginStatus;
             this.TokenResponse = tokenResponse;
         }
     }

@@ -42,6 +42,7 @@ namespace GymManagementServiceTier.UnitTesting.User
             });
 
             _repoMock=new Mock<IUserRepository>();
+            _coachRepoMock = new Mock<ICoachRepository>();
 
             _userService = new UserService(
                 _repoMock.Object,

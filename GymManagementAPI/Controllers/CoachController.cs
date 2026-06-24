@@ -21,7 +21,9 @@ namespace GymManagementAPI.Controllers
         private readonly ILogger<CoachController> _logger;
         private string _Ip;
         private string _adminId;
-        public CoachController(ICoachService coachService, ILogger<CoachController> logger)
+        public CoachController(
+            ICoachService coachService, 
+            ILogger<CoachController> logger)
         {
             _coachService = coachService;
             _logger = logger;

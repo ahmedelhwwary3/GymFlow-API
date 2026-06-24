@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Dashboard
 {
-    public interface IDashboardService
+    public interface IDashboardService 
     {
         Task<AdminDashboardResponse> GetForAdminAsync();
         Task<CoachDashboardResponse> GetForCoachAsync(int coachId); 

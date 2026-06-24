@@ -25,7 +25,8 @@ namespace GymManagementAPI.Controllers
         private readonly ILogger<AttendanceController> _logger;
         private string _Ip;
         private string _adminId;
-        public AttendanceController(IAttendanceService atndService,
+        public AttendanceController(
+            IAttendanceService atndService,
             ILogger<AttendanceController> logger)
         {
             _attdService = atndService;
