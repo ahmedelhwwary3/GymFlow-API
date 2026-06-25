@@ -15,17 +15,14 @@ namespace ServiceTier.Attendance
     public class AttendanceService:Service<RepositoryTier.Entities.Attendance>, IAttendanceService
     {
         private readonly IAttendanceRepository _repo;
-        private readonly IMemberRepository _memberRepo;
-        private readonly IUserRepository _userRepo;
+        private readonly IMemberRepository _memberRepo; 
         public AttendanceService(
             IAttendanceRepository repo,
-            IMemberRepository memberRepo,
-            IUserRepository userRepo) 
+            IMemberRepository memberRepo ) 
             : base(repo)
         { 
             _repo = repo;
-            _memberRepo = memberRepo;
-            _userRepo = userRepo;
+            _memberRepo = memberRepo; 
         }
 
         public async Task<GetAttendancesResponse>
