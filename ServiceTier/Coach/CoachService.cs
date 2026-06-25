@@ -18,17 +18,14 @@ namespace ServiceTier.Coach
 {
     public class CoachService : Service<RepositoryTier.Entities.Coach>, ICoachService
     {
-        private readonly ICoachRepository _repo;
-        private readonly IUserRepository _userRepo;
+        private readonly ICoachRepository _repo; 
         private readonly IUserService _userService;
         public CoachService(
             ICoachRepository repo,
-            IUserRepository userRepo,
             IUserService userService) 
             : base(repo) 
         { 
-            _repo = repo;
-            _userRepo = userRepo;
+            _repo = repo; 
             _userService = userService;
         } 
         public async Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request)
