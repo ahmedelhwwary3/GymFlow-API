@@ -16,14 +16,13 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Coach
 {
-    public class CoachService : Service<RepositoryTier.Entities.Coach>, ICoachService
+    public class CoachService : ICoachService
     {
         private readonly ICoachRepository _repo; 
         private readonly IUserService _userService;
         public CoachService(
             ICoachRepository repo,
-            IUserService userService) 
-            : base(repo) 
+            IUserService userService)  
         { 
             _repo = repo; 
             _userService = userService;

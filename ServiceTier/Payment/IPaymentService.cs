@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Payment
 {
-    public interface IPaymentService:IService<RepositoryTier.Entities.Payment>
+    public interface IPaymentService 
     {
         Task<AddPaymentResponse> AddAsync(AddPaymentRequest request);
         Task<GetPaymentByIdResponse?> GetByIdAsync(int Id);

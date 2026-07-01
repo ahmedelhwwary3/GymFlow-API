@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Subscription
 {
-    public interface ISubscriptionService:IService<RepositoryTier.Entities.Subscription>
+    public interface ISubscriptionService 
     {
         Task<GetSubscriptionsResponse> GetSubscriptionsAsync(GetSubscriptionsRequest request);
         Task<AddSubscriptionResult> AddAsync(AddSubscriptionRequest request);

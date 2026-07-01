@@ -16,7 +16,7 @@ using RepositoryTier.User.Repositories;
 
 namespace ServiceTier.WorkoutPlan
 {
-    public class WorkoutPlanService: Service<RepositoryTier.Entities.WorkoutPlan>, IWorkoutPlanService
+    public class WorkoutPlanService:  IWorkoutPlanService
     {
         private readonly IWorkoutPlanRepository _repo;
         private readonly ICoachRepository _coachRepo;
@@ -26,8 +26,7 @@ namespace ServiceTier.WorkoutPlan
             IWorkoutPlanRepository repo,
             ICoachRepository coachRepo,
             IExerciseRepository exerciseRepo,
-            IUserRepository userRepo) 
-            : base(repo) 
+            IUserRepository userRepo)  
         {
             _repo = repo;
             _coachRepo= coachRepo;

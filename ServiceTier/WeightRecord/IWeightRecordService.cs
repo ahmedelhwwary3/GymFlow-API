@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.WeightRecord
 {
-    public interface IWeightRecordService : IService<RepositoryTier.Entities.WeightRecord>
+    public interface IWeightRecordService 
     {
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Exercise
 {
-    public interface IExerciseService: IService<RepositoryTier.Entities.Exercise>
+    public interface IExerciseService 
     {
         Task<GetExercisesResponse> GetExercisesAsync(GetExercisesRequest request);
         Task<AddExerciseResult> AddAsync(AddExerciseRequest request);

@@ -6,7 +6,7 @@ using RepositoryTier.User.Results;
 
 namespace ServiceTier.User
 {
-    public interface IUserService: IService<RepositoryTier.Entities.User>
+    public interface IUserService 
     {
         Task<LoginResult> LoginAsync(LoginRequest request);
         Task<RefreshResult> RefreshAsync(RefreshRequest request);

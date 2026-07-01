@@ -12,14 +12,13 @@ using RepositoryTier.Entities;
 
 namespace ServiceTier.Payment
 {
-    public class PaymentService : Service<RepositoryTier.Entities.Payment>, IPaymentService
+    public class PaymentService : IPaymentService
     {
         private readonly IPaymentRepository _repo; 
         public PaymentService(
             IPaymentRepository repo,
             ISubscriptionRepository subscriptionRepo
-            ) 
-            : base(repo) 
+            )  
         { 
             _repo = repo; 
         }

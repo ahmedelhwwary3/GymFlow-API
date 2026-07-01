@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Exercise
 {
-    public class ExerciseService : Service<RepositoryTier.Entities.Exercise>, IExerciseService
+    public class ExerciseService :   IExerciseService
     {
         private readonly IExerciseRepository _repo;
-        public ExerciseService(IExerciseRepository repo) : base(repo) 
+        public ExerciseService(IExerciseRepository repo)  
         { 
             _repo = repo;
         }

@@ -14,7 +14,7 @@ using RepositoryTier.Entities;
 
 namespace ServiceTier.Subscription
 {
-    public class SubscriptionService : Service<RepositoryTier.Entities.Subscription>, ISubscriptionService
+    public class SubscriptionService : ISubscriptionService
     {
         private readonly ISubscriptionRepository _repo;
         private readonly IMemberRepository _memberRepo;
@@ -23,8 +23,7 @@ namespace ServiceTier.Subscription
             ISubscriptionRepository repo,
             IMemberRepository memberRepo,
             ICoachRepository coachRepo
-            ) 
-            : base(repo) 
+            )  
         { 
             _repo=repo;
             _coachRepo = coachRepo;

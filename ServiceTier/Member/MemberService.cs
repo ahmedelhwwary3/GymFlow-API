@@ -18,7 +18,7 @@ using RepositoryTier.User.Results;
 
 namespace ServiceTier.Member
 {
-    public class MemberService: Service<RepositoryTier.Entities.Member>, IMemberService
+    public class MemberService:  IMemberService
     {
         private readonly IMemberRepository _repo;
         private readonly IUserService _userService;
@@ -26,8 +26,7 @@ namespace ServiceTier.Member
         public MemberService(
             IMemberRepository repo
             ,IUserService userService,
-            ICoachRepository coachRepo) 
-            : base(repo) 
+            ICoachRepository coachRepo)  
         {
             _repo = repo;
             _userService = userService;

@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.WeightRecord
 {
-    public class WeightRecordService : Service<RepositoryTier.Entities.WeightRecord>, IWeightRecordService
+    public class WeightRecordService :  IWeightRecordService
     {
         private readonly IWeightRecordRepository _repo;
-        public WeightRecordService(IWeightRecordRepository repo) : base(repo) 
+        public WeightRecordService(IWeightRecordRepository repo)  
         {
             _repo = repo;
         } 

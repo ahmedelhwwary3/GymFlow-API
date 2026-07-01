@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks; 
 namespace ServiceTier.WorkoutPlan
 {
-    public interface IWorkoutPlanService: IService<RepositoryTier.Entities.WorkoutPlan>
+    public interface IWorkoutPlanService 
     {
         Task<GetWorkoutPlansResponse> GetWorkoutPlansAsync(GetWorkoutPlansRequest request,int? memberId);
         Task<AddWorkoutPlanResult> AddFullPlanAsync(AddWorkoutPlanRequest request);

@@ -12,14 +12,13 @@ using RepositoryTier.Entities;
 
 namespace ServiceTier.Attendance
 {
-    public class AttendanceService:Service<RepositoryTier.Entities.Attendance>, IAttendanceService
+    public class AttendanceService: IAttendanceService
     {
         private readonly IAttendanceRepository _repo;
         private readonly IMemberRepository _memberRepo; 
         public AttendanceService(
             IAttendanceRepository repo,
-            IMemberRepository memberRepo ) 
-            : base(repo)
+            IMemberRepository memberRepo )  
         { 
             _repo = repo;
             _memberRepo = memberRepo; 

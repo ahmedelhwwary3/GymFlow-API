@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Attendance
 {
-    public interface IAttendanceService:IService<RepositoryTier.Entities.Attendance>
+    public interface IAttendanceService 
     {
         Task<GetAttendancesResponse> GetAttendancesAsync(GetAttendancesRequest request, int? memberId = null);
         Task<AddAttendanceResult> AddAttendanceAsync(AddAttendanceRequest memberId);

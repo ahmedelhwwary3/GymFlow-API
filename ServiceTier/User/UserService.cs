@@ -22,7 +22,7 @@ using System.Text;
 using System.Threading.Tasks; 
 namespace ServiceTier.User
 {
-    public class UserService : Service<RepositoryTier.Entities.User>, IUserService
+    public class UserService :  IUserService
     {
         private readonly IUserRepository _repo;
         protected readonly JWTOptions _jwtConfigs;
@@ -32,8 +32,7 @@ namespace ServiceTier.User
             IUserRepository repo,
             ICoachRepository coachRepo,
             IOptions<JWTOptions> jwtOptions,
-            IConfiguration configs)
-            : base(repo)
+            IConfiguration configs) 
         {
             _jwtConfigs = jwtOptions.Value;
             _repo = repo;

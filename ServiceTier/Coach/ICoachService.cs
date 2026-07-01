@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.Coach
 {
-    public interface ICoachService:IService<RepositoryTier.Entities.Coach>
+    public interface ICoachService 
     {
         Task<GetCoachesResponse> GetCoachesAsync(GetCoachesRequest request); 
         Task<GetCoachByIdResponse?> GetByIdAsync(int Id);

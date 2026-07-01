@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.WorkoutPlanExercise
 {
-    public class WorkoutPlanExerciseService:Service
-        <RepositoryTier.Entities.WorkoutPlanExercise>,IWorkoutPlanExerciseService
+    public class WorkoutPlanExerciseService:IWorkoutPlanExerciseService
     {
         private readonly IWorkoutPlanExerciseRepository _repo;
-        public WorkoutPlanExerciseService(IWorkoutPlanExerciseRepository repo): base(repo) 
+        public WorkoutPlanExerciseService(IWorkoutPlanExerciseRepository repo)
         { 
             _repo = repo;
         }

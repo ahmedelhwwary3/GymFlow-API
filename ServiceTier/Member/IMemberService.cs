@@ -9,7 +9,7 @@ using RepositoryTier.Member.Enums;
 
 namespace ServiceTier.Member
 {
-    public interface IMemberService:IService<RepositoryTier.Entities.Member>
+    public interface IMemberService 
     {
         Task<GetAssignedMembersForCoachResponse>
             GetAssignedMembersForCoachAsync(int coachId,GetAssignedMembersForCoachRequest request);

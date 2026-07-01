@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServiceTier.WorkoutPlanExercise
 {
-    public interface IWorkoutPlanExerciseService:IService<RepositoryTier.Entities.WorkoutPlanExercise>
+    public interface IWorkoutPlanExerciseService 
     {
     }
 }
